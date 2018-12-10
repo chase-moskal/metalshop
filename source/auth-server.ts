@@ -12,6 +12,19 @@ export async function createAuthRouter({
 }: AuthRouterOptions) {
 	const router = new KoaRouter()
 
+	router.get("/auth2", async({request, response}) => {
+
+		// obtain google token
+
+		// verify google token and extract google id
+
+		// create or obtain user payload with google account link
+
+		// sign our user's token
+
+		// respond with the token
+	})
+
 	router.get("/auth", async({request, response}) => {
 		const authPayload = await getAuthPayload()
 
