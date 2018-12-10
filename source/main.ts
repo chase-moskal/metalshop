@@ -1,23 +1,24 @@
 
+import * as googleAuthLibrary from "google-auth-library"
+
 import * as fsp from "./toolbox/fsp"
 import * as authServer from "./auth-server"
 
-import {OAuth2Client} from "google-auth-library"
-
 async function main() {
 	const port = 8080
-	const secrets = fsp.readFile("secrets.json")
+	const secretsText = (await fsp.readFile("secrets.json")).toString()
+	const secrets = JSON.parse(secretsText)
 	const googleClientId = secrets["google"]["clientId"]
 
-	const client = new OAuth2Client(googleClientId)
+	const googleAuthClient = new googleAuthLibrary.OAuth2Client(googleClientId)
 
 	async function verifyGoogle({token}): Promise<string> {
-		const ticket = await client.verifyIdToken({
+		const ticket = await googleAuthClient.verifyIdToken({
 			idToken: token,
 			audience: googleClientId
 		})
 		const payload = ticket.getPayload()
-		const userid = payload['sub']
+		const userid = payload["sub"]
 		return userid
 	}
 
