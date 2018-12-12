@@ -1,7 +1,7 @@
 {
 	"name": "authoritarian",
 	"version": "0.0.0-dev.1",
-	"description": "web authentication and authorization",
+	"description": "node library for auth and user management",
 	"main": "dist",
 	"scripts": {
 		"docker": "docker-compose build && docker-compose up",
@@ -25,8 +25,12 @@
 	"license": "ISC",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/chase-moskal/authoritarian.git"
+		"url": "git+https://github.com/chase-moskal/authoritarian.git"
 	},
+	"bugs": {
+		"url": "https://github.com/chase-moskal/authoritarian/issues"
+	},
+	"homepage": "https://github.com/chase-moskal/authoritarian#readme",
 	"devDependencies": {
 		"@types/express": "4.16.0",
 		"@types/jsonwebtoken": "8.3.0",
