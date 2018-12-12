@@ -1,5 +1,4 @@
 {
-	"private": true,
 	"name": "authoritarian",
 	"version": "0.0.0-dev.1",
 	"description": "web authentication and authorization",
@@ -14,6 +13,9 @@
 		"start": "node dist/main",
 		"test": "exit 0"
 	},
+	"files": [
+		"dist"
+	],
 	"keywords": [
 		"auth",
 		"authentication",
@@ -21,6 +23,10 @@
 	],
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"license": "ISC",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/chase-moskal/authoritarian.git"
+	},
 	"devDependencies": {
 		"@types/express": "4.16.0",
 		"@types/jsonwebtoken": "8.3.0",
