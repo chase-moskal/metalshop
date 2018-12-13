@@ -1,10 +1,9 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.1",
+	"version": "0.0.0-dev.2",
 	"description": "node library for auth and user management",
 	"main": "dist",
 	"scripts": {
-		"docker": "docker-compose build && docker-compose up",
 		"prepare": "run-s clean build-barrels build test",
 		"build-barrels": "barrelsby --directory source --exclude source/_archive --exclude source/main --delete",
 		"clean": "rm -rf dist && mkdir dist",
