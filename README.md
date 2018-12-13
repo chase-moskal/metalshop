@@ -1,7 +1,7 @@
 
 ### Authoritarian overview
 
-Authentication and authorization solution for microservices and the web
+authentication and authorization solution for microservices and the web
 
 - ***[`authoritarian`](https://github.com/chase-moskal/authoritarian#authoritarian-overview) (you are here)*** – node library for auth and user management
 - [`authoritarian-client`](https://github.com/chase-moskal/authoritarian-client#authoritarian-overview) – browser ui library for login and user settings
