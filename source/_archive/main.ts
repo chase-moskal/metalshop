@@ -1,8 +1,8 @@
 
 import * as googleAuthLibrary from "google-auth-library"
 
-import * as fsp from "./toolbox/fsp"
-import * as authServer from "./auth-server"
+import * as fsp from "../toolbox/fsp"
+import * as authServer from "../auth-server"
 
 async function main() {
 	const port = 8080

@@ -8,6 +8,7 @@
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"experimentalDecorators": true,
-		"sourceMap": true
+		"sourceMap": true,
+		"declaration": true
 	}
 }
