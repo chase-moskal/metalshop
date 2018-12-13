@@ -1,6 +1,6 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.2",
+	"version": "0.0.0-dev.3",
 	"description": "node library for auth and user management",
 	"main": "dist",
 	"scripts": {
