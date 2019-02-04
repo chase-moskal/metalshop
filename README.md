@@ -12,6 +12,10 @@ authentication and authorization solution for microservices and the web
 
 # Authoritarian
 
-- functions to sign and verify user tokens
-- koa endpoints to handle serverside google sign-in openid routines
-- functions to interact with a mongo database for user data
+this is the npm library which provides common functionality and interfaces
+
+- **common interfaces**  
+	consumed by `authoritarian-client`, `auth-server`, and `auth-webapp`
+
+- **common functionality**  
+	to sign and verify tokens

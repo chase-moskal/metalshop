@@ -1,27 +1,28 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.7",
+	"version": "0.0.0-dev.8",
 	"description": "node library for auth and user management",
+	"author": "Chase Moskal <chasemoskal@gmail.com>",
+	"license": "ISC",
 	"main": "dist",
+	"files": [
+		"dist"
+	],
 	"scripts": {
-		"prepare": "run-s clean build-barrels build test",
-		"build-barrels": "barrelsby --directory source --exclude source/_archive --exclude source/main --delete",
+		"prepare": "run-s clean build test",
 		"clean": "rm -rf dist && mkdir dist",
-		"build": "tsc",
+		"build": "run-s build-modules build-barrels",
+		"build-modules": "tsc",
+		"build-barrels": "barrelsby --directory source --exclude source/_archive --exclude source/main --delete",
 		"watch": "tsc -w",
 		"start": "node dist/main",
 		"test": "exit 0"
 	},
-	"files": [
-		"dist"
-	],
 	"keywords": [
 		"auth",
 		"authentication",
 		"authorization"
 	],
-	"author": "Chase Moskal <chasemoskal@gmail.com>",
-	"license": "ISC",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/chase-moskal/authoritarian.git"
@@ -31,20 +32,21 @@
 	},
 	"homepage": "https://github.com/chase-moskal/authoritarian#readme",
 	"devDependencies": {
-		"@types/express": "4.16.0",
+		"@types/express": "4.16.1",
 		"@types/jsonwebtoken": "8.3.0",
-		"@types/koa": "2.0.47",
-		"@types/koa-router": "7.0.35",
-		"@types/node": "10.12.12",
+		"@types/koa": "2.0.48",
+		"@types/koa-router": "7.0.39",
+		"@types/node": "10.12.21",
 		"barrelsby": "1.0.2",
 		"npm-run-all": "4.1.5",
-		"typescript": "3.2.1"
+		"typescript": "3.3.1"
 	},
 	"dependencies": {
 		"express": "4.16.4",
-		"google-auth-library": "2.0.1",
+		"fancyfs": "0.0.0-dev.1",
+		"google-auth-library": "3.0.1",
 		"jsonwebtoken": "8.4.0",
-		"koa": "2.6.2",
+		"koa": "2.7.0",
 		"koa-router": "7.4.0"
 	}
 }

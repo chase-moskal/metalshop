@@ -1,19 +1,45 @@
 
-export interface AuthPayload {
-	user: {
-		id: number
-		username: string
-		email: string
-		roles: string[]
-	}
+/** Authentication token used to fetch new access tokens */
+export type RefreshToken = string
+
+/** Authorization token contains encoded access data */
+export type AccessToken = string
+
+/** Access data which is encoded within an access token */
+export interface AccessData {
+	name: string
+	profilePicture: string
 }
 
-export interface AuthRouterOptions {
-	secretKey: string | Buffer
-	tokenExpiresIn: string | number
-	getAuthPayload: () => Promise<AuthPayload>
+/** Both auth token types from a successful login routine */
+export interface AuthTokens {
+	accessToken: AccessToken
+	refreshToken: RefreshToken
 }
 
-export interface AuthServerOptions extends AuthRouterOptions {
-	port: number
+/** Auth server json api */
+export interface AuthApi {
+
+	/** Trade a refresh token for an access token */
+	authorize(options: {refreshToken: RefreshToken}): Promise<AccessToken>
+
+	/** Trade a google token for auth tokens (after the google oauth flow) */
+	authenticateWithGoogle(options: {googleToken: string}): Promise<AuthTokens>
+}
+
+/** Token crosscall iframe api */
+export interface TokenApi {
+
+	/** Check local storage and/or call authorize to obtain an access token */
+	obtainAccessToken(): Promise<AccessToken>
+
+	/** Clear all local tokens as a part of a logout routine */
+	clearTokens(): Promise<void>
+}
+
+/** Login crosscall popup api */
+export interface LoginApi {
+
+	/** Initiate the google login routine in a popup, return an access token */
+	userLoginRoutine(): Promise<AccessToken>
 }
