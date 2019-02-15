@@ -38,12 +38,12 @@
 		"@types/koa-router": "7.0.39",
 		"barrelsby": "1.0.2",
 		"npm-run-all": "4.1.5",
-		"typescript": "3.3.1"
+		"typescript": "3.3.3"
 	},
 	"dependencies": {
 		"express": "4.16.4",
 		"fancyfs": "0.0.0-dev.1",
-		"google-auth-library": "3.0.1",
+		"google-auth-library": "3.1.0",
 		"jsonwebtoken": "8.4.0",
 		"koa": "2.7.0",
 		"koa-router": "7.4.0"
