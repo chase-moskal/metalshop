@@ -3,7 +3,7 @@ import * as jsonwebtoken from "jsonwebtoken"
 
 export async function signToken<Payload = any>({payload, secretKey, expiresIn}: {
 	payload: Payload
-	secretKey: string | Buffer
+	secretKey: string
 	expiresIn: number | string
 }): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
@@ -21,7 +21,7 @@ export async function signToken<Payload = any>({payload, secretKey, expiresIn}: 
 
 export async function verifyToken<Payload = any>({token, secretKey}: {
 	token: string
-	secretKey: string | Buffer
+	secretKey: string
 }): Promise<Payload> {
 	return new Promise<Payload>((resolve, reject) => {
 		jsonwebtoken.verify(token, secretKey, (error, payload) => {
