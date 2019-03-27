@@ -33,19 +33,20 @@
 	"homepage": "https://github.com/chase-moskal/authoritarian#readme",
 	"devDependencies": {
 		"@types/express": "4.16.1",
-		"@types/jsonwebtoken": "8.3.0",
+		"@types/jsonwebtoken": "8.3.2",
 		"@types/koa": "2.0.48",
-		"@types/koa-router": "7.0.39",
-		"barrelsby": "1.0.2",
+		"@types/koa-router": "7.0.40",
+		"barrelsby": "2.0.0",
 		"npm-run-all": "4.1.5",
-		"typescript": "3.3.3"
+		"typescript": "3.3.4000"
 	},
 	"dependencies": {
 		"express": "4.16.4",
-		"fancyfs": "0.0.0-dev.1",
-		"google-auth-library": "3.1.0",
-		"jsonwebtoken": "8.4.0",
+		"fancyfs": "0.0.0",
+		"google-auth-library": "3.1.2",
+		"jsonwebtoken": "8.5.1",
 		"koa": "2.7.0",
-		"koa-router": "7.4.0"
+		"koa-router": "7.4.0",
+		"renraku": "0.0.0-dev.2"
 	}
 }
