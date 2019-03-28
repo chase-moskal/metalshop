@@ -2,8 +2,8 @@
 	"name": "authoritarian",
 	"version": "0.0.0-dev.9",
 	"description": "node library for auth and user management",
-	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"license": "ISC",
+	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"module": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"main": "dist/cjs/index.js",
@@ -21,19 +21,6 @@
 		"start": "node dist/main",
 		"test": "exit 0"
 	},
-	"keywords": [
-		"auth",
-		"authentication",
-		"authorization"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/chase-moskal/authoritarian.git"
-	},
-	"bugs": {
-		"url": "https://github.com/chase-moskal/authoritarian/issues"
-	},
-	"homepage": "https://github.com/chase-moskal/authoritarian#readme",
 	"devDependencies": {
 		"@types/jsonwebtoken": "^8.3.2",
 		"barrelsby": "^2.0.0",
@@ -47,5 +34,18 @@
 		"google-auth-library": "^3.1.2",
 		"jsonwebtoken": "^8.5.1",
 		"renraku": "0.0.0-dev.2"
-	}
+	},
+	"keywords": [
+		"auth",
+		"authentication",
+		"authorization"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/chase-moskal/authoritarian.git"
+	},
+	"bugs": {
+		"url": "https://github.com/chase-moskal/authoritarian/issues"
+	},
+	"homepage": "https://github.com/chase-moskal/authoritarian#readme"
 }
