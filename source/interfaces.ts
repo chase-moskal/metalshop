@@ -1,4 +1,6 @@
 
+import * as renraku from "renraku"
+
 /** Authentication token used to fetch new access tokens */
 export type RefreshToken = string
 
@@ -17,8 +19,8 @@ export interface AuthTokens {
 	refreshToken: RefreshToken
 }
 
-/** Auth server json api */
-export interface AuthApi {
+/** Auth server functionality */
+export interface AuthTopic extends renraku.Topic {
 
 	/** Trade a refresh token for an access token */
 	authorize(options: {refreshToken: RefreshToken}): Promise<AccessToken>
@@ -27,8 +29,8 @@ export interface AuthApi {
 	authenticateWithGoogle(options: {googleToken: string}): Promise<AuthTokens>
 }
 
-/** Token crosscall iframe api */
-export interface TokenApi {
+/** Token crosscall iframe functionality */
+export interface TokenTopic extends renraku.Topic {
 
 	/** Check local storage and/or call authorize to obtain an access token */
 	obtainAccessToken(): Promise<AccessToken>
@@ -37,8 +39,8 @@ export interface TokenApi {
 	clearTokens(): Promise<void>
 }
 
-/** Login crosscall popup api */
-export interface LoginApi {
+/** Login crosscall popup functionality */
+export interface LoginTopic extends renraku.Topic {
 
 	/** Initiate the google login routine in a popup, return an access token */
 	userLoginRoutine(): Promise<AccessToken>
