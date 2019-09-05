@@ -33,7 +33,7 @@
 	"dependencies": {
 		"google-auth-library": "^5.2.0",
 		"jsonwebtoken": "^8.5.1",
-		"renraku": "0.0.0-dev.6"
+		"renraku": "0.0.0-dev.7"
 	},
 	"keywords": [
 		"auth",
