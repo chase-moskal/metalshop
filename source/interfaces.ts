@@ -14,17 +14,21 @@ export interface AuthTokens {
 	refreshToken: RefreshToken
 }
 
-export interface AuthTopic extends renraku.Topic<AuthTopic> {
+export interface AuthExchangerTopic extends renraku.Topic<AuthExchangerTopic> {
 	authorize(options: {refreshToken: RefreshToken}): Promise<AccessToken>
-	authenticateWithGoogle(options: {googleToken: string}): Promise<AuthTokens>
+	authenticateViaGoogle(options: {googleToken: string}): Promise<AuthTokens>
 }
 
-export interface TokenTopic extends renraku.Topic<TokenTopic> {
-	logout(): Promise<void>
+export interface TokenStorageTopic extends renraku.Topic<TokenStorageTopic> {
+	clearTokens(): Promise<void>
 	passiveCheck(): Promise<AccessToken>
 	writeTokens(token: AuthTokens): Promise<void>
 }
 
-export interface LoginTopic extends renraku.Topic<LoginTopic> {
-	userLoginRoutine(): Promise<AccessToken>
+export interface AccountPopupTopic extends renraku.Topic<AccountPopupTopic> {
+	login(): Promise<AccessToken>
+}
+
+export interface AuthExchangerApi extends renraku.Api<AuthExchangerApi> {
+	authExchanger: AuthExchangerTopic
 }
