@@ -26,9 +26,14 @@ export interface TokenStorageTopic extends renraku.Topic<TokenStorageTopic> {
 }
 
 export interface AccountPopupTopic extends renraku.Topic<AccountPopupTopic> {
-	login(): Promise<AccessToken>
+	login(): Promise<AuthTokens>
 }
 
 export interface AuthExchangerApi extends renraku.Api<AuthExchangerApi> {
 	authExchanger: AuthExchangerTopic
+}
+
+export interface User {
+	userId: number
+	claims: {[key: string]: any}
 }

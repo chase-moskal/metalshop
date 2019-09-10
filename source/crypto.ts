@@ -30,3 +30,7 @@ export async function verifyToken<Payload = any>({token, secretKey}: {
 		})
 	})
 }
+
+export function decodeToken<Payload = any>({token}: {token: string}): Payload {
+	return <any>jsonwebtoken.decode(token)
+}
