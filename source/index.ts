@@ -3,6 +3,7 @@
  */
 
 export * from "./clients.js"
+export * from "./crypto.test.js"
 export * from "./crypto.js"
 export * from "./interfaces.js"
 export * from "./shapes.js"

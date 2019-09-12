@@ -1,5 +1,6 @@
 
 /dist
-/node_modules
+/*.pem
 /coverage
+/node_modules
 /authoritarian-*.tgz

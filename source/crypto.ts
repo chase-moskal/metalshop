@@ -1,16 +1,16 @@
 
 import * as jsonwebtoken from "jsonwebtoken"
 
-export async function signToken<Payload = any>({payload, secretKey, expiresIn}: {
+export async function signToken<Payload = any>({payload, privateKey, expiresIn}: {
 	payload: Payload
-	secretKey: string
+	privateKey: string
 	expiresIn: number | string
 }): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
 		jsonwebtoken.sign(
 			<any>payload,
-			secretKey,
-			{algorithm: "HS256", expiresIn},
+			privateKey,
+			{algorithm: "RS256", expiresIn},
 			(error, token) => {
 				if (error) reject(error)
 				else resolve(token)
@@ -19,12 +19,12 @@ export async function signToken<Payload = any>({payload, secretKey, expiresIn}: 
 	})
 }
 
-export async function verifyToken<Payload = any>({token, secretKey}: {
+export async function verifyToken<Payload = any>({token, publicKey}: {
 	token: string
-	secretKey: string
+	publicKey: string
 }): Promise<Payload> {
 	return new Promise<Payload>((resolve, reject) => {
-		jsonwebtoken.verify(token, secretKey, (error, payload) => {
+		jsonwebtoken.verify(token, publicKey, (error, payload) => {
 			if (error) reject(error)
 			else resolve(<Payload><unknown>payload)
 		})
