@@ -1,12 +1,9 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.16",
+	"version": "0.0.0-dev.17",
 	"description": "node library for auth and user management",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
-	"module": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"main": "dist/cjs/index.js",
 	"files": [
 		"dist",
 		"generate-keys"
@@ -14,8 +11,7 @@
 	"scripts": {
 		"prepare": "run-s clean build test",
 		"clean": "rimraf dist && mkdirp dist dist/cjs",
-		"build": "run-s build-barrels && run-p build-esm build-cjs",
-		"build-barrels": "barrelsby --directory source --exclude source/_archive --exclude source/main --delete && replace --silent '\";$' '.js\"' source/index.ts",
+		"build": "run-p build-esm build-cjs",
 		"build-esm": "tsc",
 		"build-cjs": "tsc --module commonjs --outDir dist/cjs",
 		"watch": "tsc -w",
@@ -31,13 +27,13 @@
 		"npm-run-all": "^4.1.5",
 		"replace": "^1.1.1",
 		"rimraf": "^3.0.0",
-		"typescript": "^3.6.2"
+		"typescript": "^3.6.3"
 	},
 	"dependencies": {
-		"crosscall": "0.0.6-dev.3",
-		"google-auth-library": "^5.2.0",
+		"crosscall": "0.0.6-dev.6",
+		"google-auth-library": "^5.2.1",
 		"jsonwebtoken": "^8.5.1",
-		"renraku": "0.0.0-dev.7"
+		"renraku": "0.0.0-dev.8"
 	},
 	"keywords": [
 		"auth",

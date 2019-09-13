@@ -1,5 +1,5 @@
 
-import * as renraku from "renraku"
+import {ApiShape} from "renraku/dist/interfaces.js"
 
 import {
 	ProfilerApi,
@@ -8,21 +8,21 @@ import {
 	PaywallGuardianApi,
 } from "./interfaces.js"
 
-export const authExchangerApiShape: renraku.ApiShape<AuthExchangerApi> = {
+export const authExchangerApiShape: ApiShape<AuthExchangerApi> = {
 	authExchanger: {
 		authorize: true,
 		authenticateViaGoogle: true,
 	}
 }
 
-export const profilerApiShape: renraku.ApiShape<ProfilerApi> = {
+export const profilerApiShape: ApiShape<ProfilerApi> = {
 	profiler: {
 		getProfile: true,
 		setProfile: true,
 	}
 }
 
-export const claimsVanguardApiShape: renraku.ApiShape<ClaimsVanguardApi> = {
+export const claimsVanguardApiShape: ApiShape<ClaimsVanguardApi> = {
 	claimsVanguard: {
 		createUser: true,
 		getUser: true,
@@ -30,7 +30,7 @@ export const claimsVanguardApiShape: renraku.ApiShape<ClaimsVanguardApi> = {
 	}
 }
 
-export const paywallGuardianApiShape: renraku.ApiShape<PaywallGuardianApi> = {
+export const paywallGuardianApiShape: ApiShape<PaywallGuardianApi> = {
 	paywallGuardian: {
 		makeUserPremium: true,
 		revokeUserPremium: true,

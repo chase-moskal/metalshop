@@ -1,6 +1,8 @@
 
-import * as renraku from "renraku"
-import * as crosscall from "crosscall"
+import {Client as CrosscallClient} from "crosscall/dist/client.js"
+import {createApiClient} from "renraku/dist/client/create-api-client.js"
+import {createPopup as crosscallCreatePopup} from "crosscall/dist/create-popup.js"
+import {createIframe as crosscallCreateIframe} from "crosscall/dist/create-iframe.js"
 
 import {authExchangerApiShape} from "./shapes.js"
 
@@ -8,13 +10,13 @@ import {
 	AuthExchangerApi,
 	AccountPopupTopic,
 	TokenStorageTopic,
-	AuthExchangerTopic
+	AuthExchangerTopic,
 } from "./interfaces.js"
 
 export async function createAuthExchangeRenrakuClient({url}: {
 	url: string
 }): Promise<AuthExchangerTopic> {
-	const {authExchanger} = await renraku.createApiClient<AuthExchangerApi>({
+	const {authExchanger} = await createApiClient<AuthExchangerApi>({
 		url,
 		shape: authExchangerApiShape
 	})
@@ -25,13 +27,13 @@ export async function createAccountPopupCrosscallClient({url, hostOrigin}: {
 	url: string
 	hostOrigin: string
 }): Promise<AccountPopupTopic> {
-	const {postMessage} = crosscall.createPopup({
+	const {postMessage} = crosscallCreatePopup({
 		url,
 		target: "_blank",
 		features: "title=0,width=360,height=200",
 		replace: true
 	})
-	const client = new crosscall.Client({hostOrigin, postMessage})
+	const client = new CrosscallClient({hostOrigin, postMessage})
 	const {topics} = await client.callable
 	return <any>topics.accountPopup
 }
@@ -40,8 +42,8 @@ export async function createTokenStorageCrosscallClient({url, hostOrigin}: {
 	url: string
 	hostOrigin: string
 }): Promise<TokenStorageTopic> {
-	const {postMessage} = crosscall.createIframe({url})
-	const client = new crosscall.Client({hostOrigin, postMessage})
+	const {postMessage} = crosscallCreateIframe({url})
+	const client = new CrosscallClient({hostOrigin, postMessage})
 	const {topics} = await client.callable
 	return <any>topics.tokenStorage
 }
