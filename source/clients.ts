@@ -13,7 +13,7 @@ import {
 	AuthExchangerTopic,
 } from "./interfaces.js"
 
-const namespace: string = "authoritarian-crosscall"
+export const namespace: string = "authoritarian"
 
 export async function createAuthExchangeRenrakuClient({url}: {
 	url: string
