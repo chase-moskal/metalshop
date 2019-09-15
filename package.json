@@ -1,6 +1,6 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.17",
+	"version": "0.0.0-dev.18",
 	"description": "node library for auth and user management",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
@@ -30,7 +30,7 @@
 		"typescript": "^3.6.3"
 	},
 	"dependencies": {
-		"crosscall": "0.0.6-dev.6",
+		"crosscall": "0.0.6-dev.8",
 		"google-auth-library": "^5.2.1",
 		"jsonwebtoken": "^8.5.1",
 		"renraku": "0.0.0-dev.8"

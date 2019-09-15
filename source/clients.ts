@@ -13,6 +13,8 @@ import {
 	AuthExchangerTopic,
 } from "./interfaces.js"
 
+const namespace: string = "authoritarian-crosscall"
+
 export async function createAuthExchangeRenrakuClient({url}: {
 	url: string
 }): Promise<AuthExchangerTopic> {
@@ -33,7 +35,7 @@ export async function createAccountPopupCrosscallClient({url, hostOrigin}: {
 		features: "title=0,width=360,height=200",
 		replace: true
 	})
-	const client = new CrosscallClient({hostOrigin, postMessage})
+	const client = new CrosscallClient({namespace, hostOrigin, postMessage})
 	const {topics} = await client.callable
 	return <any>topics.accountPopup
 }
@@ -43,7 +45,7 @@ export async function createTokenStorageCrosscallClient({url, hostOrigin}: {
 	hostOrigin: string
 }): Promise<TokenStorageTopic> {
 	const {postMessage} = crosscallCreateIframe({url})
-	const client = new CrosscallClient({hostOrigin, postMessage})
+	const client = new CrosscallClient({namespace, hostOrigin, postMessage})
 	const {topics} = await client.callable
 	return <any>topics.tokenStorage
 }
