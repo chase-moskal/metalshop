@@ -4,14 +4,17 @@ import {Topic, Api} from "renraku/dist/interfaces.js"
 export type AccessToken = string
 export type RefreshToken = string
 
-export interface AccessData {
-	name: string
-	profilePicture: string
-}
-
 export interface AuthTokens {
 	accessToken: AccessToken
 	refreshToken: RefreshToken
+}
+
+export interface AccessPayload {
+	user: User
+}
+
+export interface RefreshPayload {
+	userId: string
 }
 
 export interface Claims {
@@ -19,7 +22,7 @@ export interface Claims {
 }
 
 export interface User {
-	userId: number
+	userId: string
 	claims: Claims
 }
 
@@ -46,17 +49,12 @@ export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
 }
 
 export interface ProfilerTopic extends Topic<ProfilerTopic> {
-	getProfile(options: {accessToken: AccessToken; userId: string}): Promise<Profile>
 	setProfile(options: {accessToken: AccessToken; profile: Profile}): Promise<void>
-}
-
-export interface ProfilerCacheTopic extends Topic<ProfilerCacheTopic> {
 	getProfile(options: {accessToken: AccessToken; userId: string}): Promise<Profile>
-	setProfile(options: {accessToken: AccessToken; profile: Profile}): Promise<void>
 }
 
 export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {
-	createUser(options: {googleId: User}): Promise<User>
+	createUser(options: {googleId: string}): Promise<User>
 	getUser(options: {userId: string}): Promise<User>
 	setClaims(options: {userId: string; claims: Claims}): Promise<User>
 }
