@@ -49,8 +49,8 @@ export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
 }
 
 export interface ProfilerTopic extends Topic<ProfilerTopic> {
+	getProfile(options: {accessToken: AccessToken}): Promise<Profile>
 	setProfile(options: {accessToken: AccessToken; profile: Profile}): Promise<void>
-	getProfile(options: {accessToken: AccessToken; userId: string}): Promise<Profile>
 }
 
 export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {

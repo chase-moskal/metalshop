@@ -1,6 +1,6 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.21",
+	"version": "0.0.0-dev.22",
 	"description": "node library for auth and user management",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
@@ -32,7 +32,7 @@
 	"dependencies": {
 		"crosscall": "0.0.6-dev.8",
 		"jsonwebtoken": "^8.5.1",
-		"renraku": "0.0.0-dev.9"
+		"renraku": "0.0.0-dev.10"
 	},
 	"keywords": [
 		"auth",
