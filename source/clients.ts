@@ -7,13 +7,13 @@ import {createIframe as crosscallCreateIframe} from "crosscall/dist/create-ifram
 import {authExchangerApiShape} from "./shapes.js"
 
 import {
+	ProfilerTopic,
 	AuthExchangerApi,
-	AccountPopupTopic,
 	TokenStorageTopic,
 	AuthExchangerTopic,
 } from "./interfaces.js"
 
-export const namespace: string = "authoritarian"
+export const prefix: string = "authoritarian"
 
 export async function createAuthExchangeRenrakuClient({url}: {
 	url: string
@@ -25,27 +25,24 @@ export async function createAuthExchangeRenrakuClient({url}: {
 	return authExchanger
 }
 
-export async function createAccountPopupCrosscallClient({url, hostOrigin}: {
+export async function createTokenStorageCrosscallClient({url}: {
 	url: string
-	hostOrigin: string
-}): Promise<AccountPopupTopic> {
-	const {postMessage} = crosscallCreatePopup({
-		url,
-		target: "_blank",
-		features: "title=0,width=360,height=200",
-		replace: true
-	})
-	const client = new CrosscallClient({namespace, hostOrigin, postMessage})
-	const {topics} = await client.callable
-	return <any>topics.accountPopup
-}
-
-export async function createTokenStorageCrosscallClient({url, hostOrigin}: {
-	url: string
-	hostOrigin: string
 }): Promise<TokenStorageTopic> {
+	const namespace = `${prefix}-token-storage`
+	const {origin: hostOrigin} = new URL(url)
 	const {postMessage} = crosscallCreateIframe({url})
 	const client = new CrosscallClient({namespace, hostOrigin, postMessage})
 	const {topics} = await client.callable
 	return <any>topics.tokenStorage
+}
+
+export async function createProfilerCacheCrosscallClient({url}: {
+	url: string
+}): Promise<ProfilerTopic> {
+	const namespace = `${prefix}-profiler-cache`
+	const {origin: hostOrigin} = new URL(url)
+	const {postMessage} = crosscallCreateIframe({url})
+	const client = new CrosscallClient({namespace, hostOrigin, postMessage})
+	const {topics} = await client.callable
+	return <any>topics.profilerTopic
 }
