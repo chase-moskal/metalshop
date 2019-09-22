@@ -17,8 +17,9 @@ export const authExchangerApiShape: ApiShape<AuthExchangerApi> = {
 
 export const profilerApiShape: ApiShape<ProfilerApi> = {
 	profiler: {
-		getProfile: true,
-		setProfile: true,
+		getFullProfile: true,
+		setFullProfile: true,
+		getPublicProfile: true,
 	}
 }
 

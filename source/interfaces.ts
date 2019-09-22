@@ -28,9 +28,13 @@ export interface User {
 
 export interface Profile {
 	userId: string
-	picture: string
-	realname: string
-	nickname: string
+	public: {
+		picture: string
+		nickname: string
+	}
+	private?: {
+		realname: string
+	}
 }
 
 export interface AuthExchangerTopic extends Topic<AuthExchangerTopic> {
@@ -49,8 +53,9 @@ export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
 }
 
 export interface ProfilerTopic extends Topic<ProfilerTopic> {
-	getProfile(options: {accessToken: AccessToken}): Promise<Profile>
-	setProfile(options: {accessToken: AccessToken; profile: Profile}): Promise<void>
+	getPublicProfile(options: {userId: string}): Promise<Profile>
+	getFullProfile(options: {accessToken: AccessToken}): Promise<Profile>
+	setFullProfile(options: {accessToken: AccessToken; profile: Profile}): Promise<void>
 }
 
 export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {
@@ -75,6 +80,7 @@ export interface ProfilerApi extends Api<ProfilerApi> {
 export interface ClaimsVanguardApi extends Api<ClaimsVanguardApi> {
 	claimsVanguard: ClaimsVanguardTopic
 }
+
 
 export interface PaywallGuardianApi extends Api<PaywallGuardianApi> {
 	paywallGuardian: PaywallGuardianTopic
