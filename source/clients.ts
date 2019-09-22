@@ -1,29 +1,13 @@
 
 import {Client as CrosscallClient} from "crosscall/dist/client.js"
-import {createApiClient} from "renraku/dist/client/create-api-client.js"
-import {createPopup as crosscallCreatePopup} from "crosscall/dist/create-popup.js"
 import {createIframe as crosscallCreateIframe} from "crosscall/dist/create-iframe.js"
-
-import {authExchangerApiShape} from "./shapes.js"
 
 import {
 	ProfilerTopic,
-	AuthExchangerApi,
 	TokenStorageTopic,
-	AuthExchangerTopic,
 } from "./interfaces.js"
 
 export const prefix: string = "authoritarian"
-
-export async function createAuthExchangeRenrakuClient({url}: {
-	url: string
-}): Promise<AuthExchangerTopic> {
-	const {authExchanger} = await createApiClient<AuthExchangerApi>({
-		url,
-		shape: authExchangerApiShape
-	})
-	return authExchanger
-}
 
 export async function createTokenStorageCrosscallClient({url}: {
 	url: string
