@@ -16,7 +16,6 @@
 		"build-esm": "tsc",
 		"build-cjs": "tsc --module commonjs --outDir dist/cjs",
 		"watch": "tsc -w",
-		"start": "node dist/main",
 		"test": "./generate-keys && jest --verbose dist/cjs"
 	},
 	"devDependencies": {
@@ -31,7 +30,7 @@
 		"typescript": "^3.6.3"
 	},
 	"dependencies": {
-		"crosscall": "0.0.6-dev.8",
+		"crosscall": "0.0.6-dev.9",
 		"jsonwebtoken": "^8.5.1",
 		"renraku": "0.0.0-dev.11"
 	},

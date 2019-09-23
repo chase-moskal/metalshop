@@ -14,7 +14,7 @@ export async function createTokenStorageCrosscallClient({url}: {
 }): Promise<TokenStorageTopic> {
 	const namespace = `${prefix}-token-storage`
 	const {origin: hostOrigin} = new URL(url)
-	const {postMessage} = crosscallCreateIframe({url})
+	const {postMessage} = await crosscallCreateIframe({url})
 	const client = new CrosscallClient({namespace, hostOrigin, postMessage})
 	const {topics} = await client.callable
 	return <any>topics.tokenStorage
@@ -25,8 +25,8 @@ export async function createProfilerCacheCrosscallClient({url}: {
 }): Promise<ProfilerTopic> {
 	const namespace = `${prefix}-profiler-cache`
 	const {origin: hostOrigin} = new URL(url)
-	const {postMessage} = crosscallCreateIframe({url})
+	const {postMessage} = await crosscallCreateIframe({url})
 	const client = new CrosscallClient({namespace, hostOrigin, postMessage})
 	const {topics} = await client.callable
-	return <any>topics.profilerTopic
+	return <any>topics.profiler
 }

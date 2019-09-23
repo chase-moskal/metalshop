@@ -1,5 +1,6 @@
 
 import {readFileSync} from "fs"
+import {TokenData} from "./interfaces"
 import {signToken, verifyToken} from "./crypto"
 
 const nap = (duration: number) => new Promise(
@@ -21,21 +22,21 @@ describe("crypto", () => {
 	const privateKey: string = readFileSync("private.pem", "utf-8")
 
 	it("signed token passes verification", async() => {
-		const token = await signToken({
+		const token = await signToken<typeof payload>({
 			payload,
 			privateKey,
 			expiresIn: "100s",
 		})
-		const payload2 = await verifyToken({
+		const {payload: payload2} = await verifyToken<typeof payload>({
 			token,
 			publicKey,
 		})
-		await expect(payload2.a).toEqual(payload.a)
-		await expect(payload2.b).toEqual(payload.b)
+		expect(payload2.a).toEqual(payload.a)
+		expect(payload2.b).toEqual(payload.b)
 	})
 
 	it("expired token fails verification", async() => {
-		const token = await signToken({
+		const token = await signToken<typeof payload>({
 			payload,
 			privateKey,
 			expiresIn: "1s",
@@ -49,7 +50,7 @@ describe("crypto", () => {
 	})
 
 	it("tampered token fails verification", async() => {
-		let goodToken = await signToken({
+		let goodToken = await signToken<typeof payload>({
 			payload,
 			privateKey,
 			expiresIn: "100s",

@@ -1,4 +1,5 @@
 
+import {TokenData} from "./interfaces.js"
 import * as jsonwebtoken from "jsonwebtoken"
 
 export async function signToken<Payload = any>({payload, privateKey, expiresIn}: {
@@ -8,7 +9,7 @@ export async function signToken<Payload = any>({payload, privateKey, expiresIn}:
 }): Promise<string> {
 	return new Promise<string>((resolve, reject) => {
 		jsonwebtoken.sign(
-			<any>payload,
+			<TokenData<Payload>>{payload},
 			privateKey,
 			{algorithm: "RS256", expiresIn},
 			(error, token) => {
@@ -22,15 +23,17 @@ export async function signToken<Payload = any>({payload, privateKey, expiresIn}:
 export async function verifyToken<Payload = any>({token, publicKey}: {
 	token: string
 	publicKey: string
-}): Promise<Payload> {
-	return new Promise<Payload>((resolve, reject) => {
-		jsonwebtoken.verify(token, publicKey, (error, payload) => {
+}): Promise<TokenData<Payload>> {
+	return new Promise<TokenData<Payload>>((resolve, reject) => {
+		jsonwebtoken.verify(token, publicKey, (error, data: TokenData<Payload>) => {
 			if (error) reject(error)
-			else resolve(<Payload><unknown>payload)
+			else resolve(data)
 		})
 	})
 }
 
-export function decodeToken<Payload = any>({token}: {token: string}): Payload {
-	return <any>jsonwebtoken.decode(token)
+export function decodeToken<Payload = any>({token}: {
+	token: string
+}): TokenData<Payload> {
+	return <TokenData<Payload>>jsonwebtoken.decode(token)
 }

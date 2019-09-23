@@ -17,6 +17,12 @@ export interface RefreshPayload {
 	userId: string
 }
 
+export interface TokenData<Payload = any> {
+	iat: any
+	exp: any
+	payload: Payload
+}
+
 export interface Claims {
 	[key: string]: any
 }
