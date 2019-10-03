@@ -52,6 +52,7 @@ export interface TokenStorageTopic extends Topic<TokenStorageTopic> {
 	clearTokens(): Promise<void>
 	passiveCheck(): Promise<AccessToken>
 	writeTokens(token: AuthTokens): Promise<void>
+	writeAccessToken(accessToken: AccessToken): Promise<void>
 }
 
 export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
