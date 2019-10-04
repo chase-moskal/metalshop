@@ -1,5 +1,5 @@
 
-/dist
+/dist*
 /*.pem
 /coverage
 /node_modules

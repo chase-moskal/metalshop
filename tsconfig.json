@@ -10,5 +10,12 @@
 		"experimentalDecorators": true,
 		"sourceMap": true,
 		"declaration": true
-	}
+	},
+	"include": [
+		"source/**/*.ts",
+		"source/**/*.js"
+	],
+	"exclude": [
+		"jwt/**/*"
+	]
 }

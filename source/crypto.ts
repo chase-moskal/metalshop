@@ -1,6 +1,6 @@
 
+import * as jsonwebtoken from "./jwt.js"
 import {TokenData} from "./interfaces.js"
-import * as jsonwebtoken from "jsonwebtoken"
 
 export async function signToken<Payload = any>({payload, privateKey, expiresIn}: {
 	payload: Payload

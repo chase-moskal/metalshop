@@ -1,32 +1,36 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.28",
+	"version": "0.0.0-dev.29",
 	"description": "node library for auth and user management",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"files": [
 		"dist",
 		"source",
+		"dist-cjs",
 		"generate-keys"
 	],
 	"scripts": {
 		"prepare": "run-s clean build test",
-		"clean": "rimraf dist && mkdirp dist dist/cjs",
-		"build": "run-p build-esm build-cjs",
+		"clean": "rimraf dist dist-cjs && mkdirp dist dist-cjs",
+		"build": "run-p build-esm build-cjs && run-s build-jwt",
 		"build-esm": "tsc",
-		"build-cjs": "tsc --module commonjs --outDir dist/cjs",
+		"build-cjs": "tsc --module commonjs --outDir dist-cjs",
+		"build-jwt": "cpy jwt/jwt.min.js dist --rename='jwt.js' && cpy jwt/jwt.cjs.js dist-cjs --rename='jwt.js'",
 		"watch": "tsc -w",
-		"test": "./generate-keys && jest --verbose dist/cjs"
+		"start": "serve",
+		"test": "./generate-keys && jest --verbose dist-cjs"
 	},
 	"devDependencies": {
 		"@types/jest": "^24.0.18",
 		"@types/jsonwebtoken": "^8.3.4",
-		"barrelsby": "^2.1.1",
+		"cpy-cli": "^2.0.0",
+		"importly": "0.1.0-dev.0",
 		"jest": "^24.9.0",
 		"mkdirp": "^0.5.1",
 		"npm-run-all": "^4.1.5",
-		"replace": "^1.1.1",
 		"rimraf": "^3.0.0",
+		"serve": "^11.2.0",
 		"typescript": "^3.6.3"
 	},
 	"dependencies": {

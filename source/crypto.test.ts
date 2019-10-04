@@ -1,6 +1,5 @@
 
 import {readFileSync} from "fs"
-import {TokenData} from "./interfaces"
 import {signToken, verifyToken} from "./crypto"
 
 const nap = (duration: number) => new Promise(
