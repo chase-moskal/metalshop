@@ -16,7 +16,7 @@
 		"build": "run-p build-esm build-cjs && run-s build-jwt",
 		"build-esm": "tsc",
 		"build-cjs": "tsc --module commonjs --outDir dist-cjs",
-		"build-jwt": "cpy jwt/jwt.min.js dist --rename='jwt.js' && cpy jwt/jwt.cjs.js dist-cjs --rename='jwt.js'",
+		"build-jwt": "cpy jwt/jwt.esm.js dist --rename='jwt.js' && cpy jwt/jwt.cjs.js dist-cjs --rename='jwt.js'",
 		"watch": "tsc -w",
 		"start": "serve",
 		"test": "./generate-keys && jest --verbose dist-cjs"
