@@ -3,7 +3,7 @@ import {Client as CrosscallClient} from "crosscall/dist/client.js"
 import {createIframe as crosscallCreateIframe} from "crosscall/dist/create-iframe.js"
 
 import {
-	ProfilerTopic,
+	ProfileMagistrateTopic,
 	TokenStorageTopic,
 } from "./interfaces.js"
 
@@ -20,13 +20,13 @@ export async function createTokenStorageCrosscallClient({url}: {
 	return <any>topics.tokenStorage
 }
 
-export async function createProfilerCacheCrosscallClient({url}: {
+export async function createProfileMagistrateCacheCrosscallClient({url}: {
 	url: string
-}): Promise<ProfilerTopic> {
-	const namespace = `${prefix}-profiler-cache`
+}): Promise<ProfileMagistrateTopic> {
+	const namespace = `${prefix}-profile-magistrate-cache`
 	const {origin: hostOrigin} = new URL(url)
 	const {postMessage} = await crosscallCreateIframe({url})
 	const client = new CrosscallClient({namespace, hostOrigin, postMessage})
 	const {topics} = await client.callable
-	return <any>topics.profiler
+	return <any>topics.profileMagistrate
 }

@@ -2,7 +2,7 @@
 import {ApiShape} from "renraku/dist/interfaces.js"
 
 import {
-	ProfilerApi,
+	ProfileMagistrateApi,
 	AuthExchangerApi,
 	ClaimsVanguardApi,
 	PaywallGuardianApi,
@@ -15,8 +15,8 @@ export const authExchangerApiShape: ApiShape<AuthExchangerApi> = {
 	}
 }
 
-export const profilerApiShape: ApiShape<ProfilerApi> = {
-	profiler: {
+export const profileMagistrateApiShape: ApiShape<ProfileMagistrateApi> = {
+	profileMagistrate: {
 		getFullProfile: true,
 		setFullProfile: true,
 		getPublicProfile: true,

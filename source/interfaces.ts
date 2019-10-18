@@ -59,10 +59,11 @@ export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
 	login(): Promise<AuthTokens>
 }
 
-export interface ProfilerTopic extends Topic<ProfilerTopic> {
+export interface ProfileMagistrateTopic extends Topic<ProfileMagistrateTopic> {
 	getPublicProfile(options: {userId: string}): Promise<Profile>
 	getFullProfile(options: {accessToken: AccessToken}): Promise<Profile>
-	setFullProfile(options: {accessToken: AccessToken; profile: Profile}): Promise<void>
+	setFullProfile(options: {accessToken: AccessToken; profile: Profile}):
+		Promise<void>
 }
 
 export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {
@@ -76,19 +77,38 @@ export interface PaywallGuardianTopic extends Topic<PaywallGuardianTopic> {
 	revokeUserPremium({accessToken: AccessToken}): Promise<AccessToken>
 }
 
+export interface PrivateVimeoGovernorTopic
+ extends Topic<PrivateVimeoGovernorTopic> {
+
+	getVimeo(o: {
+		accessToken: AccessToken
+		videoName: string
+	}): Promise<{vimeoId: string}>
+
+	setVimeo(o: {
+		accessToken: AccessToken
+		videoName: string
+		vimeoId: string
+	}): Promise<void>
+}
+
 export interface AuthExchangerApi extends Api<AuthExchangerApi> {
 	authExchanger: AuthExchangerTopic
 }
 
-export interface ProfilerApi extends Api<ProfilerApi> {
-	profiler: ProfilerTopic
+export interface ProfileMagistrateApi extends Api<ProfileMagistrateApi> {
+	profileMagistrate: ProfileMagistrateTopic
 }
 
 export interface ClaimsVanguardApi extends Api<ClaimsVanguardApi> {
 	claimsVanguard: ClaimsVanguardTopic
 }
 
-
 export interface PaywallGuardianApi extends Api<PaywallGuardianApi> {
 	paywallGuardian: PaywallGuardianTopic
+}
+
+export interface PrivateVimeoGovernorApi
+ extends Topic<PrivateVimeoGovernorTopic> {
+	privateVimeoGovernor: PrivateVimeoGovernorTopic
 }
