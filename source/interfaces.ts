@@ -29,7 +29,12 @@ export interface Claims {
 
 export interface User {
 	userId: string
-	claims: Claims
+	public: {
+		claims: Claims
+	}
+	private?: {
+		claims: Claims
+	}
 }
 
 export interface Profile {
@@ -69,7 +74,13 @@ export interface ProfileMagistrateTopic extends Topic<ProfileMagistrateTopic> {
 export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {
 	createUser(options: {googleId: string}): Promise<User>
 	getUser(options: {userId: string}): Promise<User>
-	setClaims(options: {userId: string; claims: Claims}): Promise<User>
+	setPublicClaims(options: {userId: string; claims: Claims}): Promise<User>
+	setPrivateClaims(options: {userId: string; claims: Claims}): Promise<User>
+}
+
+export interface PublicClaimsDealerTopic
+ extends Topic<PublicClaimsDealerTopic> {
+	getPublicUser(options: {userId: string}): Promise<User>
 }
 
 export type PaypalToken = string
