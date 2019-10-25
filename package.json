@@ -22,7 +22,7 @@
 		"test": "./generate-keys && jest --verbose dist-cjs"
 	},
 	"devDependencies": {
-		"@types/jest": "^24.0.19",
+		"@types/jest": "^24.0.20",
 		"@types/jsonwebtoken": "^8.3.5",
 		"cpy-cli": "^2.0.0",
 		"importly": "0.1.0-dev.0",
