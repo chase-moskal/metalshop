@@ -33,7 +33,7 @@ export const claimsVanguardApiShape: ApiShape<ClaimsVanguardApi> = {
 
 export const paywallGuardianApiShape: ApiShape<PaywallGuardianApi> = {
 	paywallGuardian: {
-		makeUserPremium: true,
+		grantUserPremium: true,
 		revokeUserPremium: true,
 	}
 }

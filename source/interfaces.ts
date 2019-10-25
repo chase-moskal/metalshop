@@ -72,9 +72,19 @@ export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {
 	setClaims(options: {userId: string; claims: Claims}): Promise<User>
 }
 
+export type PaypalToken = string
+
 export interface PaywallGuardianTopic extends Topic<PaywallGuardianTopic> {
-	makeUserPremium({accessToken: AccessToken}): Promise<AccessToken>
-	revokeUserPremium({accessToken: AccessToken}): Promise<AccessToken>
+
+	grantUserPremium(o: {
+		accessToken: AccessToken
+		paypalToken: PaypalToken
+	}): Promise<AccessToken>
+
+	revokeUserPremium(o: {
+		accessToken: AccessToken
+		paypalToken: PaypalToken
+	}): Promise<AccessToken>
 }
 
 export interface PrivateVimeoGovernorTopic
