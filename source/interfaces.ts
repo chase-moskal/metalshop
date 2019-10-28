@@ -1,5 +1,5 @@
 
-import {Topic, TopicApi} from "renraku/dist/interfaces.js"
+import {Topic} from "renraku/dist/interfaces.js"
 
 export type AccessToken = string
 export type RefreshToken = string
