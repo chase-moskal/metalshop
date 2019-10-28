@@ -1,5 +1,5 @@
 
-import {Topic, Api} from "renraku/dist/interfaces.js"
+import {Topic, TopicApi} from "renraku/dist/interfaces.js"
 
 export type AccessToken = string
 export type RefreshToken = string
@@ -72,10 +72,13 @@ export interface ProfileMagistrateTopic extends Topic<ProfileMagistrateTopic> {
 }
 
 export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {
-	createUser(options: {googleId: string}): Promise<User>
-	getUser(options: {userId: string}): Promise<User>
-	setPublicClaims(options: {userId: string; claims: Claims}): Promise<User>
-	setPrivateClaims(options: {userId: string; claims: Claims}): Promise<User>
+	createUser(o: {googleId: string}): Promise<User>
+	getUser(o: {userId: string}): Promise<User>
+	setClaims(o: {
+		userId: string
+		publicClaims?: Claims
+		privateClaims?: Claims
+	}): Promise<User>
 }
 
 export interface PublicClaimsDealerTopic
@@ -113,19 +116,19 @@ export interface PrivateVimeoGovernorTopic
 	}): Promise<void>
 }
 
-export interface AuthExchangerApi extends Api<AuthExchangerApi> {
+export interface AuthExchangerApi extends TopicApi<AuthExchangerApi> {
 	authExchanger: AuthExchangerTopic
 }
 
-export interface ProfileMagistrateApi extends Api<ProfileMagistrateApi> {
+export interface ProfileMagistrateApi extends TopicApi<ProfileMagistrateApi> {
 	profileMagistrate: ProfileMagistrateTopic
 }
 
-export interface ClaimsVanguardApi extends Api<ClaimsVanguardApi> {
+export interface ClaimsVanguardApi extends TopicApi<ClaimsVanguardApi> {
 	claimsVanguard: ClaimsVanguardTopic
 }
 
-export interface PaywallGuardianApi extends Api<PaywallGuardianApi> {
+export interface PaywallGuardianApi extends TopicApi<PaywallGuardianApi> {
 	paywallGuardian: PaywallGuardianTopic
 }
 

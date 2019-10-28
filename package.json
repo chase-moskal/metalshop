@@ -36,7 +36,7 @@
 	"dependencies": {
 		"crosscall": "0.0.6-dev.11",
 		"jsonwebtoken": "^8.5.1",
-		"renraku": "0.0.0-dev.13"
+		"renraku": "0.0.0-dev.14"
 	},
 	"keywords": [
 		"auth",

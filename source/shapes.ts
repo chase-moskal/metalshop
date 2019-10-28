@@ -26,9 +26,8 @@ export const profileMagistrateApiShape: ApiShape<ProfileMagistrateApi> = {
 export const claimsVanguardApiShape: ApiShape<ClaimsVanguardApi> = {
 	claimsVanguard: {
 		getUser: true,
+		setClaims: true,
 		createUser: true,
-		setPublicClaims: true,
-		setPrivateClaims: true,
 	}
 }
 
