@@ -81,8 +81,8 @@ export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {
 	}): Promise<User>
 }
 
-export interface PublicClaimsDealerTopic
- extends Topic<PublicClaimsDealerTopic> {
+export interface ClaimsDealerTopic
+ extends Topic<ClaimsDealerTopic> {
 	getPublicUser(options: {userId: string}): Promise<User>
 }
 
@@ -114,25 +114,4 @@ export interface PrivateVimeoGovernorTopic
 		videoName: string
 		vimeoId: string
 	}): Promise<void>
-}
-
-export interface AuthExchangerApi extends TopicApi<AuthExchangerApi> {
-	authExchanger: AuthExchangerTopic
-}
-
-export interface ProfileMagistrateApi extends TopicApi<ProfileMagistrateApi> {
-	profileMagistrate: ProfileMagistrateTopic
-}
-
-export interface ClaimsVanguardApi extends TopicApi<ClaimsVanguardApi> {
-	claimsVanguard: ClaimsVanguardTopic
-}
-
-export interface PaywallGuardianApi extends TopicApi<PaywallGuardianApi> {
-	paywallGuardian: PaywallGuardianTopic
-}
-
-export interface PrivateVimeoGovernorApi
- extends Topic<PrivateVimeoGovernorTopic> {
-	privateVimeoGovernor: PrivateVimeoGovernorTopic
 }

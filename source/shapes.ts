@@ -1,39 +1,31 @@
 
-import {ApiShape} from "renraku/dist/interfaces.js"
+import {Shape} from "renraku/dist/interfaces.js"
 
 import {
-	ProfileMagistrateApi,
-	AuthExchangerApi,
-	ClaimsVanguardApi,
-	PaywallGuardianApi,
+	ClaimsVanguardTopic,
+	PaywallGuardianTopic,
+	AuthExchangerTopic,
+	ProfileMagistrateTopic,
 } from "./interfaces.js"
 
-export const authExchangerApiShape: ApiShape<AuthExchangerApi> = {
-	authExchanger: {
-		authorize: true,
-		authenticateViaGoogle: true,
-	}
+export const authExchangerShape: Shape<AuthExchangerTopic> = {
+	authorize: true,
+	authenticateViaGoogle: true,
 }
 
-export const profileMagistrateApiShape: ApiShape<ProfileMagistrateApi> = {
-	profileMagistrate: {
-		getFullProfile: true,
-		setFullProfile: true,
-		getPublicProfile: true,
-	}
+export const profileMagistrateShape: Shape<ProfileMagistrateTopic> = {
+	getFullProfile: true,
+	setFullProfile: true,
+	getPublicProfile: true,
 }
 
-export const claimsVanguardApiShape: ApiShape<ClaimsVanguardApi> = {
-	claimsVanguard: {
-		getUser: true,
-		setClaims: true,
-		createUser: true,
-	}
+export const claimsVanguardShape: Shape<ClaimsVanguardTopic> = {
+	getUser: true,
+	setClaims: true,
+	createUser: true,
 }
 
-export const paywallGuardianApiShape: ApiShape<PaywallGuardianApi> = {
-	paywallGuardian: {
-		grantUserPremium: true,
-		revokeUserPremium: true,
-	}
+export const paywallGuardianShape: Shape<PaywallGuardianTopic> = {
+	grantUserPremium: true,
+	revokeUserPremium: true,
 }
