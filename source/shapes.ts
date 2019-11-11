@@ -1,31 +1,66 @@
 
-import {Shape} from "renraku/dist/interfaces.js"
+import {ApiShape as CrosscallApiShape} from "crosscall/dist/interfaces.js"
+import {ApiShape as RenrakuApiShape, Shape} from "renraku/dist/interfaces.js"
 
 import {
-	ClaimsVanguardTopic,
-	PaywallGuardianTopic,
-	AuthExchangerTopic,
+	AuthServerApi,
+	ProfileMagistrateCacheApi,
+	PaywallServerApi,
+	ProfileServerApi,
 	ProfileMagistrateTopic,
+	TokenStorageApi,
 } from "./interfaces.js"
 
-export const authExchangerShape: Shape<AuthExchangerTopic> = {
-	authorize: true,
-	authenticateViaGoogle: true,
+//
+// RENRAKU APIs
+//
+
+export const authServerShape: RenrakuApiShape<AuthServerApi> = {
+	claimsDealer: {
+		getPublicUser: "method",
+	},
+	authExchanger: {
+		authorize: "method",
+		authenticateViaGoogle: "method",
+	},
+	claimsVanguard: {
+		getUser: "method",
+		setClaims: "method",
+		createUser: "method",
+	}
 }
 
-export const profileMagistrateShape: Shape<ProfileMagistrateTopic> = {
-	getFullProfile: true,
-	setFullProfile: true,
-	getPublicProfile: true,
+const profileMagistrateMethodsShape: Shape<ProfileMagistrateTopic> = {
+	setFullProfile: "method",
+	getFullProfile: "method",
+	getPublicProfile: "method",
 }
 
-export const claimsVanguardShape: Shape<ClaimsVanguardTopic> = {
-	getUser: true,
-	setClaims: true,
-	createUser: true,
+export const profileServerShape: RenrakuApiShape<ProfileServerApi> = {
+	profileMagistrate: profileMagistrateMethodsShape
 }
 
-export const paywallGuardianShape: Shape<PaywallGuardianTopic> = {
-	grantUserPremium: true,
-	revokeUserPremium: true,
+export const paywallServerShape: RenrakuApiShape<PaywallServerApi> = {
+	paywallGuardian: {
+		grantUserPremium: "method",
+		revokeUserPremium: "method",
+	}
+}
+
+//
+// CROSSCALL APIs
+//
+
+export const tokenStorageShape: CrosscallApiShape<TokenStorageApi> = {
+	tokenStorage: {
+		clearTokens: "method",
+		writeTokens: "method",
+		passiveCheck: "method",
+		writeAccessToken: "method",
+	}
+}
+
+export const profileMagistrateCacheShape:
+ CrosscallApiShape<ProfileMagistrateCacheApi> = {
+	profileMagistrateCache: profileMagistrateMethodsShape,
 }

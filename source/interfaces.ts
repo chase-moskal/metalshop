@@ -1,5 +1,6 @@
 
-import {Topic} from "renraku/dist/interfaces.js"
+import {Api as CrosscallApi} from "crosscall/dist/interfaces.js"
+import {Topic, Api as RenrakuApi} from "renraku/dist/interfaces.js"
 
 export type AccessToken = string
 export type RefreshToken = string
@@ -48,6 +49,51 @@ export interface Profile {
 	}
 }
 
+export type PaypalToken = string
+
+//
+// RENRAKU APIs
+//
+
+export interface AuthServerApi extends RenrakuApi<AuthServerApi> {
+	claimsDealer: ClaimsDealerTopic
+	authExchanger: AuthExchangerTopic
+	claimsVanguard: ClaimsVanguardTopic
+}
+
+export interface ProfileServerApi extends RenrakuApi<ProfileServerApi> {
+	profileMagistrate: ProfileMagistrateTopic
+}
+
+export interface PaywallServerApi extends RenrakuApi<PaywallServerApi> {
+	paywallGuardian: PaywallGuardianTopic
+}
+
+export interface PrivateVimeoServer extends RenrakuApi<PrivateVimeoServer> {
+	vimeoGovernor: PrivateVimeoGovernorTopic
+}
+
+//
+// CROSSCALL APIs
+//
+
+export interface TokenStorageApi extends CrosscallApi<TokenStorageApi> {
+	tokenStorage: TokenStorageTopic
+}
+
+export interface ProfileMagistrateCacheApi
+ extends CrosscallApi<ProfileMagistrateCacheApi>{
+	profileMagistrateCache: ProfileMagistrateTopic
+}
+
+export interface AccountPopupApi extends CrosscallApi<AccountPopupApi> {
+	accountPopup: AccountPopupTopic
+}
+
+//
+// API METHODS
+//
+
 export interface AuthExchangerTopic extends Topic<AuthExchangerTopic> {
 	authorize(options: {refreshToken: RefreshToken}): Promise<AccessToken>
 	authenticateViaGoogle(options: {googleToken: string}): Promise<AuthTokens>
@@ -64,7 +110,8 @@ export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
 	login(): Promise<AuthTokens>
 }
 
-export interface ProfileMagistrateTopic extends Topic<ProfileMagistrateTopic> {
+export interface ProfileMagistrateTopic extends
+ Topic<ProfileMagistrateTopic> {
 	getPublicProfile(options: {userId: string}): Promise<Profile>
 	getFullProfile(options: {accessToken: AccessToken}): Promise<Profile>
 	setFullProfile(options: {accessToken: AccessToken; profile: Profile}):
@@ -86,10 +133,8 @@ export interface ClaimsDealerTopic
 	getPublicUser(options: {userId: string}): Promise<User>
 }
 
-export type PaypalToken = string
-
-export interface PaywallGuardianTopic extends Topic<PaywallGuardianTopic> {
-
+export interface PaywallGuardianTopic
+ extends Topic<PaywallGuardianTopic> {
 	grantUserPremium(o: {
 		accessToken: AccessToken
 		paypalToken: PaypalToken
@@ -103,7 +148,6 @@ export interface PaywallGuardianTopic extends Topic<PaywallGuardianTopic> {
 
 export interface PrivateVimeoGovernorTopic
  extends Topic<PrivateVimeoGovernorTopic> {
-
 	getVimeo(o: {
 		accessToken: AccessToken
 		videoName: string
