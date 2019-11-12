@@ -20,8 +20,7 @@ export async function tokenStorageClient({url}: {url: string}) {
 		postMessage,
 		shape: tokenStorageShape
 	})
-	const {tokenStorage} = await callable
-	return {tokenStorage}
+	return (await callable).tokenStorage
 }
 
 export async function profileMagistrateCacheClient({url}: {url: string}) {
@@ -34,6 +33,5 @@ export async function profileMagistrateCacheClient({url}: {url: string}) {
 		postMessage,
 		shape: profileMagistrateCacheShape
 	})
-	const {profileMagistrateCache} = await callable
-	return {profileMagistrateCache}
+	return (await callable).profileMagistrateCache
 }

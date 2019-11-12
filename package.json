@@ -34,7 +34,7 @@
 		"typescript": "^3.7.2"
 	},
 	"dependencies": {
-		"crosscall": "0.0.6-dev.13",
+		"crosscall": "0.0.6-dev.14",
 		"jsonwebtoken": "^8.5.1",
 		"renraku": "0.0.0-dev.18"
 	},

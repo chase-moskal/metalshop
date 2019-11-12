@@ -3,19 +3,19 @@ import {ApiShape as CrosscallApiShape} from "crosscall/dist/interfaces.js"
 import {ApiShape as RenrakuApiShape, Shape} from "renraku/dist/interfaces.js"
 
 import {
-	AuthServerApi,
-	ProfileMagistrateCacheApi,
-	PaywallServerApi,
-	ProfileServerApi,
-	ProfileMagistrateTopic,
+	AuthApi,
+	PaywallApi,
+	ProfileApi,
 	TokenStorageApi,
+	ProfileMagistrateTopic,
+	ProfileMagistrateCacheApi,
 } from "./interfaces.js"
 
 //
 // RENRAKU APIs
 //
 
-export const authServerShape: RenrakuApiShape<AuthServerApi> = {
+export const authShape: RenrakuApiShape<AuthApi> = {
 	claimsDealer: {
 		getPublicUser: "method",
 	},
@@ -30,17 +30,17 @@ export const authServerShape: RenrakuApiShape<AuthServerApi> = {
 	}
 }
 
-const profileMagistrateMethodsShape: Shape<ProfileMagistrateTopic> = {
+const magistrateShape: Shape<ProfileMagistrateTopic> = {
 	setFullProfile: "method",
 	getFullProfile: "method",
 	getPublicProfile: "method",
 }
 
-export const profileServerShape: RenrakuApiShape<ProfileServerApi> = {
-	profileMagistrate: profileMagistrateMethodsShape
+export const profileShape: RenrakuApiShape<ProfileApi> = {
+	profileMagistrate: magistrateShape
 }
 
-export const paywallServerShape: RenrakuApiShape<PaywallServerApi> = {
+export const paywallShape: RenrakuApiShape<PaywallApi> = {
 	paywallGuardian: {
 		grantUserPremium: "method",
 		revokeUserPremium: "method",
@@ -62,5 +62,5 @@ export const tokenStorageShape: CrosscallApiShape<TokenStorageApi> = {
 
 export const profileMagistrateCacheShape:
  CrosscallApiShape<ProfileMagistrateCacheApi> = {
-	profileMagistrateCache: profileMagistrateMethodsShape,
+	profileMagistrateCache: magistrateShape,
 }

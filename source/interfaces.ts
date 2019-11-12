@@ -55,21 +55,21 @@ export type PaypalToken = string
 // RENRAKU APIs
 //
 
-export interface AuthServerApi extends RenrakuApi<AuthServerApi> {
+export interface AuthApi extends RenrakuApi<AuthApi> {
 	claimsDealer: ClaimsDealerTopic
 	authExchanger: AuthExchangerTopic
 	claimsVanguard: ClaimsVanguardTopic
 }
 
-export interface ProfileServerApi extends RenrakuApi<ProfileServerApi> {
+export interface ProfileApi extends RenrakuApi<ProfileApi> {
 	profileMagistrate: ProfileMagistrateTopic
 }
 
-export interface PaywallServerApi extends RenrakuApi<PaywallServerApi> {
+export interface PaywallApi extends RenrakuApi<PaywallApi> {
 	paywallGuardian: PaywallGuardianTopic
 }
 
-export interface PrivateVimeoServer extends RenrakuApi<PrivateVimeoServer> {
+export interface PrivateVimeoApi extends RenrakuApi<PrivateVimeoApi> {
 	vimeoGovernor: PrivateVimeoGovernorTopic
 }
 
