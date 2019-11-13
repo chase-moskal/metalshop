@@ -52,6 +52,25 @@ export interface Profile {
 export type PaypalToken = string
 
 //
+// ACCOUNT POPUP
+//
+
+export interface AccountPopupMessage {
+	topic: "login"
+	namespace: string
+}
+
+export interface AccountPopupLoginRequest extends AccountPopupMessage {}
+export interface AccountPopupLoginResponse extends AccountPopupMessage {
+	tokens: AuthTokens
+}
+
+export interface AccountPopupEvent<M extends AccountPopupMessage>
+ extends MessageEvent {
+	data: M
+}
+
+//
 // RENRAKU APIs
 //
 
