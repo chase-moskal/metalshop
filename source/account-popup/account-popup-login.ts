@@ -36,8 +36,9 @@ export async function accountPopupLogin(authServerUrl: string):
 		const requestMessage: AccountPopupLoginRequest = {namespace, topic: "login"}
 		popup.postMessage(requestMessage, authServerOrigin)
 
-		window.addEventListener("message", function listener(
-		 response: AccountPopupEvent<AccountPopupLoginResponse>
+		window.addEventListener("message", listener)
+		function listener(
+			response: AccountPopupEvent<AccountPopupLoginResponse>
 		) {
 			try {
 				const message = response.data
@@ -63,7 +64,7 @@ export async function accountPopupLogin(authServerUrl: string):
 			catch (error) {
 				reject(error)
 			}
-		})
+		}
 	})
 }
 

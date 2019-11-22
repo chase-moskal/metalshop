@@ -5,6 +5,7 @@ import {CorsPermissions} from "crosscall/dist/interfaces.js"
 import {
 	AuthTokens,
 	AccountPopupEvent,
+	AccountPopupMessage,
 	AccountPopupLoginRequest,
 	AccountPopupLoginResponse,
 } from "../interfaces.js"
@@ -15,9 +16,19 @@ export async function accountPopupHost({cors, auth}: {
 	auth: () => Promise<AuthTokens>
 }) {
 	const opener: Window = window.opener
-	if (!opener) throw new Error("no opener")
-	window.addEventListener("message", listener)
-	async function listener(request: AccountPopupEvent<AccountPopupLoginRequest>) {
+
+	if (opener) window.addEventListener("message", listener)
+	else listener(<any>{
+		origin: window.location.origin,
+		data: <AccountPopupMessage>{
+			namespace,
+			topic: "login"
+		}
+	})
+
+	async function listener(
+		request: AccountPopupEvent<AccountPopupLoginRequest>
+	) {
 
 		// check if the message is even relevant to us
 		// (we need to ignore google-related messages flying around)
@@ -36,7 +47,10 @@ export async function accountPopupHost({cors, auth}: {
 				}
 				opener.postMessage(message, request.origin)
 			}
-			else console.warn(`message denied, from origin "${request.origin}"`, request.data)
+			else console.warn(
+				`message denied, from origin "${request.origin}"`,
+				request.data
+			)
 		}
 	}
 }
