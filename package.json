@@ -23,9 +23,9 @@
 		"test": "./generate-keys && jest --verbose dist-cjs"
 	},
 	"devDependencies": {
-		"@types/jest": "^24.0.22",
+		"@types/jest": "^24.0.23",
 		"@types/jsonwebtoken": "^8.3.5",
-		"cpy-cli": "^2.0.0",
+		"cpy-cli": "^3.0.0",
 		"importly": "0.1.0-dev.0",
 		"jest": "^24.9.0",
 		"mkdirp": "^0.5.1",
@@ -33,7 +33,7 @@
 		"replace-in-files-cli": "^0.3.0",
 		"rimraf": "^3.0.0",
 		"serve": "^11.2.0",
-		"typescript": "^3.7.2"
+		"typescript": "^3.7.3"
 	},
 	"dependencies": {
 		"crosscall": "0.0.6-dev.16",
