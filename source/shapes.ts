@@ -8,7 +8,6 @@ import {
 	ProfileApi,
 	TokenStorageApi,
 	ProfileMagistrateTopic,
-	ProfileMagistrateCacheApi,
 } from "./interfaces.js"
 
 //
@@ -16,9 +15,6 @@ import {
 //
 
 export const authShape: RenrakuApiShape<AuthApi> = {
-	claimsDealer: {
-		getPublicUser: "method",
-	},
 	authExchanger: {
 		authorize: "method",
 		authenticateViaGoogle: "method",
@@ -31,9 +27,8 @@ export const authShape: RenrakuApiShape<AuthApi> = {
 }
 
 const magistrateShape: Shape<ProfileMagistrateTopic> = {
-	setFullProfile: "method",
-	getFullProfile: "method",
-	getPublicProfile: "method",
+	setProfile: "method",
+	getProfile: "method",
 }
 
 export const profileShape: RenrakuApiShape<ProfileApi> = {
@@ -58,9 +53,4 @@ export const tokenStorageShape: CrosscallApiShape<TokenStorageApi> = {
 		passiveCheck: "method",
 		writeAccessToken: "method",
 	}
-}
-
-export const profileMagistrateCacheShape:
- CrosscallApiShape<ProfileMagistrateCacheApi> = {
-	profileMagistrateCache: magistrateShape,
 }

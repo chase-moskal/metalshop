@@ -30,23 +30,13 @@ export interface Claims {
 
 export interface User {
 	userId: string
-	public: {
-		claims: Claims
-	}
-	private?: {
-		claims: Claims
-	}
+	claims: Claims
 }
 
 export interface Profile {
 	userId: string
-	public: {
-		picture: string
-		nickname: string
-	}
-	private?: {
-		realname: string
-	}
+	avatar: string
+	nickname: string
 }
 
 export type PaypalToken = string
@@ -75,7 +65,6 @@ export interface AccountPopupEvent<M extends AccountPopupMessage>
 //
 
 export interface AuthApi extends RenrakuApi<AuthApi> {
-	claimsDealer: ClaimsDealerTopic
 	authExchanger: AuthExchangerTopic
 	claimsVanguard: ClaimsVanguardTopic
 }
@@ -88,8 +77,8 @@ export interface PaywallApi extends RenrakuApi<PaywallApi> {
 	paywallGuardian: PaywallGuardianTopic
 }
 
-export interface PrivateVimeoApi extends RenrakuApi<PrivateVimeoApi> {
-	vimeoGovernor: PrivateVimeoGovernorTopic
+export interface VimeoApi extends RenrakuApi<VimeoApi> {
+	vimeoGovernor: VimeoGovernorTopic
 }
 
 //
@@ -98,11 +87,6 @@ export interface PrivateVimeoApi extends RenrakuApi<PrivateVimeoApi> {
 
 export interface TokenStorageApi extends CrosscallApi<TokenStorageApi> {
 	tokenStorage: TokenStorageTopic
-}
-
-export interface ProfileMagistrateCacheApi
- extends CrosscallApi<ProfileMagistrateCacheApi>{
-	profileMagistrateCache: ProfileMagistrateTopic
 }
 
 export interface AccountPopupApi extends CrosscallApi<AccountPopupApi> {
@@ -131,25 +115,14 @@ export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
 
 export interface ProfileMagistrateTopic extends
  Topic<ProfileMagistrateTopic> {
-	getPublicProfile(options: {userId: string}): Promise<Profile>
-	getFullProfile(options: {accessToken: AccessToken}): Promise<Profile>
-	setFullProfile(options: {accessToken: AccessToken; profile: Profile}):
-		Promise<void>
+	getProfile(): Promise<Profile>
+	setProfile(options: {accessToken: AccessToken; profile: Profile}): Promise<void>
 }
 
 export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {
-	createUser(o: {googleId: string}): Promise<User>
 	getUser(o: {userId: string}): Promise<User>
-	setClaims(o: {
-		userId: string
-		publicClaims?: Claims
-		privateClaims?: Claims
-	}): Promise<User>
-}
-
-export interface ClaimsDealerTopic
- extends Topic<ClaimsDealerTopic> {
-	getPublicUser(options: {userId: string}): Promise<User>
+	createUser(o: {googleId: string}): Promise<User>
+	setClaims(o: {userId: string; claims: Claims}): Promise<User>
 }
 
 export interface PaywallGuardianTopic
@@ -165,8 +138,8 @@ export interface PaywallGuardianTopic
 	}): Promise<AccessToken>
 }
 
-export interface PrivateVimeoGovernorTopic
- extends Topic<PrivateVimeoGovernorTopic> {
+export interface VimeoGovernorTopic
+ extends Topic<VimeoGovernorTopic> {
 	getVimeo(o: {
 		accessToken: AccessToken
 		videoName: string
