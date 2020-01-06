@@ -46,7 +46,6 @@ export type PaypalToken = string
 //
 
 export interface AccountPopupMessage {
-	topic: "login"
 	namespace: string
 }
 
@@ -115,7 +114,7 @@ export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
 
 export interface ProfileMagistrateTopic extends
  Topic<ProfileMagistrateTopic> {
-	getProfile(): Promise<Profile>
+	getProfile(options: {userId: string}): Promise<Profile>
 	setProfile(options: {accessToken: AccessToken; profile: Profile}): Promise<void>
 }
 

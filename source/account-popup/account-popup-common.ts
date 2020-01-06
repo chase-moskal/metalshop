@@ -9,12 +9,10 @@ export class AccountPopupError extends Error {
 
 export const err = (message: string) => new AccountPopupError(message)
 
-export function isLoginMessage(message: AccountPopupMessage) {
+export function isRelevant(message: AccountPopupMessage) {
 	return (
 		message
 			&&
 		message.namespace === namespace
-			&&
-		message.topic === "login"
 	)
 }

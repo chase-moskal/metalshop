@@ -9,7 +9,7 @@ import {
 import {
 	err,
 	namespace,
-	isLoginMessage,
+	isRelevant,
 } from "./account-popup-common.js"
 
 /**
@@ -33,17 +33,17 @@ export async function accountPopupLogin(authServerUrl: string):
 	popup.focus()
 
 	return new Promise<AuthTokens>((resolve, reject) => {
-		const requestMessage: AccountPopupLoginRequest = {namespace, topic: "login"}
+		const requestMessage: AccountPopupLoginRequest = {namespace}
 		popup.postMessage(requestMessage, authServerOrigin)
-
-		window.addEventListener("message", listener)
-		function listener(
+		window.addEventListener("message", function listener(
 			response: AccountPopupEvent<AccountPopupLoginResponse>
 		) {
 			try {
 				const message = response.data
-				const relevant = isLoginMessage(message)
 
+				// filter out unwanted messages (like google message flying around)
+				const relevant = isRelevant(message)
+	
 				// security: make sure the origins match
 				const valid =
 					response.origin.toLowerCase() === authServerOrigin.toLowerCase()
@@ -64,7 +64,7 @@ export async function accountPopupLogin(authServerUrl: string):
 			catch (error) {
 				reject(error)
 			}
-		}
+		})
 	})
 }
 
