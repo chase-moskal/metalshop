@@ -1,6 +1,6 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.35",
+	"version": "0.0.0-dev.36",
 	"description": "node library for auth and user management",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
@@ -13,13 +13,17 @@
 	"scripts": {
 		"prepare": "run-s clean build test",
 		"clean": "rimraf dist dist-cjs && mkdirp dist dist-cjs",
-		"build": "run-p build-esm build-cjs && run-s build-jwt",
+		"build": "run-p build-esm build-cjs build-importmap && run-s build-jwt",
+		"build-importmap": "importly < package.json > dist/importmap.json",
 		"build-esm": "tsc",
 		"build-cjs": "tsc --module commonjs --outDir dist-cjs && run-s replace-cjs-imports",
 		"build-jwt": "cpy jwt/jwt.esm.js dist --rename='jwt.js' && cpy jwt/jwt.cjs.js dist-cjs --rename='jwt.js'",
 		"replace-cjs-imports": "replace-in-files --regex='\\/dist\\/' --replacement='/dist-cjs/' 'dist-cjs/**/*.js'",
 		"watch": "tsc -w",
 		"start": "serve",
+		"testserve1": "serve -l 8044",
+		"testserve2": "serve -l 8045",
+		"testserve": "run-p testserve1 testserve2",
 		"test": "./generate-keys && jest --verbose dist-cjs"
 	},
 	"devDependencies": {
