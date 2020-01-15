@@ -45,12 +45,27 @@ export type PaypalToken = string
 // ACCOUNT POPUP
 //
 
-export interface AccountPopupMessage {
-	namespace: string
+export enum AccountPopupMessageFlag {
+	ReadyResponse,
+	GoRequest,
+	ResultResponse
 }
 
-export interface AccountPopupLoginRequest extends AccountPopupMessage {}
-export interface AccountPopupLoginResponse extends AccountPopupMessage {
+export interface AccountPopupMessage {
+	namespace: string
+	flag: AccountPopupMessageFlag
+}
+
+export interface AccountPopupReadyResponse extends AccountPopupMessage {
+	flag: AccountPopupMessageFlag.ReadyResponse
+}
+
+export interface AccountPopupGoRequest extends AccountPopupMessage {
+	flag: AccountPopupMessageFlag.GoRequest
+}
+
+export interface AccountPopupResultResponse extends AccountPopupMessage {
+	flag: AccountPopupMessageFlag.ResultResponse
 	tokens: AuthTokens
 }
 

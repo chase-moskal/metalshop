@@ -1,0 +1,32 @@
+<!doctype html>
+<head>
+	<script type="module-shim">
+		import {triggerLoginPopup}
+			from "../../dist/account-popup/trigger-login-popup.js"
+
+		document.querySelector("button").onclick = async() => {
+			console.log("login!")
+	
+			const tokens = await triggerLoginPopup({
+				accountPopupUrl: "http://localhost:8044/testing/account-popup/host.html"
+			})
+	
+			console.log("tokens!", tokens)
+		}
+	</script>
+
+	<script src="../../dist/importmap.json" type="importmap-shim"></script>
+
+	<script
+		async
+		defer
+		src="https://unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.js"
+	></script>
+</head>
+
+<body>
+	<button>
+		Login
+	</button>
+</body>
+</html>

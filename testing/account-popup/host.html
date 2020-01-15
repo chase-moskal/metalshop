@@ -1,0 +1,23 @@
+
+<script type="module-shim">
+	import {setupPopupMessaging}
+		from "../../dist/account-popup/setup-popup-messaging.js"
+
+		setupPopupMessaging({
+		cors: {
+			allowed: /^https?:\/\/localhost:8\d{3}$/i,
+			forbidden: null,
+		},
+		auth: async() => {
+			return {accessToken: "a123", refreshToken: "r234"}
+		}
+	})
+</script>
+
+<script src="../../dist/importmap.json" type="importmap-shim"></script>
+
+<script
+	async
+	defer
+	src="https://unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.js"
+></script>
