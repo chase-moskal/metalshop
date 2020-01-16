@@ -10,7 +10,7 @@ import {
 	AccountPopupReadyResponse,
 	AccountPopupResultResponse,
 } from "../interfaces.js"
-import {namespace, isRelevant} from "./account-popup-common.js"
+import {namespace, isRelevant} from "./common.js"
 
 /** Validate messages from the page, enforce cors rules */
 function validate(

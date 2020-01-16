@@ -12,7 +12,7 @@ import {
 	err,
 	namespace,
 	isRelevant,
-} from "./account-popup-common.js"
+} from "./common.js"
 
 /**
  * Trigger an account popup to appear, harvest and return the auth tokens
