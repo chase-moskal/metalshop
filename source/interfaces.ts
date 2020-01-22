@@ -79,6 +79,7 @@ export interface AccountPopupEvent<M extends AccountPopupMessage>
 //
 
 export interface AuthApi extends RenrakuApi<AuthApi> {
+	claimsDealer: ClaimsDealerTopic
 	authExchanger: AuthExchangerTopic
 	claimsVanguard: ClaimsVanguardTopic
 }
@@ -134,9 +135,12 @@ export interface ProfileMagistrateTopic extends
 }
 
 export interface ClaimsVanguardTopic extends Topic<ClaimsVanguardTopic> {
-	getUser(o: {userId: string}): Promise<User>
 	createUser(o: {googleId: string}): Promise<User>
 	setClaims(o: {userId: string; claims: Claims}): Promise<User>
+}
+
+export interface ClaimsDealerTopic extends Topic<ClaimsDealerTopic> {
+	getUser(o: {userId: string}): Promise<User>
 }
 
 export interface PaywallGuardianTopic

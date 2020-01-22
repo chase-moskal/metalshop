@@ -20,9 +20,11 @@ export const authShape: RenrakuApiShape<AuthApi> = {
 		authenticateViaGoogle: "method",
 	},
 	claimsVanguard: {
-		getUser: "method",
 		setClaims: "method",
 		createUser: "method",
+	},
+	claimsDealer: {
+		getUser: "method",
 	}
 }
 
