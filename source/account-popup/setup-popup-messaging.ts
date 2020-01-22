@@ -70,8 +70,8 @@ export async function setupPopupMessaging({auth, cors}: {
 			message => opener.postMessage(message, "*")
 		)
 
-		// react when this popup closes
-		window.addEventListener("unload", () => broadcast.respondWithTokens(null))
+		// // react when this popup closes
+		// window.addEventListener("unload", () => broadcast.respondWithTokens(null))
 
 		// send "ready" message, to indicate that we're done loading
 		broadcast.sendReadyMessage()
