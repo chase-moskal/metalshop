@@ -1,20 +1,13 @@
 {
-	"version": "0.1.0",
-	"command": "npm",
-	"isShellCommand": true,
-	"showOutput": "always",
-	"suppressTaskName": true,
+	"version": "2.0.0",
 	"tasks": [
 		{
-			"taskName": "install (production build)",
-			"args": ["install", "--silent"],
-			"isBuildCommand": true,
-			"problemMatcher": ["$tsc"]
-		},
-		{
-			"taskName": "development build",
-			"args": ["run", "build-debug", "--silent"],
-			"problemMatcher": ["$tsc"]
+			"type": "npm",
+			"script": "install",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }
