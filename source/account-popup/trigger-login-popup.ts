@@ -20,15 +20,13 @@ import {
  *   otherwise popup blockers will prevent functionality
  * - custom post-message logic communicates with the popup
  */
-export async function triggerLoginPopup({accountPopupUrl}: {
-	accountPopupUrl: string
+export async function triggerLoginPopup({authServerOrigin}: {
+	authServerOrigin: string
 }): Promise<AuthTokens> {
 	return new Promise<AuthTokens>((resolve, reject) => {
 
-		const {origin: popupOrigin} = new URL(accountPopupUrl)
-
 		const popup = window.open(
-			accountPopupUrl,
+			`${authServerOrigin}/html/account-popup`,
 			namespace,
 			popupFeaturesCentered(),
 			true,
@@ -38,7 +36,7 @@ export async function triggerLoginPopup({accountPopupUrl}: {
 
 		const {startListening} = prepareAccountPopupMessageListener({
 			popup,
-			popupOrigin,
+			popupOrigin: authServerOrigin,
 			resultCallback: (error, tokens) => {
 				if (error) reject(error)
 				else resolve(tokens)

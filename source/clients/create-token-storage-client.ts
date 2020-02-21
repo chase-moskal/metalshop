@@ -7,13 +7,13 @@ import {TokenStorageApi} from "../interfaces.js"
 
 export const prefix: string = "authoritarian"
 
-export async function createTokenStorageClient({url}: {url: string}) {
+export async function createTokenStorageClient({authServerOrigin}: {authServerOrigin: string}) {
 	const namespace = `${prefix}-token-storage`
-	const {origin: hostOrigin} = new URL(url)
+	const url = `${authServerOrigin}/html/token-storage`
 	const {postMessage} = await createIframe({url})
 	const {callable} = crosscallClient<TokenStorageApi>({
 		namespace,
-		hostOrigin,
+		hostOrigin: authServerOrigin,
 		postMessage,
 		shape: tokenStorageShape
 	})
