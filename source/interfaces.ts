@@ -42,6 +42,22 @@ export interface Profile {
 export type PaypalToken = string
 
 //
+// COMMON CONFIG
+//
+
+export interface JsonRegex {
+	pattern: string
+	flags: string
+}
+
+export interface CorsConfig {
+	allowed: JsonRegex
+	forbidden?: JsonRegex
+}
+
+export {CorsPermissions} from "renraku/dist/interfaces.js"
+
+//
 // ACCOUNT POPUP
 //
 
