@@ -32,7 +32,7 @@
 	"dependencies": {
 		"crosscall": "0.0.6-dev.18",
 		"redcrypto": "0.0.0-dev.4",
-		"renraku": "0.0.0-dev.22"
+		"renraku": "0.0.0-dev.24"
 	},
 	"keywords": [
 		"auth",
