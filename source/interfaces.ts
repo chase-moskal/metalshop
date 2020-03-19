@@ -185,3 +185,28 @@ export interface VimeoGovernorTopic
 		vimeoId: string
 	}): Promise<void>
 }
+
+// METALBACK CONFIGURATION
+
+export interface MetalbackCommonConfig {
+	mongo: {
+		link: string
+		database: string
+	}
+	cors: CorsConfig
+}
+
+export interface AuthServerConfig extends MetalbackCommonConfig {
+	authServer: {
+		port: number
+		debug: boolean
+		googleClientId: string
+		profileServerOrigin: string
+	}
+}
+
+export interface ProfileServerConfig extends MetalbackCommonConfig {
+	profileServer: {
+		port: number
+	}
+}
