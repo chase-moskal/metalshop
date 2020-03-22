@@ -37,6 +37,7 @@ export interface Profile {
 	userId: string
 	avatar: string
 	nickname: string
+	adminMode: boolean
 }
 
 export type PaypalToken = string
