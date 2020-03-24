@@ -9,7 +9,7 @@ import {
 	AccountPopupMessageFlag,
 	AccountPopupReadyResponse,
 	AccountPopupResultResponse,
-} from "../interfaces.js"
+} from "../../interfaces.js"
 import {namespace, isRelevant} from "./common.js"
 
 /** Validate messages from the page, enforce cors rules */

@@ -11,7 +11,7 @@ import {
 } from "./interfaces.js"
 
 //
-// RENRAKU APIs
+// renraku api's
 //
 
 export const authShape: RenrakuApiShape<AuthApi> = {
@@ -45,7 +45,7 @@ export const paywallShape: RenrakuApiShape<PaywallApi> = {
 }
 
 //
-// CROSSCALL APIs
+// crosscall api's
 //
 
 export const tokenStorageShape: CrosscallApiShape<TokenStorageApi> = {

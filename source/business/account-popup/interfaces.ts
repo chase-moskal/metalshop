@@ -1,10 +1,14 @@
 
-import {AuthTokens} from "./tokens.js"
+import {Topic, AuthTokens} from "../../interfaces.js"
+
+export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
+	login(): Promise<AuthTokens>
+}
 
 export enum AccountPopupMessageFlag {
 	ReadyResponse,
 	GoRequest,
-	ResultResponse
+	ResultResponse,
 }
 
 export interface AccountPopupMessage {

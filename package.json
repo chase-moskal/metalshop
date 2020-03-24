@@ -1,6 +1,6 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.44",
+	"version": "0.0.0-dev.45",
 	"description": "node library for auth and user management",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
@@ -15,7 +15,7 @@
 		"importmap": "importly < package.json > dist/importmap.json",
 		"compile": "tsc",
 		"watch": "tsc -w",
-		"start": "serve",
+		"start": "run-p testserve",
 		"testserve1": "serve -l 8044",
 		"testserve2": "serve -l 8045",
 		"testserve": "run-p testserve1 testserve2",

@@ -2,13 +2,14 @@
 <head>
 	<script type="module-shim">
 		import {triggerLoginPopup}
-			from "../../dist/account-popup/trigger-login-popup.js"
+			from "../../dist/business/account-popup/trigger-login-popup.js"
 
 		document.querySelector("button").onclick = async() => {
 			console.log("login!")
 	
 			const tokens = await triggerLoginPopup({
-				accountPopupUrl: "http://localhost:8044/testing/account-popup/popup.html"
+				authServerOrigin: "http://localhost:8044",
+				popupPath: "/testing/account-popup/popup",
 			})
 	
 			console.log("tokens!", tokens)

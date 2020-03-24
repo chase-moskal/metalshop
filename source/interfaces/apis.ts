@@ -9,11 +9,13 @@ import {
 	ClaimsDealerTopic,
 	TokenStorageTopic,
 	AuthExchangerTopic,
-	VimeoGovernorTopic,
 	ClaimsVanguardTopic,
 	PaywallGuardianTopic,
-	ProfileMagistrateTopic,
-} from "./topics.js"
+	LiveshowGovernorTopic,
+} from "../interfaces.js"
+
+import {QuestionsBureauTopic} from "../business/questions-bureau/interfaces.js"
+import {ProfileMagistrateTopic} from "../business/profile-magistrate/interfaces.js"
 
 //
 // renraku api's
@@ -33,8 +35,12 @@ export interface PaywallApi extends RenrakuApi<PaywallApi> {
 	paywallGuardian: PaywallGuardianTopic
 }
 
-export interface VimeoApi extends RenrakuApi<VimeoApi> {
-	vimeoGovernor: VimeoGovernorTopic
+export interface LiveshowApi extends RenrakuApi<LiveshowApi> {
+	liveshowGovernor: LiveshowGovernorTopic
+}
+
+export interface QuestionsApi extends RenrakuApi<QuestionsApi> {
+	questionsBureau: QuestionsBureauTopic
 }
 
 //

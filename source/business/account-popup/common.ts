@@ -1,5 +1,5 @@
 
-import {AccountPopupMessage} from "../interfaces.js"
+import {AccountPopupMessage} from "../../interfaces.js"
 
 export const namespace = "authoritarian-account-popup"
 

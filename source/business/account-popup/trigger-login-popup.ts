@@ -6,7 +6,7 @@ import {
 	AccountPopupGoRequest,
 	AccountPopupMessageFlag,
 	AccountPopupResultResponse,
-} from "../interfaces.js"
+} from "../../interfaces.js"
 
 import {
 	err,
@@ -20,13 +20,18 @@ import {
  *   otherwise popup blockers will prevent functionality
  * - custom post-message logic communicates with the popup
  */
-export async function triggerLoginPopup({authServerOrigin}: {
+export async function triggerLoginPopup({
+	authServerOrigin,
+	popupPath = "/html/account-popup"
+}: {
+	popupPath?: string
 	authServerOrigin: string
 }): Promise<AuthTokens> {
+	if (popupPath.startsWith("/")) popupPath = popupPath.slice(1)
 	return new Promise<AuthTokens>((resolve, reject) => {
 
 		const popup = window.open(
-			`${authServerOrigin}/html/account-popup`,
+			`${authServerOrigin}/${popupPath}`,
 			namespace,
 			popupFeaturesCentered(),
 			true,
