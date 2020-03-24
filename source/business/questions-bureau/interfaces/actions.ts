@@ -1,8 +1,8 @@
 
 import {QuestionRecord} from "./database.js"
 
-export interface QuestionsBureauActions {
-	fetchRecords(boardName: string): Promise<QuestionRecord[]>
+export interface QuestionsActions {
+	fetchRecords(board: string): Promise<QuestionRecord[]>
 
 	getRecordById(
 		questionId: string

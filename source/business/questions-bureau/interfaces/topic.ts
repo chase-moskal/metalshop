@@ -5,17 +5,15 @@ import {Question, QuestionDraft} from "./questions.js"
 export interface QuestionsBureauTopic {
 
 	fetchQuestions(o: {
-		boardName: string
+		board: string
 	}): Promise<Question[]>
 
 	postQuestion(o: {
-		boardName: string
 		draft: QuestionDraft
 		accessToken: AccessToken
 	}): Promise<Question>
 
 	deleteQuestion(o: {
-		boardName: string
 		questionId: string
 		accessToken: AccessToken
 	}): Promise<void>

@@ -1,9 +1,9 @@
 
 export interface QuestionRecord {
 	time: number
+	board: string
 	content: string
 	archive: boolean
-	boardName: string
 	questionId: string
 	authorUserId: string
 	likes: {userId: string}[]

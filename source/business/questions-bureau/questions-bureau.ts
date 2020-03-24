@@ -1,5 +1,7 @@
 
 import {
+	User,
+	Profile,
 	LikeInfo,
 	Question,
 	TokenData,
@@ -7,9 +9,10 @@ import {
 	AccessPayload,
 	QuestionDraft,
 	QuestionRecord,
+	QuestionsActions,
 	ClaimsDealerTopic,
+	QuestionsBureauTopic,
 	ProfileMagistrateTopic,
-	QuestionsBureauActions,
 } from "../../interfaces.js"
 
 import {generateId} from "../../toolbox/generate-id.js"
@@ -20,23 +23,53 @@ export function createQuestionsBureau({
 	claimsDealer,
 	profileMagistrate,
 }: {
-	actions: QuestionsBureauActions
+	actions: QuestionsActions
 	claimsDealer: ClaimsDealerTopic
 	profileMagistrate: ProfileMagistrateTopic
 	verifyToken: (token: AccessToken) => Promise<TokenData<AccessPayload>>
-}) {
+}): QuestionsBureauTopic {
 
 	//
 	// private
 	//
+
+	const cache: {users: User[]; profiles: Profile[]} = {
+		users: [],
+		profiles: [],
+	}
+
+	const getUser = async(userId: string): Promise<User> => {
+		const cachedUser = cache.users.find(u => u.userId === userId)
+		if (cachedUser) return cachedUser
+		else {
+			const user = await claimsDealer.getUser({userId})
+			cache.users.push(user)
+			return user
+		}
+	}
+
+	const getProfile = async(userId: string): Promise<Profile> => {
+		const cachedProfile = cache.profiles.find(p => p.userId === userId)
+		if (cachedProfile) return cachedProfile
+		else {
+			const profile = await profileMagistrate.getProfile({userId})
+			cache.profiles.push(profile)
+			return profile
+		}
+	}
+
+	const clearCache = () => {
+		cache.users = []
+		cache.profiles = []
+	}
 
 	async function resolveQuestion(
 		record: QuestionRecord
 	): Promise<Question> {
 		const {authorUserId: userId} = record
 		const author = {
-			user: await claimsDealer.getUser({userId}),
-			profile: await profileMagistrate.getProfile({userId}),
+			user: await getUser(userId),
+			profile: await getProfile(userId),
 		}
 		const likeInfo: LikeInfo = {
 			likes: record.likes.length,
@@ -46,6 +79,7 @@ export function createQuestionsBureau({
 			author,
 			likeInfo,
 			time: record.time,
+			board: record.board,
 			content: record.content,
 			questionId: record.questionId,
 		}
@@ -55,17 +89,17 @@ export function createQuestionsBureau({
 	// not private
 	//
 
-	async function fetchQuestions({boardName}: {
-		boardName: string
+	async function fetchQuestions({board}: {
+		board: string
 	}): Promise<Question[]> {
-		const records = await actions.fetchRecords(boardName)
+		clearCache()
+		const records = await actions.fetchRecords(board)
 		return await Promise.all(
 			records.map(record => resolveQuestion(record))
 		)
 	}
 
-	async function postQuestion({boardName, draft, accessToken}: {
-		boardName: string
+	async function postQuestion({draft, accessToken}: {
 		draft: QuestionDraft
 		accessToken: AccessToken
 	}): Promise<Question> {
@@ -74,11 +108,11 @@ export function createQuestionsBureau({
 		if (!user.claims.premium)
 			throw new Error(`must be premium to post question`)
 		const record: QuestionRecord = {
-			boardName,
-			authorUserId,
 			likes: [],
+			authorUserId,
 			archive: false,
 			time: Date.now(),
+			board: draft.board,
 			content: draft.content,
 			questionId: generateId(),
 		}

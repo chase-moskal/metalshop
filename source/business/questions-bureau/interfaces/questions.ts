@@ -11,14 +11,9 @@ export interface LikeInfo {
 	likes: number
 }
 
-export interface QuestionValidation {
-	angry: boolean
-	message: string
-	postable: boolean
-}
-
 export interface QuestionDraft {
 	time: number
+	board: string
 	content: string
 }
 
@@ -26,14 +21,4 @@ export interface Question extends QuestionDraft {
 	questionId: string
 	likeInfo: LikeInfo
 	author: QuestionAuthor
-}
-
-export interface QuestionsState {
-	user: User
-	profile: Profile
-	boards: {
-		[boardName: string]: {
-			questions: Question[]
-		}
-	}
 }

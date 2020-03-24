@@ -6,7 +6,7 @@ import {
 	AccessToken,
 	AccessPayload,
 	QuestionRecord,
-	QuestionsBureauActions,
+	QuestionsActions,
 } from "../../interfaces.js"
 
 export async function mockTokenVerify(
@@ -15,7 +15,7 @@ export async function mockTokenVerify(
 	return tokenDecode(token)
 }
 
-export function createMockQuestionsActions(): QuestionsBureauActions {
+export function createMockQuestionsActions(): QuestionsActions {
 	const data: {
 		records: QuestionRecord[]
 	} = {records: []}
@@ -29,7 +29,7 @@ export function createMockQuestionsActions(): QuestionsBureauActions {
 	async function fetchRecords(boardName: string): Promise<QuestionRecord[]> {
 		return [...data.records.filter(record => (
 			!record.archive &&
-			record.boardName === boardName
+			record.board === boardName
 		))]
 	}
 
