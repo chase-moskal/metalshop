@@ -5,18 +5,14 @@ import {
 } from "../../interfaces.js"
 
 export function mockQuestionsDatalayer(): QuestionsDatalayer {
-	const data: {
-		records: QuestionRecord[]
-	} = {records: []}
+	const records: QuestionRecord[] = []
 
 	async function getRecordById(questionId: string): Promise<QuestionRecord> {
-		return data.records.find(record => (
-			record.questionId === questionId
-		))
+		return records.find(record => record.questionId === questionId)
 	}
 
 	async function fetchRecords(boardName: string): Promise<QuestionRecord[]> {
-		return [...data.records.filter(record => (
+		return [...records.filter(record => (
 			!record.archive &&
 			record.board === boardName
 		))]
@@ -26,8 +22,9 @@ export function mockQuestionsDatalayer(): QuestionsDatalayer {
 		record: QuestionRecord
 	): Promise<void> {
 		const already = await getRecordById(record.questionId)
-		if (already) throw new Error(`cannot overwrite existing question`)
-		else data.records.push(record)
+		if (already === record) {}
+		else if (already) Object.assign(already, record)
+		else records.push(record)
 	}
 
 	async function likeRecord({like, userId, questionId}: {

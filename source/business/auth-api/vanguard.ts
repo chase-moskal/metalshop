@@ -16,7 +16,8 @@ export function makeAuthVanguard({userDatalayer}: {
 }): AuthCommon {
 
 	async function getUser({userId}: {userId: string}): Promise<User> {
-		return toUser(await userDatalayer.getRecordByUserId(userId))
+		const record = await userDatalayer.getRecordByUserId(userId)
+		return record ? toUser(record) : undefined
 	}
 
 	async function createUser({googleId}): Promise<User> {

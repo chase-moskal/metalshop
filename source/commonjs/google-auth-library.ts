@@ -6,6 +6,8 @@ import * as _googleAuth from "google-auth-library"
 const googleAuth: typeof _googleAuth =
 	require("google-auth-library") as typeof _googleAuth
 
+export default googleAuth
+
 const {
 	OAuth2Client
 } = googleAuth

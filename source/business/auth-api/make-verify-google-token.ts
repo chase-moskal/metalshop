@@ -2,10 +2,12 @@
 import {GoogleResult, VerifyGoogleToken} from "./interfaces.js"
 import {OAuth2Client} from "../../commonjs/google-auth-library.js"
 
-export function makeVerifyGoogleToken({googleClientId}: {
+export function makeVerifyGoogleToken(
 	googleClientId: string
-}): VerifyGoogleToken {
+): VerifyGoogleToken {
+
 	const oAuth2Client = new OAuth2Client(googleClientId)
+
 	return async(googleToken: string): Promise<GoogleResult> => {
 		const ticket = await oAuth2Client.verifyIdToken({
 			idToken: googleToken,

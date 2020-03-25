@@ -6,10 +6,10 @@ import {
 	Question,
 	VerifyToken,
 	AccessToken,
-	QuestionsDatalayer,
 	QuestionDraft,
 	QuestionRecord,
 	AuthDealerTopic,
+	QuestionsDatalayer,
 	QuestionsBureauTopic,
 	ProfileMagistrateTopic,
 } from "../../interfaces.js"
@@ -17,8 +17,8 @@ import {
 import {generateId} from "../../toolbox/generate-id.js"
 
 export function makeQuestionsBureau({
-	verifyToken,
 	authDealer,
+	verifyToken,
 	profileMagistrate,
 	questionsDatalayer,
 }: {
@@ -93,9 +93,11 @@ export function makeQuestionsBureau({
 	}): Promise<Question[]> {
 		clearCache()
 		const records = await questionsDatalayer.fetchRecords(board)
-		return await Promise.all(
+		const questions = await Promise.all(
 			records.map(record => resolveQuestion(record))
 		)
+		clearCache()
+		return questions
 	}
 
 	async function postQuestion({draft, accessToken}: {
@@ -116,7 +118,10 @@ export function makeQuestionsBureau({
 			questionId: generateId(),
 		}
 		await questionsDatalayer.saveRecord(record)
-		return await resolveQuestion(record)
+		clearCache()
+		const question = await resolveQuestion(record)
+		clearCache()
+		return question
 	}
 
 	async function deleteQuestion({questionId, accessToken}: {
@@ -146,7 +151,10 @@ export function makeQuestionsBureau({
 			questionId,
 			userId: user.userId,
 		})
-		return await resolveQuestion(record)
+		clearCache()
+		const question = await resolveQuestion(record)
+		clearCache()
+		return question
 	}
 
 	return {
