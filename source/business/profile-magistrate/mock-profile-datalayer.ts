@@ -9,7 +9,11 @@ export function mockProfileDatalayer(): ProfileDatalayer {
 	}
 
 	async function upsertRecord(record: ProfileRecord): Promise<void> {
-		records.push(record)
+		const existing = await getRecordByUserId(record.userId)
+		if (existing && existing !== record)
+			Object.assign(existing, record)
+		else
+			records.push(record)
 	}
 
 	return {

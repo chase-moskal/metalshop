@@ -57,6 +57,7 @@ export function makeAuthExchanger({
 				accessTokenExpiresMilliseconds
 			)
 
+			// create new profile for this user
 			try {
 				const profile = await profileMagistrate.getProfile({userId})
 				if (!profile)

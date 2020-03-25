@@ -1,6 +1,6 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.45",
+	"version": "0.0.0-dev.46",
 	"description": "node library for auth and user management",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
@@ -35,7 +35,7 @@
 		"google-auth-library": "^5.10.1",
 		"js-yaml": "^3.13.1",
 		"mongodb": "^3.5.5",
-		"redcrypto": "0.0.0-dev.4",
+		"redcrypto": "0.0.0-dev.5",
 		"renraku": "0.0.0-dev.25"
 	},
 	"keywords": [

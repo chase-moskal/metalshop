@@ -2,7 +2,7 @@
 import {GoogleResult, VerifyGoogleToken} from "./interfaces.js"
 import {OAuth2Client} from "../../commonjs/google-auth-library.js"
 
-export function makeVerifyGoogleToken(
+export function curryVerifyGoogleToken(
 	googleClientId: string
 ): VerifyGoogleToken {
 
