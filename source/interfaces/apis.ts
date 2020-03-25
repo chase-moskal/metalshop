@@ -6,10 +6,10 @@ export {Topic, RenrakuApi, CrosscallApi}
 
 import {
 	AccountPopupTopic,
-	ClaimsDealerTopic,
+	AuthDealerTopic,
 	TokenStorageTopic,
 	AuthExchangerTopic,
-	ClaimsVanguardTopic,
+	AuthVanguardTopic,
 	PaywallGuardianTopic,
 	LiveshowGovernorTopic,
 } from "../interfaces.js"
@@ -22,9 +22,9 @@ import {ProfileMagistrateTopic} from "../business/profile-magistrate/interfaces.
 //
 
 export interface AuthApi extends RenrakuApi<AuthApi> {
-	claimsDealer: ClaimsDealerTopic
+	authDealer: AuthDealerTopic
+	authVanguard: AuthVanguardTopic
 	authExchanger: AuthExchangerTopic
-	claimsVanguard: ClaimsVanguardTopic
 }
 
 export interface ProfileApi extends RenrakuApi<ProfileApi> {

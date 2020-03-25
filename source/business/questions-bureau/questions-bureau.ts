@@ -9,8 +9,8 @@ import {
 	AccessPayload,
 	QuestionDraft,
 	QuestionRecord,
-	QuestionsActions,
-	ClaimsDealerTopic,
+	QuestionsData,
+	AuthDealerTopic,
 	QuestionsBureauTopic,
 	ProfileMagistrateTopic,
 } from "../../interfaces.js"
@@ -18,13 +18,13 @@ import {
 import {generateId} from "../../toolbox/generate-id.js"
 
 export function createQuestionsBureau({
-	actions,
 	verifyToken,
 	claimsDealer,
+	questionsData,
 	profileMagistrate,
 }: {
-	actions: QuestionsActions
-	claimsDealer: ClaimsDealerTopic
+	questionsData: QuestionsData
+	claimsDealer: AuthDealerTopic
 	profileMagistrate: ProfileMagistrateTopic
 	verifyToken: (token: AccessToken) => Promise<TokenData<AccessPayload>>
 }): QuestionsBureauTopic {
@@ -93,7 +93,7 @@ export function createQuestionsBureau({
 		board: string
 	}): Promise<Question[]> {
 		clearCache()
-		const records = await actions.fetchRecords(board)
+		const records = await questionsData.fetchRecords(board)
 		return await Promise.all(
 			records.map(record => resolveQuestion(record))
 		)
@@ -116,7 +116,7 @@ export function createQuestionsBureau({
 			content: draft.content,
 			questionId: generateId(),
 		}
-		await actions.saveRecord(record)
+		await questionsData.saveRecord(record)
 		return await resolveQuestion(record)
 	}
 
@@ -125,13 +125,13 @@ export function createQuestionsBureau({
 		accessToken: AccessToken
 	}): Promise<void> {
 		const {user} = (await verifyToken(accessToken)).payload
-		const record = await actions.getRecordById(questionId)
+		const record = await questionsData.getRecordById(questionId)
 
 		const owner = user.userId === record.authorUserId
 		const admin = !!user.claims.admin
 
 		if (owner || admin)
-			await actions.trashRecord(questionId)
+			await questionsData.trashRecord(questionId)
 		else
 			throw new Error(`must own the question to trash it`)
 	}
@@ -142,7 +142,7 @@ export function createQuestionsBureau({
 		accessToken: AccessToken
 	}): Promise<Question> {
 		const {user} = (await verifyToken(accessToken)).payload
-		const record = await actions.likeRecord({
+		const record = await questionsData.likeRecord({
 			like,
 			questionId,
 			userId: user.userId,

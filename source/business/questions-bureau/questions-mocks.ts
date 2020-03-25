@@ -5,8 +5,8 @@ import {
 	TokenData,
 	AccessToken,
 	AccessPayload,
+	QuestionsData,
 	QuestionRecord,
-	QuestionsActions,
 } from "../../interfaces.js"
 
 export async function mockTokenVerify(
@@ -15,7 +15,7 @@ export async function mockTokenVerify(
 	return tokenDecode(token)
 }
 
-export function createMockQuestionsActions(): QuestionsActions {
+export function makeMockQuestionsData(): QuestionsData {
 	const data: {
 		records: QuestionRecord[]
 	} = {records: []}
