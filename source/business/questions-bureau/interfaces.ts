@@ -33,7 +33,7 @@ export interface QuestionRecord {
 	likes: {userId: string}[]
 }
 
-export interface QuestionsData {
+export interface QuestionsDatalayer {
 	fetchRecords(board: string): Promise<QuestionRecord[]>
 
 	getRecordById(

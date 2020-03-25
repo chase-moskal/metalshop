@@ -1,5 +1,5 @@
 
-import {UserRecord, Claims, UsersData, UserDraft} from "../../interfaces.js"
+import {UserRecord, Claims, UserDatalayer, UserDraft} from "../../interfaces.js"
 import {Collection, ObjectId, ObjectID} from "../../commonjs/mongodb.js"
 
 interface UserRaw extends UserDraft {
@@ -18,7 +18,7 @@ const toRecord = ({
 
 const toMongoId = (userId: string) => new ObjectId(userId)
 
-export function mongoUsersData(collection: Collection): UsersData {
+export function mongoUserDatalayer(collection: Collection): UserDatalayer {
 
 	async function getRecordByUserId(
 		userId: string

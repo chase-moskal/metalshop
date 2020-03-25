@@ -4,12 +4,11 @@ import {
 	Profile,
 	LikeInfo,
 	Question,
-	TokenData,
+	VerifyToken,
 	AccessToken,
-	AccessPayload,
+	QuestionsDatalayer,
 	QuestionDraft,
 	QuestionRecord,
-	QuestionsData,
 	AuthDealerTopic,
 	QuestionsBureauTopic,
 	ProfileMagistrateTopic,
@@ -17,16 +16,16 @@ import {
 
 import {generateId} from "../../toolbox/generate-id.js"
 
-export function createQuestionsBureau({
+export function makeQuestionsBureau({
 	verifyToken,
-	claimsDealer,
-	questionsData,
+	authDealer,
 	profileMagistrate,
+	questionsDatalayer,
 }: {
-	questionsData: QuestionsData
-	claimsDealer: AuthDealerTopic
+	verifyToken: VerifyToken
+	authDealer: AuthDealerTopic
+	questionsDatalayer: QuestionsDatalayer
 	profileMagistrate: ProfileMagistrateTopic
-	verifyToken: (token: AccessToken) => Promise<TokenData<AccessPayload>>
 }): QuestionsBureauTopic {
 
 	//
@@ -42,7 +41,7 @@ export function createQuestionsBureau({
 		const cachedUser = cache.users.find(u => u.userId === userId)
 		if (cachedUser) return cachedUser
 		else {
-			const user = await claimsDealer.getUser({userId})
+			const user = await authDealer.getUser({userId})
 			cache.users.push(user)
 			return user
 		}
@@ -93,7 +92,7 @@ export function createQuestionsBureau({
 		board: string
 	}): Promise<Question[]> {
 		clearCache()
-		const records = await questionsData.fetchRecords(board)
+		const records = await questionsDatalayer.fetchRecords(board)
 		return await Promise.all(
 			records.map(record => resolveQuestion(record))
 		)
@@ -103,7 +102,7 @@ export function createQuestionsBureau({
 		draft: QuestionDraft
 		accessToken: AccessToken
 	}): Promise<Question> {
-		const {user} = (await verifyToken(accessToken)).payload
+		const {user} = await verifyToken(accessToken)
 		const {userId: authorUserId} = user
 		if (!user.claims.premium)
 			throw new Error(`must be premium to post question`)
@@ -116,7 +115,7 @@ export function createQuestionsBureau({
 			content: draft.content,
 			questionId: generateId(),
 		}
-		await questionsData.saveRecord(record)
+		await questionsDatalayer.saveRecord(record)
 		return await resolveQuestion(record)
 	}
 
@@ -124,14 +123,14 @@ export function createQuestionsBureau({
 		questionId: string
 		accessToken: AccessToken
 	}): Promise<void> {
-		const {user} = (await verifyToken(accessToken)).payload
-		const record = await questionsData.getRecordById(questionId)
+		const {user} = await verifyToken(accessToken)
+		const record = await questionsDatalayer.getRecordById(questionId)
 
 		const owner = user.userId === record.authorUserId
 		const admin = !!user.claims.admin
 
 		if (owner || admin)
-			await questionsData.trashRecord(questionId)
+			await questionsDatalayer.trashRecord(questionId)
 		else
 			throw new Error(`must own the question to trash it`)
 	}
@@ -141,8 +140,8 @@ export function createQuestionsBureau({
 		questionId: string
 		accessToken: AccessToken
 	}): Promise<Question> {
-		const {user} = (await verifyToken(accessToken)).payload
-		const record = await questionsData.likeRecord({
+		const {user} = await verifyToken(accessToken)
+		const record = await questionsDatalayer.likeRecord({
 			like,
 			questionId,
 			userId: user.userId,

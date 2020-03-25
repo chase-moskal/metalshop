@@ -1,8 +1,8 @@
 
-import {UserDraft, UsersData, UserRecord, Claims} from "../../interfaces.js"
+import {UserDraft, UserDatalayer, UserRecord, Claims} from "../../interfaces.js"
 import {generateId} from "../../toolbox/generate-id.js"
 
-export function mockUsersData(): UsersData {
+export function mockUserDatalayer(): UserDatalayer {
 
 	//
 	// private

@@ -1,7 +1,6 @@
 
 export * from "./business/account-popup/interfaces.js"
-export * from "./business/auth-vanguard/interfaces.js"
-export * from "./business/auth-exchanger/interfaces.js"
+export * from "./business/auth-api/interfaces.js"
 export * from "./business/liveshow-governor/interfaces.js"
 export * from "./business/paywall-guardian/interfaces.js"
 export * from "./business/profile-magistrate/interfaces.js"

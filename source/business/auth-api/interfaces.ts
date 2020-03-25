@@ -3,6 +3,9 @@ import {
 	User,
 	Topic,
 	Claims,
+	AuthTokens,
+	AccessToken,
+	RefreshToken,
 } from "../../interfaces.js"
 
 export interface UserDraft {
@@ -14,15 +17,11 @@ export interface UserRecord extends UserDraft {
 	userId: string
 }
 
-export interface UsersData {
+export interface UserDatalayer {
 	insertRecord(draft: UserDraft): Promise<UserRecord>
 	getRecordByUserId(userId: string): Promise<UserRecord>
 	getRecordByGoogleId(googleId: string): Promise<UserRecord>
 	setRecordClaims(userId: string, claims: Claims): Promise<UserRecord>
-}
-
-export interface AuthCommonOptions {
-	usersData: UsersData
 }
 
 export interface AuthDealerTopic extends Topic<AuthDealerTopic> {
@@ -38,4 +37,17 @@ export interface AuthVanguardTopic
 export interface AuthCommon {
 	authDealer: AuthDealerTopic
 	authVanguard: AuthVanguardTopic
+}
+
+export interface AuthExchangerTopic extends Topic<AuthExchangerTopic> {
+	authorize(options: {refreshToken: RefreshToken}): Promise<AccessToken>
+	authenticateViaGoogle(options: {googleToken: string}): Promise<AuthTokens>
+}
+
+export type VerifyGoogleToken = (googleToken: string) => Promise<GoogleResult>
+
+export interface GoogleResult {
+	name: string
+	avatar: string
+	googleId: string
 }

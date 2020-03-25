@@ -1,21 +1,10 @@
 
-import {tokenDecode} from "redcrypto/dist/token-decode.js"
-
 import {
-	TokenData,
-	AccessToken,
-	AccessPayload,
-	QuestionsData,
 	QuestionRecord,
+	QuestionsDatalayer,
 } from "../../interfaces.js"
 
-export async function mockTokenVerify(
-	token: AccessToken
-): Promise<TokenData<AccessPayload>> {
-	return tokenDecode(token)
-}
-
-export function makeMockQuestionsData(): QuestionsData {
+export function mockQuestionsDatalayer(): QuestionsDatalayer {
 	const data: {
 		records: QuestionRecord[]
 	} = {records: []}

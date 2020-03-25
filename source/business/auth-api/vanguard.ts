@@ -1,9 +1,9 @@
 
 import {
 	User,
-	UsersData,
-	UserRecord,
 	AuthCommon,
+	UserRecord,
+	UserDatalayer,
 } from "../../interfaces.js"
 
 const toUser = ({userId, claims}: UserRecord): User => ({
@@ -11,18 +11,18 @@ const toUser = ({userId, claims}: UserRecord): User => ({
 	userId,
 })
 
-export function createAuthVanguard({usersData}: {
-	usersData: UsersData
+export function makeAuthVanguard({userDatalayer}: {
+	userDatalayer: UserDatalayer
 }): AuthCommon {
 
 	async function getUser({userId}: {userId: string}): Promise<User> {
-		return toUser(await usersData.getRecordByUserId(userId))
+		return toUser(await userDatalayer.getRecordByUserId(userId))
 	}
 
 	async function createUser({googleId}): Promise<User> {
-		let record = await usersData.getRecordByGoogleId(googleId)
+		let record = await userDatalayer.getRecordByGoogleId(googleId)
 		if (!record) {
-			record = await usersData.insertRecord({
+			record = await userDatalayer.insertRecord({
 				googleId,
 				claims: {},
 			})
@@ -31,12 +31,12 @@ export function createAuthVanguard({usersData}: {
 	}
 
 	async function setClaims({userId, claims = {}}): Promise<User> {
-		return toUser(await usersData.setRecordClaims(userId, claims))
+		return toUser(await userDatalayer.setRecordClaims(userId, claims))
 	}
 
 	return {
 
-		// must be kept secure
+		// must be kept secure, never expose to public
 		authVanguard: {getUser, createUser, setClaims},
 
 		// can be exposed publicly on the web

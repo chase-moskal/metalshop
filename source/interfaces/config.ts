@@ -11,11 +11,13 @@ export interface CorsConfig {
 	forbidden?: JsonRegex
 }
 
+export interface MongoConfig {
+	link: string
+	database: string
+}
+
 export interface CommonConfig {
-	mongo: {
-		link: string
-		database: string
-	}
+	mongo: MongoConfig
 	cors: CorsConfig
 }
 
