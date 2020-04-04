@@ -1,6 +1,6 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.46",
+	"version": "0.0.0-dev.47",
 	"description": "node library for auth and user management",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
