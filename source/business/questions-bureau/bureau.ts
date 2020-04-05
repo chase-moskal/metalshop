@@ -84,6 +84,10 @@ export function makeQuestionsBureau({
 		}
 	}
 
+	async function purgeQuestions(o: {accessToken: AccessToken}): Promise<void> {
+		await questionsDatalayer.purgeRecords()
+	}
+
 	//
 	// not private
 	//
@@ -162,5 +166,6 @@ export function makeQuestionsBureau({
 		postQuestion,
 		deleteQuestion,
 		likeQuestion,
+		purgeQuestions,
 	}
 }

@@ -35,45 +35,35 @@ export interface QuestionRecord {
 
 export interface QuestionsDatalayer {
 	fetchRecords(board: string): Promise<QuestionRecord[]>
-
-	getRecordById(
-		questionId: string
-	): Promise<QuestionRecord>
-
-	saveRecord(
-		record: QuestionRecord
-	): Promise<void>
-
+	getRecordById(questionId: string): Promise<QuestionRecord>
+	saveRecord(record: QuestionRecord): Promise<void>
 	likeRecord(options: {
 		like: boolean
 		userId: string
 		questionId: string
 	}): Promise<QuestionRecord>
-
-	trashRecord(
-		questionId: string
-	): Promise<void>
+	trashRecord(questionId: string): Promise<void>
+	purgeRecords(): Promise<void>
 }
 
 export interface QuestionsBureauTopic {
-
 	fetchQuestions(o: {
 		board: string
 	}): Promise<Question[]>
-
 	postQuestion(o: {
 		draft: QuestionDraft
 		accessToken: AccessToken
 	}): Promise<Question>
-
 	deleteQuestion(o: {
 		questionId: string
 		accessToken: AccessToken
 	}): Promise<void>
-
 	likeQuestion(o: {
 		like: boolean
 		questionId: string
 		accessToken: AccessToken
 	}): Promise<Question>
+	purgeQuestions(o: {
+		accessToken: AccessToken
+	}): Promise<void>
 }

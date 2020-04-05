@@ -41,7 +41,6 @@ export function mockQuestionsDatalayer(): QuestionsDatalayer {
 		else {
 			record.likes = record.likes.filter(like => like.userId !== userId)
 		}
-		await saveRecord(record)
 		return record
 	}
 
@@ -51,11 +50,18 @@ export function mockQuestionsDatalayer(): QuestionsDatalayer {
 		await saveRecord(record)
 	}
 
+	async function purgeRecords(): Promise<void> {
+		for (const record of records) {
+			record.archive = true
+		}
+	}
+
 	return {
 		getRecordById,
 		fetchRecords,
 		likeRecord,
 		saveRecord,
 		trashRecord,
+		purgeRecords,
 	}
 }
