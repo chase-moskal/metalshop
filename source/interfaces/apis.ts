@@ -14,6 +14,7 @@ import {
 	LiveshowGovernorTopic,
 } from "../interfaces.js"
 
+import {ScheduleSentryTopic} from "../business/schedule-sentry/interfaces.js"
 import {QuestionsBureauTopic} from "../business/questions-bureau/interfaces.js"
 import {ProfileMagistrateTopic} from "../business/profile-magistrate/interfaces.js"
 
@@ -41,6 +42,10 @@ export interface LiveshowApi extends RenrakuApi<LiveshowApi> {
 
 export interface QuestionsApi extends RenrakuApi<QuestionsApi> {
 	questionsBureau: QuestionsBureauTopic
+}
+
+export interface ScheduleApi extends RenrakuApi<ScheduleApi> {
+	scheduleSentry: ScheduleSentryTopic
 }
 
 //
