@@ -32,7 +32,7 @@ export class TokenStorage implements TokenStorageTopic {
 	}
 
 	async writeAccessToken(accessToken: AccessToken): Promise<void> {
-		this._storage.setItem("accessToken", accessToken)
+		this._storage.setItem("accessToken", accessToken || "")
 	}
 
 	async writeTokens({accessToken, refreshToken}: AuthTokens): Promise<void> {
