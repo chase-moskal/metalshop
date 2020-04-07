@@ -129,7 +129,7 @@ export function makeQuestionsBureau({
 		questionId: string
 		accessToken: AccessToken
 	}): Promise<void> {
-		const {user} = await verifyToken(accessToken)
+		const {user} = await verifyToken<AccessPayload>(accessToken)
 		const record = await questionsDatalayer.getRecordById(questionId)
 
 		const owner = user.userId === record.authorUserId
@@ -146,7 +146,7 @@ export function makeQuestionsBureau({
 		questionId: string
 		accessToken: AccessToken
 	}): Promise<Question> {
-		const {user} = await verifyToken(accessToken)
+		const {user} = await verifyToken<AccessPayload>(accessToken)
 		const record = await questionsDatalayer.likeRecord({
 			like,
 			questionId,
