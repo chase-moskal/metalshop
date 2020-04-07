@@ -42,8 +42,8 @@ export interface QuestionsDatalayer {
 		userId: string
 		questionId: string
 	}): Promise<QuestionRecord>
-	trashRecord(questionId: string): Promise<void>
-	purgeRecords(): Promise<void>
+	purgeRecords(board: string): Promise<void>
+	archiveRecord(questionId: string): Promise<void>
 }
 
 export interface QuestionsBureauTopic {
@@ -64,6 +64,7 @@ export interface QuestionsBureauTopic {
 		accessToken: AccessToken
 	}): Promise<Question>
 	purgeQuestions(o: {
+		board: string
 		accessToken: AccessToken
 	}): Promise<void>
 }

@@ -35,3 +35,11 @@ export interface ProfileServerConfig extends CommonConfig {
 		port: number
 	}
 }
+
+export interface QuestionsServerConfig extends CommonConfig {
+	questionsServer: {
+		port: number
+		authServerOrigin: string
+		profileServerOrigin: string
+	}
+}

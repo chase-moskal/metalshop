@@ -44,15 +44,15 @@ export function mockQuestionsDatalayer(): QuestionsDatalayer {
 		return record
 	}
 
-	async function trashRecord(questionId: string): Promise<void> {
+	async function archiveRecord(questionId: string): Promise<void> {
 		const record = await getRecordById(questionId)
 		record.archive = true
 		await saveRecord(record)
 	}
 
-	async function purgeRecords(): Promise<void> {
+	async function purgeRecords(board: string): Promise<void> {
 		for (const record of records) {
-			record.archive = true
+			if (record.board === board) record.archive = true
 		}
 	}
 
@@ -61,7 +61,7 @@ export function mockQuestionsDatalayer(): QuestionsDatalayer {
 		fetchRecords,
 		likeRecord,
 		saveRecord,
-		trashRecord,
+		archiveRecord,
 		purgeRecords,
 	}
 }

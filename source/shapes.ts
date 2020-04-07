@@ -1,13 +1,13 @@
 
+import {ApiShape as RenrakuApiShape} from "renraku/dist/interfaces.js"
 import {ApiShape as CrosscallApiShape} from "crosscall/dist/interfaces.js"
-import {ApiShape as RenrakuApiShape, Shape} from "renraku/dist/interfaces.js"
 
 import {
 	AuthApi,
 	PaywallApi,
 	ProfileApi,
+	QuestionsApi,
 	TokenStorageApi,
-	ProfileMagistrateTopic,
 } from "./interfaces.js"
 
 //
@@ -29,13 +29,21 @@ export const authShape: RenrakuApiShape<AuthApi> = {
 	}
 }
 
-const magistrateShape: Shape<ProfileMagistrateTopic> = {
-	setProfile: "method",
-	getProfile: "method",
+export const profileShape: RenrakuApiShape<ProfileApi> = {
+	profileMagistrate: {
+		setProfile: "method",
+		getProfile: "method",
+	}
 }
 
-export const profileShape: RenrakuApiShape<ProfileApi> = {
-	profileMagistrate: magistrateShape
+export const questionsShape: RenrakuApiShape<QuestionsApi> = {
+	questionsBureau: {
+		likeQuestion: "method",
+		postQuestion: "method",
+		deleteQuestion: "method",
+		fetchQuestions: "method",
+		purgeQuestions: "method",
+	}
 }
 
 export const paywallShape: RenrakuApiShape<PaywallApi> = {

@@ -15,6 +15,7 @@ import {
 } from "../../interfaces.js"
 
 import {generateId} from "../../toolbox/generate-id.js"
+import {AccessPayload} from "../../interfaces/tokens.js"
 
 export function makeQuestionsBureau({
 	authDealer,
@@ -84,10 +85,6 @@ export function makeQuestionsBureau({
 		}
 	}
 
-	async function purgeQuestions(o: {accessToken: AccessToken}): Promise<void> {
-		await questionsDatalayer.purgeRecords()
-	}
-
 	//
 	// not private
 	//
@@ -108,7 +105,7 @@ export function makeQuestionsBureau({
 		draft: QuestionDraft
 		accessToken: AccessToken
 	}): Promise<Question> {
-		const {user} = await verifyToken(accessToken)
+		const {user} = await verifyToken<AccessPayload>(accessToken)
 		const {userId: authorUserId} = user
 		if (!user.claims.premium)
 			throw new Error(`must be premium to post question`)
@@ -139,9 +136,9 @@ export function makeQuestionsBureau({
 		const admin = !!user.claims.admin
 
 		if (owner || admin)
-			await questionsDatalayer.trashRecord(questionId)
+			await questionsDatalayer.archiveRecord(questionId)
 		else
-			throw new Error(`must own the question to trash it`)
+			throw new Error(`not authorized to archive record`)
 	}
 
 	async function likeQuestion({like, questionId, accessToken}: {
@@ -161,11 +158,19 @@ export function makeQuestionsBureau({
 		return question
 	}
 
+	async function purgeQuestions({board, accessToken}: {
+		board: string
+		accessToken: AccessToken
+	}): Promise<void> {
+		await verifyToken<AccessPayload>(accessToken)
+		await questionsDatalayer.purgeRecords(board)
+	}
+
 	return {
-		fetchQuestions,
-		postQuestion,
-		deleteQuestion,
 		likeQuestion,
+		postQuestion,
+		fetchQuestions,
+		deleteQuestion,
 		purgeQuestions,
 	}
 }
