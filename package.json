@@ -1,7 +1,7 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.48",
-	"description": "node library for auth and user management",
+	"version": "0.0.0-dev.49",
+	"description": "metalshop's interfaces, business logic, and common functions",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"type": "module",
