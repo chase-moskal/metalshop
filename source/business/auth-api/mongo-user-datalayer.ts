@@ -6,14 +6,10 @@ interface UserRaw extends UserDraft {
 	_id?: ObjectID
 }
 
-const toRecord = ({
-	_id,
-	claims,
-	googleId,
-}: UserRaw): UserRecord => ({
-	claims,
-	googleId,
-	userId: _id.toHexString(),
+const toRecord = (raw?: UserRaw): UserRecord => (raw && {
+	claims: raw.claims,
+	googleId: raw.googleId,
+	userId: raw._id.toHexString(),
 })
 
 const toMongoId = (userId: string) => new ObjectId(userId)
