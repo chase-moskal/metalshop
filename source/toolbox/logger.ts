@@ -1,6 +1,5 @@
 
-import chalk from "../commonjs/chalk.js"
-import {Chalk} from "../commonjs/chalk.js"
+import chalk, {Chalk} from "../commonjs/chalk.js"
 
 export interface SimpleConsole {
 	log: typeof console.log
