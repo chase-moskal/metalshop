@@ -1,6 +1,6 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.49",
+	"version": "0.0.0-dev.50",
 	"description": "metalshop's interfaces, business logic, and common functions",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
