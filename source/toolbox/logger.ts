@@ -58,7 +58,7 @@ export class Logger implements SimpleConsole {
 		this.info = prepare(con.info, chalkstick.cyanBright)
 		this.debug = prepare(con.debug, chalkstick.blueBright)
 		this.warn = prepare(con.warn, chalkstick.yellow)
-		this.error = prepare(con.error, chalkstick.red)
+		this.error = prepare(con.error, chalkstick.redBright)
 		this.clear = () => con.clear()
 	}
 }
