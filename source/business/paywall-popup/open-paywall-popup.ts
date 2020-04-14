@@ -12,6 +12,6 @@ export const openPaywallPopup = ({
 }) => openPopup<null, User>({
 	namespace,
 	popupPath,
-	parameters: null,
+	parameters: undefined,
 	popupOrigin: paywallServerOrigin,
 })

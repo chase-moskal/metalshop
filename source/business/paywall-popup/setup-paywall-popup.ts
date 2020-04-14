@@ -6,10 +6,10 @@ import {setupPopup} from "../../toolbox/popups/setup-popup.js"
 
 export const setupPaywallPopup = ({
 	cors,
-	action,
+	manageSubscription: action,
 }: {
 	cors: CorsPermissions
-	action: () => Promise<User>
+	manageSubscription: () => Promise<User>
 }) => setupPopup<undefined, User>({
 	cors,
 	action,

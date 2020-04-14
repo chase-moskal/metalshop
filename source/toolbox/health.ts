@@ -1,5 +1,6 @@
 
 import {SimpleConsole} from "./logger.js"
+import {httpHandler} from "./http-handler.js"
 import {Middleware} from "../commonjs/koa.js"
 
 export const health = ({
@@ -10,9 +11,7 @@ export const health = ({
 	path?: string
 	result?: string
 	logger?: SimpleConsole
-} = {}): Middleware => async(context, next) => {
+} = {}): Middleware => httpHandler("get", path, async() => {
 	if (logger) logger.log("health check")
-	return context.URL.pathname === path
-		? context.body = result
-		: next()
-}
+	return result
+})

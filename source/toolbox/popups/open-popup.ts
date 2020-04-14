@@ -1,5 +1,5 @@
 
-import {PopupHandler} from "../../toolbox/popups/interfaces.js"
+import {PopupHandler, PopupErrorResponse} from "../../toolbox/popups/interfaces.js"
 import {validateResponse} from "../../toolbox/popups/validate-response.js"
 import {centeredPopupFeatures} from "../../toolbox/popups/centered-popup-features.js"
 import {PopupFlag, PopupMessage, PopupMessageEvent, PopupGoRequest, PopupPayloadResponse} from "../../toolbox/popups/interfaces.js"
@@ -49,7 +49,14 @@ export function openPopup<Parameters, Payload>({
 					// handle result response
 					else if (message.flag === PopupFlag.PayloadResponse) {
 						const {payload} = <PopupPayloadResponse<Payload>>message
+						closePopup()
 						resolve(payload)
+					}
+
+					// handle an error
+					else if (message.flag === PopupFlag.ErrorResponse) {
+						const {error} = <PopupErrorResponse>message
+						reject(error)
 					}
 
 					// throw on unknown response
@@ -68,7 +75,7 @@ export function openPopup<Parameters, Payload>({
 
 	// open the popup
 	popup = window.open(
-		`//${popupOrigin}/${popupPath}`,
+		`${popupOrigin}/${popupPath}`,
 		namespace,
 		centeredPopupFeatures(),
 		true,

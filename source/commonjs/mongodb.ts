@@ -5,6 +5,7 @@ import * as _mongodb from "mongodb"
 const mongodb: typeof _mongodb = require("mongodb") as typeof _mongodb
 
 // types
+type Db = _mongodb.Db
 type ObjectID = _mongodb.ObjectID
 type Collection = _mongodb.Collection
 
@@ -17,6 +18,7 @@ const {
 export {
 
 	// types
+	Db,
 	ObjectID,
 	Collection,
 	

@@ -1,14 +1,16 @@
 
+import {Middleware} from "../commonjs/koa.js"
+
 export function httpHandler(
 	method = "get",
 	url: string,
 	handler: () => Promise<string>
-): any {
-	return async(context: any, next: any) => {
+): Middleware {
+	return async(context, next) => {
 		const methodIsHead = context.method.toLowerCase() === "head"
-		const methodIsGet = context.method.toLowerCase() === method.toLowerCase()
-		if (!(methodIsHead || methodIsGet)) await next()
-		if (context.url === url) {
+		const methodMatches = context.method.toLowerCase() === method.toLowerCase()
+		const validMethod = methodIsHead || methodMatches
+		if (validMethod && context.url === url) {
 			const body = await handler()
 			context.response.body = body
 		}

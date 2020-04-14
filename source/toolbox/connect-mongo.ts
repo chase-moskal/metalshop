@@ -1,15 +1,14 @@
 
 import {MongoConfig} from "../interfaces.js"
-import {MongoClient, Collection} from "../commonjs/mongodb.js"
+import {MongoClient, Collection, Db} from "../commonjs/mongodb.js"
 
 export async function connectMongo(
 	mongo: MongoConfig,
-	collection: string,
-): Promise<Collection> {
+): Promise<Db> {
 	const client = new MongoClient(mongo.link, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true
 	})
 	await client.connect()
-	return client.db(mongo.database).collection(collection)
+	return client.db(mongo.database)
 }

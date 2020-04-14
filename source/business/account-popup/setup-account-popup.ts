@@ -6,10 +6,10 @@ import {setupPopup} from "../../toolbox/popups/setup-popup.js"
 
 export const setupAccountPopup = ({
 	cors,
-	action,
+	auth: action,
 }: {
 	cors: CorsPermissions
-	action: () => Promise<AuthTokens>
+	auth: () => Promise<AuthTokens>
 }) => setupPopup<undefined, AuthTokens>({
 	cors,
 	action,
