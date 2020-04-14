@@ -43,3 +43,10 @@ export interface QuestionsServerConfig extends CommonConfig {
 		profileServerOrigin: string
 	}
 }
+
+export interface PaywallServerConfig extends CommonConfig {
+	paywallServer: {
+		port: number
+		authServerOrigin: string
+	}
+}
