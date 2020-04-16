@@ -37,14 +37,16 @@ export function openPopup<Parameters, Payload>({
 				try {
 
 					// handle ready response by sending go request
-					if (message.flag === PopupFlag.ReadyResponse) popup.postMessage(
-						<PopupGoRequest<Parameters>>{
-							namespace,
-							parameters,
-							flag: PopupFlag.GoRequest,
-						},
-						popupOrigin
-					)
+					if (message.flag === PopupFlag.ReadyResponse) {
+						popup.postMessage(
+							<PopupGoRequest<Parameters>>{
+								namespace,
+								parameters,
+								flag: PopupFlag.GoRequest,
+							},
+							popupOrigin
+						)
+					}
 
 					// handle result response
 					else if (message.flag === PopupFlag.PayloadResponse) {
@@ -56,11 +58,15 @@ export function openPopup<Parameters, Payload>({
 					// handle an error
 					else if (message.flag === PopupFlag.ErrorResponse) {
 						const {error} = <PopupErrorResponse>message
+						closePopup()
 						reject(error)
 					}
 
 					// throw on unknown response
-					else throw new Error("unknown popup message flag")
+					else {
+						closePopup()
+						throw new Error("unknown popup message flag")
+					}
 				}
 				catch (error) {
 					closePopup()
