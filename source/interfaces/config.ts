@@ -47,6 +47,6 @@ export interface QuestionsServerConfig extends CommonConfig {
 export interface PaywallServerConfig extends CommonConfig {
 	paywallServer: {
 		port: number
-		authServerOrigin: string
+		stripeApiKey: string
 	}
 }
