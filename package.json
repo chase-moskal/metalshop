@@ -39,7 +39,8 @@
 		"koa": "^2.11.0",
 		"mongodb": "^3.5.6",
 		"redcrypto": "0.0.0-dev.5",
-		"renraku": "0.0.0-dev.26"
+		"renraku": "0.0.0-dev.26",
+		"stripe": "^8.44.0"
 	},
 	"keywords": [
 		"auth",

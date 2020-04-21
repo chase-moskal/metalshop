@@ -1,6 +1,6 @@
 
-import {UserRecord, Claims, UserDatalayer, UserDraft} from "../../interfaces.js"
 import {Collection, ObjectId, ObjectID} from "../../commonjs/mongodb.js"
+import {UserRecord, Claims, UserDatalayer, UserDraft} from "../../interfaces.js"
 
 interface UserRaw extends UserDraft {
 	_id?: ObjectID

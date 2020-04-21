@@ -31,5 +31,3 @@ export interface TokenData<Payload = any> {
 	exp: any
 	payload: Payload
 }
-
-export type PaypalToken = string

@@ -1,15 +1,31 @@
 
-import {Topic, AccessToken, PaypalToken} from "../../interfaces.js"
+import {Topic, AccessToken} from "../../interfaces.js"
 
 export interface PaywallGuardianTopic extends Topic<PaywallGuardianTopic> {
 
-	grantUserPremium(o: {
-		accessToken: AccessToken
-		paypalToken: PaypalToken
-	}): Promise<AccessToken>
+	//
+	// card linkage
+	//
 
-	revokeUserPremium(o: {
+	makeCardLinkingSession(o: {
 		accessToken: AccessToken
-		paypalToken: PaypalToken
-	}): Promise<AccessToken>
+	}): Promise<{stripeSessionId: string}>
+
+	unlinkAllCards(o: {
+		accessToken: AccessToken
+	}): Promise<void>
+
+	//
+	// subscriptions
+	//
+
+	makeSubscriptionSession(o: {
+		stripePlanId: string
+		accessToken: AccessToken
+	}): Promise<{stripeSessionId: string}>
+
+	setSubscriptionAutoRenew(o: {
+		autoRenew: boolean
+		accessToken: AccessToken
+	}): Promise<void>
 }

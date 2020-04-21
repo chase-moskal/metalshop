@@ -48,5 +48,7 @@ export interface PaywallServerConfig extends CommonConfig {
 	paywallServer: {
 		port: number
 		stripeApiKey: string
+		stripeSecret: string
+		stripeWebhooksSecret: string
 	}
 }
