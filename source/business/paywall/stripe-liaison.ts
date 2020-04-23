@@ -1,17 +1,19 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
 import {VerifyToken} from "../../interfaces.js"
-import {StripeLiaisonTopic, AccessToken, AccessPayload, BillingDatalayer} from "../../interfaces.js"
+import {StripeLiaisonTopic, AccessToken, PaywallOverlordTopic, AccessPayload, BillingDatalayer} from "../../interfaces.js"
 
 export function makeStripeLiaison({
 		stripe,
 		billing,
 		verifyToken,
+		paywallOverlord,
 		premiumSubscriptionStripePlanId,
 	}: {
 		stripe: Stripe
 		verifyToken: VerifyToken
 		billing: BillingDatalayer
+		paywallOverlord: PaywallOverlordTopic
 		premiumSubscriptionStripePlanId: string
 	}): StripeLiaisonTopic {
 
@@ -45,6 +47,7 @@ export function makeStripeLiaison({
 		/**
 		 * user wants to link their credit card
 		 * - create a session for the popup to proceed
+		 * - completion is handled by stripe webhook
 		 */
 		async createSessionForLinking({popupUrl, accessToken}: {
 				popupUrl: string
@@ -65,6 +68,7 @@ export function makeStripeLiaison({
 		/**
 		 * user wants to sign up for a premium subscription
 		 * - create a session for the popup to proceed
+		 * - completion is handled by stripe webhook
 		 */
 		async createSessionForPremium({popupUrl, accessToken}: {
 				popupUrl: string
@@ -92,6 +96,10 @@ export function makeStripeLiaison({
 			const record = await internal.getBillingRecord(accessToken)
 			record.stripePaymentMethodId = null
 			await billing.saveRecord(record)
+			await paywallOverlord.setUserBillingClaim({
+				linked: false,
+				userId: record.userId,
+			})
 		},
 
 		/**

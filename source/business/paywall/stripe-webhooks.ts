@@ -1,13 +1,13 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
 import {SimpleConsole} from "../../toolbox/logger.js"
-import {BillingDatalayer, AuthVanguardTopic, StripeWebhooks} from "../../interfaces.js"
+import {BillingDatalayer, PaywallOverlordTopic, StripeWebhooks} from "../../interfaces.js"
 
-export function makeStripeWebhooks({stripe, logger, billing, authVanguard}: {
+export function makeStripeWebhooks({stripe, logger, billing, paywallOverlord}: {
 		stripe: Stripe
 		logger: SimpleConsole
 		billing: BillingDatalayer
-		authVanguard: AuthVanguardTopic
+		paywallOverlord: PaywallOverlordTopic
 	}): StripeWebhooks {
 
 	const internal = {
@@ -20,11 +20,6 @@ export function makeStripeWebhooks({stripe, logger, billing, authVanguard}: {
 					? object
 					: object.id
 			)
-		},
-		async setPremiumClaim(userId: string, expires: number) {
-			const {claims} = await authVanguard.getUser({userId})
-			claims.premium = {expires}
-			await authVanguard.setClaims({userId, claims})
 		},
 	}
 
@@ -60,7 +55,13 @@ export function makeStripeWebhooks({stripe, logger, billing, authVanguard}: {
 					})
 				}
 
+				// save billing record and update our user's billing claim
 				await billing.saveRecord(record)
+				await paywallOverlord.setUserBillingClaim({
+					linked: true,
+					userId: record.userId,
+				})
+
 				logger.debug(` - user '${userId}' linked to stripe `
 					+ `customer '${record.stripeCustomerId}'`)
 			}
@@ -72,14 +73,23 @@ export function makeStripeWebhooks({stripe, logger, billing, authVanguard}: {
 				const planActive = !!subscription.plan?.active
 				if (!planActive) throw new Error("new plan isn't active")
 
-				// update our billing record
+				// update the billing record
 				const record = await billing.getRecord(userId)
 				record.stripePaymentMethodId = paymentMethodId
 				record.premiumSubscription = {stripeSubscriptionId, autoRenew: true}
 				await billing.saveRecord(record)
 
-				// update our premium claim
-				await internal.setPremiumClaim(userId, subscription.current_period_end)
+				// update our user's billing claim
+				await paywallOverlord.setUserBillingClaim({
+					linked: true,
+					userId: record.userId,
+				})
+
+				// update our user's premium claim
+				await paywallOverlord.setUserPremiumClaim({
+					userId,
+					expires: subscription.current_period_end,
+				})
 
 				logger.debug(` - user '${userId}' linked to stripe `
 					+ `customer '${record.stripeCustomerId}'`)
@@ -95,22 +105,28 @@ export function makeStripeWebhooks({stripe, logger, billing, authVanguard}: {
 		 * - perhaps payments failed and stripe ended the subscription
 		 * - or maybe a subscription was reactived after successful payments
 		 */
-		async ["customer.subscription.updated"](event: Stripe.Event): Promise<void> {
+		async ["customer.subscription.updated"](
+				event: Stripe.Event
+			): Promise<void> {
 			internal.logEvent(event)
-			const {
-				plan,
-				id: subscriptionId,
-			} = <Stripe.Subscription>event.data.object
-			const active: boolean = !!plan?.active
+			const subscription = <Stripe.Subscription>event.data.object
+			const stripeSubscriptionId = subscription.id
+			const stripeCustomerId = internal.getId(subscription.customer)
+			const active: boolean = !!subscription.plan?.active
+			const record = await billing.getRecordByStripeCustomerId(stripeCustomerId)
 
-			// TODO implement
-			throw new Error("TODO implement")
-			if (active) {
+			record.premiumSubscription = active
+				? record.premiumSubscription || {
+					autoRenew: true,
+					stripeSubscriptionId,
+				}
+				: null
 
-			}
-			else {
-
-			}
+			await billing.saveRecord(record)
+			await paywallOverlord.setUserPremiumClaim({
+				userId: record.userId,
+				expires: subscription.current_period_end,
+			})
 		},
 	}
 }

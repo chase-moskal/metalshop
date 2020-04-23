@@ -15,6 +15,7 @@ export interface StripeBilling {
 export interface BillingDatalayer {
 	saveRecord(record: StripeBilling): Promise<void>
 	getRecord(userId: string): Promise<StripeBilling>
+	getRecordByStripeCustomerId(stripeCustomerId: string): Promise<StripeBilling>
 }
 
 export interface StripeLiaisonTopic extends Topic<StripeLiaisonTopic> {
@@ -33,11 +34,15 @@ export interface StripeLiaisonTopic extends Topic<StripeLiaisonTopic> {
 		}): Promise<void>
 }
 
-export interface PaywallGuardianTopic extends Topic<PaywallGuardianTopic> {
-	grantPremium(options: {
+export interface PaywallOverlordTopic extends Topic<PaywallOverlordTopic> {
+	setUserPremiumClaim(options: {
 			userId: string
 			expires: number
 		}): Promise<void>
+	setUserBillingClaim(options: {
+		userId: string
+		linked: boolean
+	}): Promise<void>
 }
 
 export interface StripeWebhooks {

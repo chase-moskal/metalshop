@@ -7,10 +7,15 @@ export interface User {
 export interface Claims {
 	[key: string]: any
 	premium?: PremiumClaim
+	billing?: BillingClaim
 }
 
 export interface PremiumClaim {
 	expires: number
+}
+
+export interface BillingClaim {
+	linked: boolean
 }
 
 export interface Profile {

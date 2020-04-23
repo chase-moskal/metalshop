@@ -10,7 +10,7 @@ import {
 	TokenStorageTopic,
 	AuthExchangerTopic,
 	AuthVanguardTopic,
-	PaywallGuardianTopic,
+	PaywallOverlordTopic,
 	LiveshowGovernorTopic,
 } from "../interfaces.js"
 
@@ -33,7 +33,7 @@ export interface ProfileApi extends RenrakuApi<ProfileApi> {
 }
 
 export interface PaywallApi extends RenrakuApi<PaywallApi> {
-	paywallGuardian: PaywallGuardianTopic
+	paywallGuardian: PaywallOverlordTopic
 }
 
 export interface LiveshowApi extends RenrakuApi<LiveshowApi> {
