@@ -78,6 +78,7 @@ export function makeStripeLiaison({
 					stripeCustomerId,
 				}),
 				mode: "subscription",
+				payment_intent_data: {setup_future_usage: "off_session"},
 				subscription_data: {items: [{plan: premiumSubscriptionStripePlanId}]},
 			})
 			return {stripeSessionId: session.id}
