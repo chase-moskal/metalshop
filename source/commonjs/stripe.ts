@@ -4,8 +4,5 @@ const require = mod.createRequire(import.meta.url)
 import _thing from "stripe"
 const thing: typeof _thing = require("stripe") as typeof _thing
 
-type Stripe = _thing
-
-export {Stripe}
-
+export * from "stripe"
 export default thing

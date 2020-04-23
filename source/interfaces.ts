@@ -1,10 +1,10 @@
 
+export * from "./business/paywall/interfaces.js"
 export * from "./business/auth-api/interfaces.js"
 export * from "./business/account-popup/interfaces.js"
 export * from "./business/paywall-popup/interfaces.js"
 export * from "./business/token-storage/interfaces.js"
 export * from "./business/schedule-sentry/interfaces.js"
-export * from "./business/paywall-guardian/interfaces.js"
 export * from "./business/questions-bureau/interfaces.js"
 export * from "./business/liveshow-governor/interfaces.js"
 export * from "./business/profile-magistrate/interfaces.js"
