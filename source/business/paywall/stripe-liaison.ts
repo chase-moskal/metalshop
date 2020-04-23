@@ -93,7 +93,10 @@ export function makeStripeLiaison({
 			await billing.saveRecord(record)
 		},
 
-		/** user toggles their auto-renew setting */
+		/**
+		 * user toggles auto-renew setting on their premium subscription
+		 * - cancel or uncancel the stripe subscription
+		 */
 		async setPremiumAutoRenew({autoRenew, accessToken}: {
 				autoRenew: boolean
 				accessToken: string
