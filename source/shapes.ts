@@ -46,12 +46,7 @@ export const questionsShape: RenrakuApiShape<QuestionsApi> = {
 	}
 }
 
-export const paywallShape: RenrakuApiShape<PaywallApi> = {
-	paywallGuardian: {
-		grantUserPremium: "method",
-		revokeUserPremium: "method",
-	}
-}
+export const paywallShape: RenrakuApiShape<PaywallApi> = {}
 
 //
 // crosscall api's

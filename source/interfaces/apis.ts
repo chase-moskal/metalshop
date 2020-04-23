@@ -32,9 +32,7 @@ export interface ProfileApi extends RenrakuApi<ProfileApi> {
 	profileMagistrate: ProfileMagistrateTopic
 }
 
-export interface PaywallApi extends RenrakuApi<PaywallApi> {
-	paywallGuardian: PaywallOverlordTopic
-}
+export interface PaywallApi extends RenrakuApi<PaywallApi> {}
 
 export interface LiveshowApi extends RenrakuApi<LiveshowApi> {
 	liveshowGovernor: LiveshowGovernorTopic
