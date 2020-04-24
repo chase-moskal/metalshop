@@ -1,7 +1,6 @@
 
-import {Stripe} from "../../commonjs/stripe.js"
 import {VerifyToken} from "../../interfaces.js"
-import {StripeLiaisonTopic, AccessToken, PaywallOverlordTopic, AccessPayload, BillingDatalayer} from "../../interfaces.js"
+import {StripeLiaisonTopic, StripeDatalayer, AccessToken, PaywallOverlordTopic, AccessPayload, BillingDatalayer} from "../../interfaces.js"
 
 export function makeStripeLiaison({
 		stripe,
@@ -10,7 +9,7 @@ export function makeStripeLiaison({
 		paywallOverlord,
 		premiumSubscriptionStripePlanId,
 	}: {
-		stripe: Stripe
+		stripe: StripeDatalayer
 		verifyToken: VerifyToken
 		billing: BillingDatalayer
 		paywallOverlord: PaywallOverlordTopic
@@ -27,19 +26,17 @@ export function makeStripeLiaison({
 		},
 
 		/** generate common stripe checkout session parameters */
-		commonSessionParams({userId, popupUrl, stripeCustomerId}: {
+		commonSessionParams: ({userId, popupUrl, stripeCustomerId}: {
 				userId: string
 				popupUrl: string
 				stripeCustomerId: string
-			}): Stripe.Checkout.SessionCreateParams {
-			return {
-				customer: stripeCustomerId,
-				client_reference_id: userId,
-				payment_method_types: ["card"],
-				cancel_url: `${popupUrl}#cancel`,
-				success_url: `${popupUrl}#success`,
-			}
-		},
+			}) => ({
+			customer: stripeCustomerId,
+			client_reference_id: userId,
+			payment_method_types: ["card"],
+			cancel_url: `${popupUrl}#cancel`,
+			success_url: `${popupUrl}#success`,
+		}),
 	}
 
 	return {
@@ -53,16 +50,16 @@ export function makeStripeLiaison({
 				popupUrl: string
 				accessToken: AccessToken
 			}): Promise<{stripeSessionId: string}> {
-			const {userId, stripeCustomerId} = await internal.getBillingRecord(accessToken)
-			const session = await stripe.checkout.sessions.create({
-				...internal.commonSessionParams({
-					userId,
-					popupUrl,
-					stripeCustomerId,
-				}),
-				mode: "setup",
+			const {
+				userId,
+				stripeCustomerId,
+			} = await internal.getBillingRecord(accessToken)
+			const {stripeSessionId} = await stripe.createLinkingSession({
+				userId,
+				popupUrl,
+				stripeCustomerId,
 			})
-			return {stripeSessionId: session.id}
+			return {stripeSessionId}
 		},
 
 		/**
@@ -74,21 +71,17 @@ export function makeStripeLiaison({
 				popupUrl: string
 				accessToken: AccessToken
 			}): Promise<{stripeSessionId: string}> {
-			const {userId, stripeCustomerId} = await internal.getBillingRecord(accessToken)
-			const session = await stripe.checkout.sessions.create({
-				...internal.commonSessionParams({
-					userId,
-					popupUrl,
-					stripeCustomerId,
-				}),
-				mode: "subscription",
-				payment_intent_data: {setup_future_usage: "off_session"},
-				subscription_data: {items: [{
-					quantity: 1,
-					plan: premiumSubscriptionStripePlanId,
-				}]},
+			const {
+				userId,
+				stripeCustomerId,
+			} = await internal.getBillingRecord(accessToken)
+			const {stripeSessionId} = await stripe.createSubscriptionSession({
+				userId,
+				popupUrl,
+				stripeCustomerId,
+				premiumSubscriptionStripePlanId,
 			})
-			return {stripeSessionId: session.id}
+			return {stripeSessionId}
 		},
 
 		/**
@@ -119,10 +112,7 @@ export function makeStripeLiaison({
 			const {stripeSubscriptionId} = premiumSubscription
 
 			// tell stripe about the new autorenew state
-			await stripe.subscriptions.update(
-				stripeSubscriptionId,
-				{cancel_at_period_end: !autoRenew}
-			)
+			await stripe.updateSubscription({autoRenew, stripeSubscriptionId})
 
 			// update our billing record
 			record.premiumSubscription.autoRenew = autoRenew

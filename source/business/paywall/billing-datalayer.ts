@@ -1,11 +1,10 @@
 
-import {Stripe} from "../../commonjs/stripe.js"
 import {Collection} from "../../commonjs/mongodb.js"
-import {BillingDatalayer, StripeBilling} from "../../interfaces.js"
+import {BillingDatalayer, StripeBilling, StripeDatalayer} from "../../interfaces.js"
 
 export function makeBillingDatalayer({stripe, collection}: {
-		stripe: Stripe
 		collection: Collection
+		stripe: StripeDatalayer
 	}): BillingDatalayer {
 
 	const internal = {
@@ -22,7 +21,7 @@ export function makeBillingDatalayer({stripe, collection}: {
 		async getRecord(userId) {
 			let record = await collection.findOne<StripeBilling>({userId})
 			if (!record) {
-				const {id: stripeCustomerId} = await stripe.customers.create()
+				const {stripeCustomerId} = await stripe.createCustomer()
 				record = {userId, stripeCustomerId}
 				await internal.writeRecord(record)
 			}

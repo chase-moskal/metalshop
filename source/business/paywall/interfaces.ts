@@ -12,6 +12,25 @@ export interface StripeBilling {
 	}
 }
 
+export interface StripeDatalayer {
+	createCustomer(): Promise<{stripeCustomerId: string}>
+	createLinkingSession(options: {
+			userId: string
+			popupUrl: string
+			stripeCustomerId: string
+		}): Promise<{stripeSessionId: string}>
+	createSubscriptionSession(options: {
+			userId: string
+			popupUrl: string
+			stripeCustomerId: string
+			premiumSubscriptionStripePlanId: string
+		}): Promise<{stripeSessionId: string}>
+	updateSubscription(options: {
+			autoRenew: boolean
+			stripeSubscriptionId: string
+		}): Promise<void>
+}
+
 export interface BillingDatalayer {
 	saveRecord(record: StripeBilling): Promise<void>
 	getRecord(userId: string): Promise<StripeBilling>

@@ -9,7 +9,16 @@ import {
 	ProfileMagistrateTopic,
 } from "../../interfaces.js"
 
-const toProfile = (record: ProfileRecord): Profile => record
+const toProfile = (record: ProfileRecord): Profile => (
+	record
+		? {
+			userId: record.userId,
+			avatar: record.avatar,
+			nickname: record.nickname,
+			adminMode: record.adminMode,
+		}
+		: null
+)
 
 const limitLength = (limit: number, value: string) => {
 	if (value.length > limit) throw new Error(`bad request`)
