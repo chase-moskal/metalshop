@@ -17,8 +17,9 @@ export interface MongoConfig {
 }
 
 export interface CommonConfig {
-	mongo: MongoConfig
+	debug: boolean
 	cors: CorsConfig
+	mongo: MongoConfig
 }
 
 export interface AuthServerConfig extends CommonConfig {
@@ -50,5 +51,6 @@ export interface PaywallServerConfig extends CommonConfig {
 		stripeApiKey: string
 		stripeSecret: string
 		stripeWebhooksSecret: string
+		premiumSubscriptionStripePlanId: string
 	}
 }

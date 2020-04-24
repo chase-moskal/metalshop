@@ -46,6 +46,7 @@ export interface PaywallOverlordTopic extends Topic<PaywallOverlordTopic> {
 }
 
 export interface StripeWebhooks {
+	[eventType: string]: (event: Stripe.Event) => Promise<void>
 	["checkout.session.completed"](event: Stripe.Event): Promise<void>
 	["customer.subscription.updated"](event: Stripe.Event): Promise<void>
 }

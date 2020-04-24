@@ -83,7 +83,10 @@ export function makeStripeLiaison({
 				}),
 				mode: "subscription",
 				payment_intent_data: {setup_future_usage: "off_session"},
-				subscription_data: {items: [{plan: premiumSubscriptionStripePlanId}]},
+				subscription_data: {items: [{
+					quantity: 1,
+					plan: premiumSubscriptionStripePlanId,
+				}]},
 			})
 			return {stripeSessionId: session.id}
 		},

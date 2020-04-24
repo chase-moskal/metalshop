@@ -5,18 +5,17 @@ import {Topic, Api as RenrakuApi} from "renraku/dist/interfaces.js"
 export {Topic, RenrakuApi, CrosscallApi}
 
 import {
-	AccountPopupTopic,
 	AuthDealerTopic,
+	AccountPopupTopic,
+	AuthVanguardTopic,
 	TokenStorageTopic,
 	AuthExchangerTopic,
-	AuthVanguardTopic,
-	PaywallOverlordTopic,
+	StripeLiaisonTopic,
+	ScheduleSentryTopic,
+	QuestionsBureauTopic,
 	LiveshowGovernorTopic,
+	ProfileMagistrateTopic,
 } from "../interfaces.js"
-
-import {ScheduleSentryTopic} from "../business/schedule-sentry/interfaces.js"
-import {QuestionsBureauTopic} from "../business/questions-bureau/interfaces.js"
-import {ProfileMagistrateTopic} from "../business/profile-magistrate/interfaces.js"
 
 //
 // renraku api's
@@ -32,7 +31,9 @@ export interface ProfileApi extends RenrakuApi<ProfileApi> {
 	profileMagistrate: ProfileMagistrateTopic
 }
 
-export interface PaywallApi extends RenrakuApi<PaywallApi> {}
+export interface PaywallApi extends RenrakuApi<PaywallApi> {
+	stripeLiaison: StripeLiaisonTopic
+}
 
 export interface LiveshowApi extends RenrakuApi<LiveshowApi> {
 	liveshowGovernor: LiveshowGovernorTopic

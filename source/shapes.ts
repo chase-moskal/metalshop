@@ -46,7 +46,14 @@ export const questionsShape: RenrakuApiShape<QuestionsApi> = {
 	}
 }
 
-export const paywallShape: RenrakuApiShape<PaywallApi> = {}
+export const paywallShape: RenrakuApiShape<PaywallApi> = {
+	stripeLiaison: {
+		createSessionForLinking: "method",
+		createSessionForPremium: "method",
+		setPremiumAutoRenew: "method",
+		unlinkPaymentMethod: "method",
+	}
+}
 
 //
 // crosscall api's
