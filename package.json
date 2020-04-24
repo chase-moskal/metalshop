@@ -1,6 +1,6 @@
 {
 	"name": "authoritarian",
-	"version": "0.0.0-dev.51",
+	"version": "0.0.0-dev.52",
 	"description": "metalshop's interfaces, business logic, and common functions",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
@@ -39,7 +39,7 @@
 		"koa": "^2.11.0",
 		"mongodb": "^3.5.6",
 		"redcrypto": "0.0.0-dev.5",
-		"renraku": "0.0.0-dev.26",
+		"renraku": "0.0.0-dev.28",
 		"stripe": "^8.46.0"
 	},
 	"keywords": [
