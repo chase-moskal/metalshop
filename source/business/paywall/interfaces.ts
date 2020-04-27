@@ -25,9 +25,13 @@ export interface StripeDatalayer {
 			stripeCustomerId: string
 			premiumSubscriptionStripePlanId: string
 		}): Promise<{stripeSessionId: string}>
-	updateSubscription(options: {
+	updateSubscriptionAutoRenew(options: {
 			autoRenew: boolean
 			stripeSubscriptionId: string
+		}): Promise<void>
+	updateSubscriptionPaymentMethod(options: {
+			stripeSubscriptionId: string
+			stripePaymentMethodId: string
 		}): Promise<void>
 }
 
@@ -44,24 +48,13 @@ export interface StripeLiaisonTopic extends Topic<StripeLiaisonTopic> {
 	createSessionForPremium(options: {
 			accessToken: AccessToken
 		}): Promise<{stripeSessionId: string}>
-	unlinkPaymentMethod(options: {
+	unlink(options: {
 			accessToken: AccessToken
 		}): Promise<void>
 	setPremiumAutoRenew(options: {
 			autoRenew: boolean
 			accessToken: string
 		}): Promise<void>
-}
-
-export interface PaywallOverlordTopic extends Topic<PaywallOverlordTopic> {
-	setUserPremiumClaim(options: {
-			userId: string
-			expires: number
-		}): Promise<void>
-	setUserBillingClaim(options: {
-		userId: string
-		linked: boolean
-	}): Promise<void>
 }
 
 export interface StripeWebhooks {

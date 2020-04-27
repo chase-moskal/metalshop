@@ -1,13 +1,19 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
 import {SimpleConsole} from "../../toolbox/logger.js"
-import {BillingDatalayer, PaywallOverlordTopic, StripeWebhooks} from "../../interfaces.js"
+import {BillingDatalayer, AuthVanguardTopic, StripeWebhooks, BillingClaim} from "../../interfaces.js"
+import { PremiumClaim } from "source/interfaces/common.js"
 
-export function makeStripeWebhooks({stripe, logger, billing, paywallOverlord}: {
+export function makeStripeWebhooks({
+		logger,
+		stripe,
+		authVanguard,
+		billingDatalayer,
+	}: {
 		stripe: Stripe
 		logger: SimpleConsole
-		billing: BillingDatalayer
-		paywallOverlord: PaywallOverlordTopic
+		authVanguard: AuthVanguardTopic
+		billingDatalayer: BillingDatalayer
 	}): StripeWebhooks {
 
 	const internal = {
@@ -20,6 +26,22 @@ export function makeStripeWebhooks({stripe, logger, billing, paywallOverlord}: {
 					? object
 					: object.id
 			)
+		},
+		async setUserBillingClaim({userId, billing}: {
+				userId: string
+				billing: BillingClaim
+			}) {
+			const {claims} = await authVanguard.getUser({userId})
+			claims.billing = billing
+			await authVanguard.setClaims({userId, claims})
+		},
+		async setUserPremiumClaim({userId, premium}: {
+				userId: string
+				premium: PremiumClaim
+			}) {
+			const {claims} = await authVanguard.getUser({userId})
+			claims.premium = premium
+			await authVanguard.setClaims({userId, claims})
 		},
 	}
 
@@ -42,7 +64,7 @@ export function makeStripeWebhooks({stripe, logger, billing, paywallOverlord}: {
 			// link a card
 			if (session.mode === "setup") {
 				logger.debug(" - checkout in 'setup' mode")
-				const record = await billing.getRecord(userId)
+				const record = await billingDatalayer.getRecord(userId)
 
 				// update our record's payment method
 				record.stripePaymentMethodId = paymentMethodId
@@ -56,10 +78,10 @@ export function makeStripeWebhooks({stripe, logger, billing, paywallOverlord}: {
 				}
 
 				// save billing record and update our user's billing claim
-				await billing.saveRecord(record)
-				await paywallOverlord.setUserBillingClaim({
-					linked: true,
+				await billingDatalayer.saveRecord(record)
+				await internal.setUserBillingClaim({
 					userId: record.userId,
+					billing: {linked: true},
 				})
 
 				logger.debug(` - user '${userId}' linked to stripe `
@@ -73,22 +95,22 @@ export function makeStripeWebhooks({stripe, logger, billing, paywallOverlord}: {
 				const planActive = !!subscription.plan?.active
 				if (!planActive) throw new Error("new plan isn't active")
 
-				// update the billing record
-				const record = await billing.getRecord(userId)
+				// update our billing record
+				const record = await billingDatalayer.getRecord(userId)
 				record.stripePaymentMethodId = paymentMethodId
 				record.premiumSubscription = {stripeSubscriptionId, autoRenew: true}
-				await billing.saveRecord(record)
+				await billingDatalayer.saveRecord(record)
 
 				// update our user's billing claim
-				await paywallOverlord.setUserBillingClaim({
-					linked: true,
+				await internal.setUserBillingClaim({
 					userId: record.userId,
+					billing: {linked: true}
 				})
 
 				// update our user's premium claim
-				await paywallOverlord.setUserPremiumClaim({
+				await internal.setUserPremiumClaim({
 					userId,
-					expires: subscription.current_period_end,
+					premium: {expires: subscription.current_period_end},
 				})
 
 				logger.debug(` - user '${userId}' linked to stripe `
@@ -113,7 +135,7 @@ export function makeStripeWebhooks({stripe, logger, billing, paywallOverlord}: {
 			const stripeSubscriptionId = subscription.id
 			const stripeCustomerId = internal.getId(subscription.customer)
 			const active: boolean = !!subscription.plan?.active
-			const record = await billing.getRecordByStripeCustomerId(stripeCustomerId)
+			const record = await billingDatalayer.getRecordByStripeCustomerId(stripeCustomerId)
 
 			record.premiumSubscription = active
 				? record.premiumSubscription || {
@@ -122,10 +144,10 @@ export function makeStripeWebhooks({stripe, logger, billing, paywallOverlord}: {
 				}
 				: null
 
-			await billing.saveRecord(record)
-			await paywallOverlord.setUserPremiumClaim({
+			await billingDatalayer.saveRecord(record)
+			await internal.setUserPremiumClaim({
 				userId: record.userId,
-				expires: subscription.current_period_end,
+				premium: {expires: subscription.current_period_end},
 			})
 		},
 	}

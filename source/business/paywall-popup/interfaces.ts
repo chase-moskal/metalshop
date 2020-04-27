@@ -11,8 +11,7 @@ export interface PaywallPopupTopic extends Topic<PaywallPopupTopic> {
 }
 
 export interface PaywallPopupParameters {
-	userId: string
-	stripePlanId: string
+	stripeSessionId: string
 }
 
 export interface PaywallPopupPayload {}

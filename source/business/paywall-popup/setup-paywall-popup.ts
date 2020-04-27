@@ -1,8 +1,8 @@
 
-import {namespace} from "./common.js"
 import {loadStripe} from "@stripe/stripe-js"
 import {CorsPermissions} from "crosscall/dist/interfaces.js"
 
+import {namespace} from "./common.js"
 import {PaywallPopupState} from "./interfaces.js"
 import {validateRequest} from "../../toolbox/popups/validate-request.js"
 import {PaywallPopupParameters, PaywallPopupPayload} from "../../business/paywall-popup/interfaces.js"
@@ -20,7 +20,6 @@ export const setupPaywallPopup = ({
 	if (state === PaywallPopupState.Initial) {
 
 		// RECEIVE POSTMESSAGE GoRequest
-		// - plan
 		// - userId
 		window.addEventListener("message", async function goListener(
 			event: PopupMessageEvent<PopupGoRequest<PaywallPopupParameters>>
@@ -34,26 +33,11 @@ export const setupPaywallPopup = ({
 			window.removeEventListener("message", goListener)
 
 			// extract parameters out of the go request
-			const {parameters} = event.data
-			const {
-				stripePlanId: plan,
-				userId: clientReferenceId,
-			} = parameters
-
-			// construct callback url's for stripe (this page but with querystring)
-			const {protocol, host, pathname} = window.location
-			const baseUrl = `${protocol}//${host}${pathname}`
-			const cancelUrl = `${baseUrl}#cancel`
-			const successUrl = `${baseUrl}#success`
+			const {stripeSessionId} = event.data.parameters
 
 			// initiate the stripe redirection flow
 			const stripe = await loadStripe(stripeApiKey)
-			stripe.redirectToCheckout({
-				cancelUrl,
-				successUrl,
-				clientReferenceId,
-				items: [{plan, quantity: 1}],
-			})
+			stripe.redirectToCheckout({sessionId: stripeSessionId})
 		})
 	}
 	else if (state === PaywallPopupState.Done) {

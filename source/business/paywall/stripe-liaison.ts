@@ -1,18 +1,18 @@
 
 import {VerifyToken} from "../../interfaces.js"
-import {StripeLiaisonTopic, StripeDatalayer, AccessToken, PaywallOverlordTopic, AccessPayload, BillingDatalayer} from "../../interfaces.js"
+import {StripeLiaisonTopic, StripeDatalayer, AccessToken, AuthVanguardTopic, AccessPayload, BillingDatalayer} from "../../interfaces.js"
 
 export function makeStripeLiaison({
-		stripe,
-		billing,
 		verifyToken,
-		paywallOverlord,
+		authVanguard,
+		stripeDatalayer,
+		billingDatalayer,
 		premiumSubscriptionStripePlanId,
 	}: {
-		stripe: StripeDatalayer
 		verifyToken: VerifyToken
-		billing: BillingDatalayer
-		paywallOverlord: PaywallOverlordTopic
+		authVanguard: AuthVanguardTopic
+		stripeDatalayer: StripeDatalayer
+		billingDatalayer: BillingDatalayer
 		premiumSubscriptionStripePlanId: string
 	}): StripeLiaisonTopic {
 
@@ -22,7 +22,7 @@ export function makeStripeLiaison({
 		async getBillingRecord(accessToken: AccessToken) {
 			const {user} = await verifyToken<AccessPayload>(accessToken)
 			const {userId} = user
-			return await billing.getRecord(userId)
+			return await billingDatalayer.getRecord(userId)
 		},
 
 		/** generate common stripe checkout session parameters */
@@ -54,7 +54,7 @@ export function makeStripeLiaison({
 				userId,
 				stripeCustomerId,
 			} = await internal.getBillingRecord(accessToken)
-			const {stripeSessionId} = await stripe.createLinkingSession({
+			const {stripeSessionId} = await stripeDatalayer.createLinkingSession({
 				userId,
 				popupUrl,
 				stripeCustomerId,
@@ -75,7 +75,7 @@ export function makeStripeLiaison({
 				userId,
 				stripeCustomerId,
 			} = await internal.getBillingRecord(accessToken)
-			const {stripeSessionId} = await stripe.createSubscriptionSession({
+			const {stripeSessionId} = await stripeDatalayer.createSubscriptionSession({
 				userId,
 				popupUrl,
 				stripeCustomerId,
@@ -86,16 +86,33 @@ export function makeStripeLiaison({
 
 		/**
 		 * user wants to disable one-click payments
-		 * - does not affect existing active subscriptions
 		 */
-		async unlinkPaymentMethod({accessToken}: {accessToken: AccessToken}) {
+		async unlink({accessToken}: {accessToken: AccessToken}) {
+
+			// update billing record and the stripe subscription
 			const record = await internal.getBillingRecord(accessToken)
 			record.stripePaymentMethodId = null
-			await billing.saveRecord(record)
-			await paywallOverlord.setUserBillingClaim({
+			if (record.premiumSubscription) {
+				record.premiumSubscription.autoRenew = false
+				const {stripeSubscriptionId} = record.premiumSubscription
+				await stripeDatalayer.updateSubscriptionAutoRenew({
+					autoRenew: false,
+					stripeSubscriptionId,
+				})
+				await stripeDatalayer.updateSubscriptionPaymentMethod({
+					stripeSubscriptionId,
+					stripePaymentMethodId: null,
+				})
+			}
+			await billingDatalayer.saveRecord(record)
+
+			// set our user's billing claim
+			const {claims} = await authVanguard.getUser({userId: record.userId})
+			claims.billing = {
+				...claims.billing,
 				linked: false,
-				userId: record.userId,
-			})
+			}
+			await authVanguard.setClaims({userId: record.userId, claims})
 		},
 
 		/**
@@ -112,11 +129,11 @@ export function makeStripeLiaison({
 			const {stripeSubscriptionId} = premiumSubscription
 
 			// tell stripe about the new autorenew state
-			await stripe.updateSubscription({autoRenew, stripeSubscriptionId})
+			await stripeDatalayer.updateSubscriptionAutoRenew({autoRenew, stripeSubscriptionId})
 
 			// update our billing record
 			record.premiumSubscription.autoRenew = autoRenew
-			await billing.saveRecord(record)
+			await billingDatalayer.saveRecord(record)
 		},
 	}
 }

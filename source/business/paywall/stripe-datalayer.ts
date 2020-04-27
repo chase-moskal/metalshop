@@ -25,9 +25,17 @@ export function makeStripeDatalayer({stripe}: {
 			const {id: stripeCustomerId} = await stripe.customers.create()
 			return {stripeCustomerId}
 		},
-		async updateSubscription({autoRenew, stripeSubscriptionId}) {
+		async updateSubscriptionAutoRenew({autoRenew, stripeSubscriptionId}) {
 			await stripe.subscriptions.update(stripeSubscriptionId, {
 				cancel_at_period_end: !autoRenew
+			})
+		},
+		async updateSubscriptionPaymentMethod({
+				stripeSubscriptionId,
+				stripePaymentMethodId,
+			}) {
+			await stripe.subscriptions.update(stripeSubscriptionId, {
+				default_payment_method: stripePaymentMethodId
 			})
 		},
 		async createLinkingSession({userId, popupUrl, stripeCustomerId}) {

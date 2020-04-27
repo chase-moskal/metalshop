@@ -12,13 +12,19 @@ export function mockStripeDatalayer(): StripeDatalayer {
 			data.customers.push({id: stripeCustomerId})
 			return {stripeCustomerId}
 		},
-		async updateSubscription({autoRenew, stripeSubscriptionId}) {
+		async updateSubscriptionAutoRenew({autoRenew, stripeSubscriptionId}) {
 			const subscription = data.subscriptions.find(
 				sub => sub.id === stripeSubscriptionId
 			)
 			if (subscription) {
 				subscription.cancel_at_period_end = !autoRenew
 			}
+		},
+		async updateSubscriptionPaymentMethod({
+				stripeSubscriptionId,
+				stripePaymentMethodId,
+			}) {
+			return undefined
 		},
 		async createLinkingSession() {
 			return {stripeSessionId: `stripe-linking-session-${Date.now()}`}

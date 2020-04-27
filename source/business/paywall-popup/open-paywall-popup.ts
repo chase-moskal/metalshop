@@ -4,21 +4,16 @@ import {openPopup} from "../../toolbox/popups/open-popup.js"
 import {PaywallPopupParameters, PaywallPopupPayload} from "./interfaces.js"
 
 export const openPaywallPopup = ({
-	userId,
-	stripePlanId,
+	stripeSessionId,
 	paywallServerOrigin,
 	popupPath = "/html/paywall-popup",
 }: {
-	userId: string
-	stripePlanId: string
-	popupPath?: string
+	stripeSessionId: string
 	paywallServerOrigin: string
+	popupPath?: string
 }) => openPopup<PaywallPopupParameters, PaywallPopupPayload>({
 	namespace,
 	popupPath,
-	parameters: {
-		userId,
-		stripePlanId,
-	},
+	parameters: {stripeSessionId},
 	popupOrigin: paywallServerOrigin,
 })
