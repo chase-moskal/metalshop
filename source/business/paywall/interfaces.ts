@@ -8,57 +8,40 @@ export interface BillingRecord {
 	premiumStripeSubscriptionId?: string
 }
 
-export interface StripeSetupMetadata extends Stripe.Metadata {
-	flow: string
-}
+export type UpdateFlow = "UpdatePremiumSubscription"
 
-export interface StripeSetupMetadataUpdateSubscription
-		extends StripeSetupMetadata {
-	flow: "UpdateSubscription"
-	stripeSubscriptionId: string
+export interface StripeSetupMetadata extends Stripe.Metadata {
+	flow: UpdateFlow
 }
 
 export interface StripeDatalayer {
-
-	/** create a new stripe customer */
 	createCustomer(): Promise<{stripeCustomerId: string}>
-
-	/** create a stripe session for the purchase of a subscription */
 	checkoutSubscriptionPurchase(options: {
 			userId: string
 			popupUrl: string
 			stripePlanId: string
 			stripeCustomerId: string
 		}): Promise<{stripeSessionId: string}>
-
-	/** create a stripe session to update a particular subscription */
-	checkoutSubscriptionUpdate(options: {
+	checkoutUpdate(options: {
 			userId: string
+			flow: UpdateFlow
 			popupUrl: string
 			stripeCustomerId: string
-			stripeSubscriptionId: string
 		}): Promise<{stripeSessionId: string}>
-
-	/** get a payment method object */
+	fetchPaymentMethod(stripePaymentMethodId: string):
+		Promise<Stripe.PaymentMethod>
 	fetchPaymentMethodByIntentId(stripeIntentId: string):
 		Promise<Stripe.PaymentMethod>
-
 	fetchPaymentMethodBySubscriptionId(stripeSubscriptionId: string):
 		Promise<Stripe.PaymentMethod>
-
-	/** get details about a subscription */
 	fetchSubscriptionDetails(stripeSubscriptionId: string): Promise<{
 			expires: number
 			status: Stripe.Subscription.Status
 		}>
-
-	/** update a stripe subscription's payment method */
 	updateSubscriptionPaymentMethod(options: {
 			stripeSubscriptionId: string
 			stripePaymentMethodId: string
 		}): Promise<void>
-
-	/** cancel a stripe subscription */
 	scheduleSubscriptionCancellation(options: {
 			stripeSubscriptionId: string
 		}): Promise<void>

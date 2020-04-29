@@ -9,18 +9,3 @@ export const stripeGetId = (x: string | {id: string}) => {
 			: x.id
 	)
 }
-
-export const getCardClues = ({card}: Stripe.PaymentMethod): CardClues => (
-	card && {
-		brand: card.brand,
-		last4: card.last4,
-		country: card.country,
-		expireYear: card.exp_year,
-		expireMonth: card.exp_month,
-	}
-)
-
-export const getSubscriptionDetails = (subscription: Stripe.Subscription) => ({
-	status: subscription.status,
-	expires: subscription.current_period_end,
-})

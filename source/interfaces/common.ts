@@ -30,7 +30,7 @@ export interface Settings {
 	admin: {
 		actAsAdmin: boolean
 	}
-	premium: {
+	premium?: {
 		expires: number
 	}
 	billing: {

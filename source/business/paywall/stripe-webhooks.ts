@@ -1,18 +1,22 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
+import {stripeGetId} from "./stripe-helpers.js"
 import {SimpleConsole} from "../../toolbox/logger.js"
-import {stripeGetId, getCardClues, getSubscriptionDetails} from "./stripe-helpers.js"
-import {StripeDatalayer, BillingDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, StripeSetupMetadata, StripeSetupMetadataUpdateSubscription} from "../../interfaces.js"
+import {BillingRecord, StripeDatalayer, CardClues, BillingDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, StripeSetupMetadata} from "../../interfaces.js"
+
+export class StripeWebhookError extends Error {
+	name = this.constructor.name
+}
+
+const err = (message: string) => new StripeWebhookError(message)
 
 export function makeStripeWebhooks({
 		logger,
-		// stripe,
 		authVanguard,
 		stripeDatalayer,
 		billingDatalayer,
 		settingsDatalayer,
 	}: {
-		// stripe: Stripe
 		logger: SimpleConsole
 		authVanguard: AuthVanguardTopic
 		stripeDatalayer: StripeDatalayer
@@ -20,158 +24,184 @@ export function makeStripeWebhooks({
 		settingsDatalayer: SettingsDatalayer
 	}): StripeWebhooks {
 
-	const internal = {
-		logEvent(event: Stripe.Event) {
-			logger.debug("stripe webhook", event.type)
-		},
-		async setUserPremiumClaim({userId, premium}: {
+	//
+	// handy helpers
+	//
+
+	const getSubscriptionDetails = (subscription: Stripe.Subscription) => ({
+		status: subscription.status,
+		stripeSubscriptionId: subscription.id,
+		expires: subscription.current_period_end,
+		stripePaymentMethodId: stripeGetId(subscription.default_payment_method),
+	})
+
+	async function setUserPremiumClaim({userId, premium}: {
 			userId: string
 			premium: boolean
 		}) {
-			const {claims} = await authVanguard.getUser({userId})
-			claims.premium = premium
-			await authVanguard.setClaims({userId, claims})
-		},
+		const {claims} = await authVanguard.getUser({userId})
+		claims.premium = premium
+		await authVanguard.setClaims({userId, claims})
 	}
+
+	const getCardClues = ({card}: Stripe.PaymentMethod): CardClues => (
+		card && {
+			brand: card.brand,
+			last4: card.last4,
+			country: card.country,
+			expireYear: card.exp_year,
+			expireMonth: card.exp_month,
+		}
+	)
+
+	//
+	// logical actions
+	//
+
+	/**
+	 * action to fulfill a purchased subscription
+	 */
+	async function fulfillSubscription({userId, session}: {
+		userId: string
+		session: Stripe.Checkout.Session
+	}) {
+
+		// get more info about the stripe subscription
+		const stripeSubscriptionId = stripeGetId(session.subscription)
+		const {expires} = await stripeDatalayer
+			.fetchSubscriptionDetails(stripeSubscriptionId)
+
+		// update our billing record
+		const record = await billingDatalayer.getOrCreateRecord(userId)
+		record.premiumStripeSubscriptionId = stripeSubscriptionId
+		await billingDatalayer.setRecord(record)
+
+		// update our premium claim
+		await setUserPremiumClaim({userId, premium: true})
+
+		// update our settings
+		const settings = await settingsDatalayer.getOrCreateSettings(userId)
+		const stripePaymentMethod = await stripeDatalayer
+			.fetchPaymentMethodBySubscriptionId(stripeSubscriptionId)
+		const card = getCardClues(stripePaymentMethod)
+		if (!card) throw err("card clues missing")
+		settings.premium = {expires}
+		settings.billing.premiumSubscription = {card}
+		await settingsDatalayer.saveSettings(settings)
+	}
+
+	/**
+	 * action to update the payment method used on an active subscription
+	 */
+	async function updatePremiumSubscription({userId, session}: {
+			userId: string
+			session: Stripe.Checkout.Session
+		}) {
+
+		// obtain existing subscription id
+		const {premiumStripeSubscriptionId} = await billingDatalayer.getOrCreateRecord(userId)
+		if (!premiumStripeSubscriptionId) throw err(`subscription id missing`)
+
+		// obtain the payment method
+		const stripeIntentId = stripeGetId(session.setup_intent)
+		const stripePaymentMethod = await stripeDatalayer
+			.fetchPaymentMethodByIntentId(stripeIntentId)
+
+		// update the stripe subscription's payment method
+		await stripeDatalayer.updateSubscriptionPaymentMethod({
+			stripePaymentMethodId: stripePaymentMethod.id,
+			stripeSubscriptionId: premiumStripeSubscriptionId,
+		})
+
+		// save our billing settings
+		const settings = await settingsDatalayer.getOrCreateSettings(userId)
+		const card = getCardClues(stripePaymentMethod)
+		if (!card) throw err("card clues missing")
+		settings.billing.premiumSubscription = {card}
+		await settingsDatalayer.saveSettings(settings)
+	}
+
+	/**
+	 * action to unfulfill or refulfill expiring/canceled/defunct subscriptions
+	 */
+	async function respectSubscriptionChange({record, subscription}: {
+			record: BillingRecord
+			subscription: Stripe.Subscription
+		}) {
+
+		const {userId} = record
+		const {status, expires, stripePaymentMethodId} =
+			getSubscriptionDetails(subscription)
+		const active = status === "active"
+			|| status === "trialing"
+			|| status === "past_due"
+		if (active) {
+
+			// set our user's claim
+			setUserPremiumClaim({userId, premium: true})
+
+			// set our billing settings
+			const settings = await settingsDatalayer.getOrCreateSettings(userId)
+			const paymentMethod = await stripeDatalayer.fetchPaymentMethod(stripePaymentMethodId)
+			const card = getCardClues(paymentMethod)
+			settings.premium = {expires}
+			settings.billing.premiumSubscription = {card}
+			await settingsDatalayer.saveSettings(settings)
+		}
+		else {
+
+			// set our user's claim
+			setUserPremiumClaim({userId, premium: false})
+
+			// set our billing settings
+			const settings = await settingsDatalayer.getOrCreateSettings(userId)
+			settings.premium = null
+			settings.billing.premiumSubscription = null
+			await settingsDatalayer.saveSettings(settings)
+
+			// set our record
+			record.premiumStripeSubscriptionId = null
+			await billingDatalayer.setRecord(record)
+		}
+	}
+
+	//
+	// stripe webhook responders
+	//
 
 	return {
 
-		/**
-		 * customer saved a payment source and maybe purchased something
-		 * - happens when a user links a card, for the sake of future payments
-		 * - also happens when a user purchases a subscription or product
-		 */
-		async ["checkout.session.completed"](event: Stripe.Event): Promise<void> {
-			internal.logEvent(event)
+		async ["checkout.session.completed"](event: Stripe.Event) {
 			const session = <Stripe.Checkout.Session>event.data.object
 			const userId = session.client_reference_id
 
-			// checkout was in setup mode, no purchase was made
-			if (session.mode === "setup") {
+			// checkout session has purchased a subscription
+			if (session.mode === "subscription") {
+				logger.debug(" - checkout in 'subscription' mode")
+				await fulfillSubscription({userId, session})
+			}
+
+			// checkout session is in setup mode, no purchase is made
+			else if (session.mode === "setup") {
 				logger.debug(" - checkout in 'setup' mode")
 				const metadata = <StripeSetupMetadata>session.metadata
-				if (metadata.flow === "UpdateSubscription") {
-					logger.debug(" - checkout setup in UpdateSubscription flow")
-					const {stripeSubscriptionId} =
-						<StripeSetupMetadataUpdateSubscription>metadata
-
-					// obtain the payment method
-					const stripeIntentId = stripeGetId(session.setup_intent)
-					const stripePaymentMethod = await stripeDatalayer
-						.fetchPaymentMethodByIntentId(stripeIntentId)
-
-					// update the stripe subscription's payment method
-					await stripeDatalayer.updateSubscriptionPaymentMethod({
-						stripeSubscriptionId,
-						stripePaymentMethodId: stripePaymentMethod.id,
-					})
-
-					// save our billing settings
-					const settings = await settingsDatalayer.getOrCreateSettings(userId)
-					const card = getCardClues(stripePaymentMethod)
-					if (!card) throw new Error("card clues missing")
-					settings.billing.premiumSubscription = {card}
-					await settingsDatalayer.saveSettings(settings)
-
-					logger.debug(" - subscription payment method updated ")
+				if (metadata.flow === "UpdatePremiumSubscription") {
+					logger.debug(` - flow "${metadata.flow}"`)
+					await updatePremiumSubscription({userId, session})
 				}
-				else {
-					throw new Error("unknown setup flow")
-				}
+				else throw err(`unknown flow "${metadata.flow}"`)
 			}
 
-			// customer purchased a subscription
-			else if (session.mode === "subscription") {
-				logger.debug(" - checkout in 'subscription' mode")
-				const stripeSubscriptionId = stripeGetId(session.subscription)
-				const {status, expires} = await stripeDatalayer
-					.fetchSubscriptionDetails(stripeSubscriptionId)
-				// if (!planActive) throw new Error("new subscription plan isn't active")
-
-				// update our billing record
-				const record = await billingDatalayer.getOrCreateRecord(userId)
-				record.premiumStripeSubscriptionId = stripeSubscriptionId
-				await billingDatalayer.setRecord(record)
-
-				// update our premium claim
-				await internal.setUserPremiumClaim({userId, premium: true})
-
-				// update our settings
-				const settings = await settingsDatalayer.getOrCreateSettings(userId)
-				const stripePaymentMethod = await stripeDatalayer
-					.fetchPaymentMethodBySubscriptionId(stripeSubscriptionId)
-				const card = getCardClues(stripePaymentMethod)
-				if (!card) throw new Error("card clues missing")
-				settings.premium = {expires}
-				settings.billing.premiumSubscription = {card}
-				await settingsDatalayer.saveSettings(settings)
-
-				logger.debug(" - new subscription saved")
-			}
-
-			// handle error
-			else throw new Error("unknown session mode for stripe webhook "
-				+ "'checkout.session.completed'")
+			// throw error on unsupported modes
+			else throw err(`unknown session mode "${session.mode}"`)
 		},
 
-		/**
-		 * subscription details have changed
-		 * - perhaps payments failed and stripe ended the subscription
-		 * - or maybe a subscription was reactived after successful payments
-		 */
-		async ["customer.subscription.updated"](
-				event: Stripe.Event
-			): Promise<void> {
-			internal.logEvent(event)
+		async ["customer.subscription.updated"](event: Stripe.Event) {
 			const subscription = <Stripe.Subscription>event.data.object
-			const stripeSubscriptionId = subscription.id
 			const stripeCustomerId = stripeGetId(subscription.customer)
 			const record = await billingDatalayer
 				.getRecordByStripeCustomerId(stripeCustomerId)
-			const {status, expires} = getSubscriptionDetails(subscription)
-
-			// TODO multiple subscription products?
-			if (record.premiumStripeSubscriptionId !== stripeSubscriptionId)
-				throw new Error("cannot update unknown subscription id")
-
-			// TODO AHHH
-			// const active = status === "active"
-			// 	|| status === "trialing"
-			// 	|| status === 
-
-			if (!active) {
-
-				// update our settings
-				const settings = await settingsDatalayer
-					.getOrCreateSettings(record.userId)
-				settings.premium = null
-				settings.billing.premiumSubscription = null
-				await settingsDatalayer.saveSettings(settings)
-	
-				// update our claims
-				await internal.setUserPremiumClaim({
-					premium: false,
-					userId: record.userId,
-				})
-
-				// update our billing record
-				record.premiumStripeSubscriptionId = null
-				await billingDatalayer.setRecord(record)
-			}
-
-
-			// record.premiumSubscription = active
-			// 	? record.premiumSubscription || {
-			// 		autoRenew: true,
-			// 		stripeSubscriptionId,
-			// 	}
-			// 	: null
-
-			// await billingDatalayer.saveRecord(record)
-			// await internal.setUserPremiumClaim({
-			// 	userId: record.userId,
-			// 	premium: {expires: subscription.current_period_end},
-			// })
+			await respectSubscriptionChange({record, subscription})
 		},
 	}
 }
