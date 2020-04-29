@@ -1,6 +1,6 @@
 
 import {Collection} from "../../commonjs/mongodb.js"
-import {BillingDatalayer, StripeBilling, StripeDatalayer} from "../../interfaces.js"
+import {BillingDatalayer, BillingRecord, StripeDatalayer} from "../../interfaces.js"
 
 export function makeBillingDatalayer({stripeDatalayer, collection}: {
 		collection: Collection
@@ -8,7 +8,7 @@ export function makeBillingDatalayer({stripeDatalayer, collection}: {
 	}): BillingDatalayer {
 
 	const internal = {
-		async writeRecord(record: StripeBilling) {
+		async writeRecord(record: BillingRecord) {
 			await collection.updateOne(
 				{userId: record.userId},
 				{$set: record},
@@ -18,8 +18,8 @@ export function makeBillingDatalayer({stripeDatalayer, collection}: {
 	}
 
 	return {
-		async getRecord(userId) {
-			let record = await collection.findOne<StripeBilling>({userId})
+		async getOrCreateRecord(userId) {
+			let record = await collection.findOne<BillingRecord>({userId})
 			if (!record) {
 				const {stripeCustomerId} = await stripeDatalayer.createCustomer()
 				record = {userId, stripeCustomerId}
@@ -28,9 +28,9 @@ export function makeBillingDatalayer({stripeDatalayer, collection}: {
 			return record
 		},
 		async getRecordByStripeCustomerId(stripeCustomerId) {
-			return await collection.findOne<StripeBilling>({stripeCustomerId})
+			return await collection.findOne<BillingRecord>({stripeCustomerId})
 		},
-		async saveRecord(record) {
+		async setRecord(record) {
 			await internal.writeRecord(record)
 		},
 	}

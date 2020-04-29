@@ -1,59 +1,91 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {Topic, AccessToken} from "../../interfaces.js"
+import {Topic, AccessToken, Settings} from "../../interfaces.js"
 
-export interface StripeBilling {
+export interface BillingRecord {
 	userId: string
 	stripeCustomerId: string
-	stripePaymentMethodId?: string
-	premiumSubscription?: {
-		autoRenew: boolean
-		stripeSubscriptionId: string
-	}
+	premiumStripeSubscriptionId?: string
+}
+
+export interface StripeSetupMetadata extends Stripe.Metadata {
+	flow: string
+}
+
+export interface StripeSetupMetadataUpdateSubscription
+		extends StripeSetupMetadata {
+	flow: "UpdateSubscription"
+	stripeSubscriptionId: string
 }
 
 export interface StripeDatalayer {
+
+	/** create a new stripe customer */
 	createCustomer(): Promise<{stripeCustomerId: string}>
-	createLinkingSession(options: {
+
+	/** create a stripe session for the purchase of a subscription */
+	checkoutSubscriptionPurchase(options: {
+			userId: string
+			popupUrl: string
+			stripePlanId: string
+			stripeCustomerId: string
+		}): Promise<{stripeSessionId: string}>
+
+	/** create a stripe session to update a particular subscription */
+	checkoutSubscriptionUpdate(options: {
 			userId: string
 			popupUrl: string
 			stripeCustomerId: string
-		}): Promise<{stripeSessionId: string}>
-	createSubscriptionSession(options: {
-			userId: string
-			popupUrl: string
-			stripeCustomerId: string
-			premiumSubscriptionStripePlanId: string
-		}): Promise<{stripeSessionId: string}>
-	updateSubscriptionAutoRenew(options: {
-			autoRenew: boolean
 			stripeSubscriptionId: string
-		}): Promise<void>
+		}): Promise<{stripeSessionId: string}>
+
+	/** get a payment method object */
+	fetchPaymentMethodByIntentId(stripeIntentId: string):
+		Promise<Stripe.PaymentMethod>
+
+	fetchPaymentMethodBySubscriptionId(stripeSubscriptionId: string):
+		Promise<Stripe.PaymentMethod>
+
+	/** get details about a subscription */
+	fetchSubscriptionDetails(stripeSubscriptionId: string): Promise<{
+			expires: number
+			status: Stripe.Subscription.Status
+		}>
+
+	/** update a stripe subscription's payment method */
 	updateSubscriptionPaymentMethod(options: {
 			stripeSubscriptionId: string
 			stripePaymentMethodId: string
 		}): Promise<void>
+
+	/** cancel a stripe subscription */
+	scheduleSubscriptionCancellation(options: {
+			stripeSubscriptionId: string
+		}): Promise<void>
+}
+
+export interface SettingsDatalayer {
+	saveSettings(settings: Settings): Promise<void>
+	getOrCreateSettings(userId: string): Promise<Settings>
 }
 
 export interface BillingDatalayer {
-	saveRecord(record: StripeBilling): Promise<void>
-	getRecord(userId: string): Promise<StripeBilling>
-	getRecordByStripeCustomerId(stripeCustomerId: string): Promise<StripeBilling>
+	setRecord(record: BillingRecord): Promise<void>
+	getOrCreateRecord(userId: string): Promise<BillingRecord>
+	getRecordByStripeCustomerId(stripeCustomerId: string): Promise<BillingRecord>
 }
 
 export interface StripeLiaisonTopic extends Topic<StripeLiaisonTopic> {
-	createSessionForLinking(options: {
+	checkoutPremium(options: {
+			popupUrl: string
 			accessToken: AccessToken
 		}): Promise<{stripeSessionId: string}>
-	createSessionForPremium(options: {
-			accessToken: AccessToken
-		}): Promise<{stripeSessionId: string}>
-	unlink(options: {
-			accessToken: AccessToken
-		}): Promise<void>
-	setPremiumAutoRenew(options: {
-			autoRenew: boolean
+	updatePremium(options: {
+			popupUrl: string
 			accessToken: string
+		}): Promise<{stripeSessionId: string}>
+	cancelPremium(options: {
+			accessToken: AccessToken
 		}): Promise<void>
 }
 
