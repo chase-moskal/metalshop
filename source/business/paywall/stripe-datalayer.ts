@@ -20,10 +20,12 @@ export function makeStripeDatalayer({stripe}: {
 	})
 
 	return {
+
 		async createCustomer() {
 			const {id: stripeCustomerId} = await stripe.customers.create()
 			return {stripeCustomerId}
 		},
+
 		async checkoutSubscriptionPurchase({
 				userId,
 				popupUrl,
@@ -40,6 +42,7 @@ export function makeStripeDatalayer({stripe}: {
 			})
 			return {stripeSessionId}
 		},
+
 		async checkoutUpdate({
 				flow,
 				userId,
@@ -53,6 +56,7 @@ export function makeStripeDatalayer({stripe}: {
 			})
 			return {stripeSessionId}
 		},
+
 		async fetchSubscriptionDetails(subscriptionId) {
 			const subscription = await stripe.subscriptions.retrieve(subscriptionId)
 			return {
@@ -60,9 +64,11 @@ export function makeStripeDatalayer({stripe}: {
 				expires: subscription?.current_period_end,
 			}
 		},
+
 		async fetchPaymentMethod(stripePaymentMethodId: string) {
 			return stripe.paymentMethods.retrieve(stripePaymentMethodId)
 		},
+
 		async fetchPaymentMethodByIntentId(intentId) {
 			const intent = await stripe.setupIntents.retrieve(intentId)
 			const stripePaymentMethod = await stripe.paymentMethods.retrieve(
@@ -70,6 +76,7 @@ export function makeStripeDatalayer({stripe}: {
 			)
 			return stripePaymentMethod
 		},
+
 		async fetchPaymentMethodBySubscriptionId(stripeSubscriptionId) {
 			const subscription = await stripe.subscriptions
 				.retrieve(stripeSubscriptionId)
@@ -79,6 +86,7 @@ export function makeStripeDatalayer({stripe}: {
 				.retrieve(paymentMethodId)
 			return stripePaymentMethod
 		},
+
 		async updateSubscriptionPaymentMethod({
 				stripeSubscriptionId,
 				stripePaymentMethodId,
@@ -87,6 +95,7 @@ export function makeStripeDatalayer({stripe}: {
 				default_payment_method: stripePaymentMethodId
 			})
 		},
+
 		async scheduleSubscriptionCancellation({
 				stripeSubscriptionId,
 			}) {
