@@ -15,17 +15,12 @@ const toProfile = (record: ProfileRecord): Profile => (
 			userId: record.userId,
 			avatar: record.avatar,
 			nickname: record.nickname,
-			adminMode: record.adminMode,
 		}
 		: null
 )
 
 const limitLength = (limit: number, value: string) => {
 	if (value.length > limit) throw new Error(`bad request`)
-}
-
-const onlyBoolean = (v: any) => {
-	if (typeof v !== "boolean") throw new Error(`bad request`)
 }
 
 export function makeProfileMagistrate({verifyToken, profileDatalayer}: {
@@ -49,16 +44,14 @@ export function makeProfileMagistrate({verifyToken, profileDatalayer}: {
 
 		if (!authorized) throw new Error(`unauthorized`)
 
-		const {avatar, nickname, adminMode} = profile
+		const {avatar, nickname} = profile
 		limitLength(1000, avatar)
 		limitLength(1000, nickname)
-		onlyBoolean(adminMode)
 
 		await profileDatalayer.upsertRecord({
 			userId,
 			avatar,
 			nickname,
-			adminMode,
 		})
 	}
 

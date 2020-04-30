@@ -101,7 +101,9 @@ export function makeStripeWebhooks({
 		}) {
 
 		// obtain existing subscription id
-		const {premiumStripeSubscriptionId} = await billingDatalayer.getOrCreateRecord(userId)
+		const {
+			premiumStripeSubscriptionId,
+		} = await billingDatalayer.getOrCreateRecord(userId)
 		if (!premiumStripeSubscriptionId) throw err(`subscription id missing`)
 
 		// obtain the payment method

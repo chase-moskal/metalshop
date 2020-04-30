@@ -22,11 +22,12 @@ export interface StripeDatalayer {
 			stripePlanId: string
 			stripeCustomerId: string
 		}): Promise<{stripeSessionId: string}>
-	checkoutUpdate(options: {
+	checkoutSubscriptionUpdate(options: {
 			userId: string
 			flow: UpdateFlow
 			popupUrl: string
 			stripeCustomerId: string
+			stripeSubscriptionId: string
 		}): Promise<{stripeSessionId: string}>
 	fetchPaymentMethod(stripePaymentMethodId: string):
 		Promise<Stripe.PaymentMethod>
@@ -45,11 +46,6 @@ export interface StripeDatalayer {
 	scheduleSubscriptionCancellation(options: {
 			stripeSubscriptionId: string
 		}): Promise<void>
-}
-
-export interface SettingsDatalayer {
-	saveSettings(settings: Settings): Promise<void>
-	getOrCreateSettings(userId: string): Promise<Settings>
 }
 
 export interface BillingDatalayer {

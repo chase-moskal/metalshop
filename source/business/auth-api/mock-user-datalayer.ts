@@ -1,6 +1,6 @@
 
+import {random8} from "../../toolbox/random8.js"
 import {UserDraft, UserDatalayer, UserRecord, Claims} from "../../interfaces.js"
-import {generateId} from "../../toolbox/generate-id.js"
 
 export function mockUserDatalayer(): UserDatalayer {
 
@@ -31,7 +31,7 @@ export function mockUserDatalayer(): UserDatalayer {
 	): Promise<UserRecord> {
 		const record: UserRecord = {
 			...draft,
-			userId: generateId(),
+			userId: `mock-${random8()}`,
 		}
 		records.push(record)
 		return record

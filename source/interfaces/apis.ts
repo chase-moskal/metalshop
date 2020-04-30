@@ -12,6 +12,7 @@ import {
 	AuthExchangerTopic,
 	StripeLiaisonTopic,
 	ScheduleSentryTopic,
+	SettingsSheriffTopic,
 	QuestionsBureauTopic,
 	LiveshowGovernorTopic,
 	ProfileMagistrateTopic,
@@ -25,6 +26,10 @@ export interface AuthApi extends RenrakuApi<AuthApi> {
 	authDealer: AuthDealerTopic
 	authVanguard: AuthVanguardTopic
 	authExchanger: AuthExchangerTopic
+}
+
+export interface SettingsApi extends RenrakuApi<SettingsApi> {
+	settingsSheriff: SettingsSheriffTopic
 }
 
 export interface ProfileApi extends RenrakuApi<ProfileApi> {

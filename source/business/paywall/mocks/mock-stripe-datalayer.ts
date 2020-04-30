@@ -1,36 +1,133 @@
 
-import {StripeDatalayer} from "../../../interfaces.js"
+import {Stripe} from "../../../commonjs/stripe.js"
+import {random8} from "../../../toolbox/random8.js"
+import {StripeDatalayer, StripeWebhooks} from "../../../interfaces.js"
 
-export function mockStripeDatalayer(): StripeDatalayer {
+interface MockCustomer {
+	id: string
+}
+
+interface MockSubscription {
+	id: string
+	cancel_at_period_end: boolean
+}
+
+interface MockPaymentMethod {
+	id: string
+	card: Stripe.PaymentMethod.Card
+}
+
+export function mockStripeDatalayer({webhooks}: {
+		webhooks: StripeWebhooks
+	}): StripeDatalayer {
+
 	const data = {
-		customers: <{id: string}[]>[],
-		subscriptions: <{id: string; cancel_at_period_end: boolean}[]>[],
+		customers: <MockCustomer[]>[],
+		subscriptions: <MockSubscription[]>[],
+		paymentMethods: <MockPaymentMethod[]>[],
 	}
+
+	const mockSessionId = () => `mock-session-${random8()}`
+
+	function insertCustomer(customer: MockCustomer) {
+		data.customers.push(customer)
+	}
+
 	return {
+
 		async createCustomer() {
 			const stripeCustomerId = `stripe-customer-id-${Date.now()}`
-			data.customers.push({id: stripeCustomerId})
+			insertCustomer({id: stripeCustomerId})
 			return {stripeCustomerId}
 		},
-		async updateSubscriptionAutoRenew({autoRenew, stripeSubscriptionId}) {
-			const subscription = data.subscriptions.find(
-				sub => sub.id === stripeSubscriptionId
-			)
-			if (subscription) {
-				subscription.cancel_at_period_end = !autoRenew
-			}
+
+		async checkoutSubscriptionPurchase({
+				userId,
+				popupUrl,
+				stripePlanId,
+				stripeCustomerId,
+			}) {
+			const stripeSessionId = mockSessionId()
+			await webhooks["checkout.session.completed"](<any>{
+				id: stripeSessionId,
+				data: {object: <Partial<Stripe.Checkout.Session>>{
+					mode: "subscription",
+					client_reference_id: userId,
+					subscription: "fake-subscription-id",
+				}},
+			})
+			return null
 		},
+
+		async checkoutSubscriptionUpdate({
+				flow,
+				userId,
+				stripeCustomerId,
+				stripeSubscriptionId,
+			}) {
+			const stripeSessionId = mockSessionId()
+			await webhooks["checkout.session.completed"](<any>{data: {
+				object: <Partial<Stripe.Checkout.Session>>{
+					mode: "setup",
+					metadata: {flow},
+					customer: stripeCustomerId,
+					client_reference_id: userId,
+					subscription: stripeSubscriptionId,
+				}
+			}})
+			return {stripeSessionId}
+		},
+
+		async fetchPaymentMethod(id: string) {
+			return null
+		},
+
+		async fetchPaymentMethodByIntentId(id: string) {
+			return null
+		},
+
+		async fetchPaymentMethodBySubscriptionId(id: string) {
+			return null
+		},
+
+		async fetchSubscriptionDetails(id: string) {
+			return null
+		},
+
 		async updateSubscriptionPaymentMethod({
 				stripeSubscriptionId,
 				stripePaymentMethodId,
 			}) {
-			return undefined
+			// await onUpdateSubscriptionPaymentMethod()
+			return null
 		},
-		async createLinkingSession() {
-			return {stripeSessionId: `stripe-linking-session-${Date.now()}`}
+
+		async scheduleSubscriptionCancellation({
+				stripeSubscriptionId,
+			}) {
+			// await onScheduleSubscriptionCancellation()
+			return null
 		},
-		async createSubscriptionSession() {
-			return {stripeSessionId: `stripe-subscription-session-${Date.now()}`}
-		},
+
+		// async updateSubscriptionAutoRenew({autoRenew, stripeSubscriptionId}) {
+		// 	const subscription = data.subscriptions.find(
+		// 		sub => sub.id === stripeSubscriptionId
+		// 	)
+		// 	if (subscription) {
+		// 		subscription.cancel_at_period_end = !autoRenew
+		// 	}
+		// },
+		// async updateSubscriptionPaymentMethod({
+		// 		stripeSubscriptionId,
+		// 		stripePaymentMethodId,
+		// 	}) {
+		// 	return undefined
+		// },
+		// async createLinkingSession() {
+		// 	return {stripeSessionId: `stripe-linking-session-${Date.now()}`}
+		// },
+		// async createSubscriptionSession() {
+		// 	return {stripeSessionId: `stripe-subscription-session-${Date.now()}`}
+		// },
 	}
 }

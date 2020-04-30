@@ -50,12 +50,14 @@ export function makeStripeLiaison({
 				throw new Error("no subscription id to update")
 
 			// initiate a stripe checkout to update existing subscription
-			const {stripeSessionId} = await stripeDatalayer.checkoutUpdate({
-				userId,
-				popupUrl,
-				stripeCustomerId,
-				flow: "UpdatePremiumSubscription",
-			})
+			const {stripeSessionId} = await stripeDatalayer
+				.checkoutSubscriptionUpdate({
+					userId,
+					popupUrl,
+					stripeCustomerId,
+					flow: "UpdatePremiumSubscription",
+					stripeSubscriptionId: premiumStripeSubscriptionId,
+				})
 
 			// our systems react to the associated stripe webhook
 			return {stripeSessionId}

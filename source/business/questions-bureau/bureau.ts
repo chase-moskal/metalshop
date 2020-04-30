@@ -14,7 +14,6 @@ import {
 	ProfileMagistrateTopic,
 } from "../../interfaces.js"
 
-import {generateId} from "../../toolbox/generate-id.js"
 import {AccessPayload} from "../../interfaces/tokens.js"
 
 export function makeQuestionsBureau({
@@ -116,7 +115,7 @@ export function makeQuestionsBureau({
 			time: Date.now(),
 			board: draft.board,
 			content: draft.content,
-			questionId: generateId(),
+			questionId: null,
 		}
 		await questionsDatalayer.saveRecord(record)
 		clearCache()

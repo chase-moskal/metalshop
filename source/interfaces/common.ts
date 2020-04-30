@@ -27,18 +27,17 @@ export interface CardClues {
 }
 
 export interface Settings {
+	userId: string
+	avatar?: string
 	admin: {
 		actAsAdmin: boolean
-	}
-	premium?: {
-		expires: number
 	}
 	billing: {
 		premiumSubscription?: {
 			card: CardClues
 		}
 	}
-	publicity: {
-		avatar: boolean
+	premium?: {
+		expires: number
 	}
 }

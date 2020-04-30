@@ -43,15 +43,22 @@ export function makeStripeDatalayer({stripe}: {
 			return {stripeSessionId}
 		},
 
-		async checkoutUpdate({
+		async checkoutSubscriptionUpdate({
 				flow,
 				userId,
 				popupUrl,
 				stripeCustomerId,
+				stripeSubscriptionId,
 			}) {
 			const {id: stripeSessionId} = await stripe.checkout.sessions.create({
 				...commonSessionParams({userId, popupUrl, stripeCustomerId}),
 				mode: "setup",
+				setup_intent_data: {
+					metadata: {
+						customer_id: stripeCustomerId,
+						subscription_id: stripeSubscriptionId,
+					}
+				},
 				metadata: <StripeSetupMetadata>{flow},
 			})
 			return {stripeSessionId}

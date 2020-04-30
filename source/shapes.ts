@@ -48,10 +48,9 @@ export const questionsShape: RenrakuApiShape<QuestionsApi> = {
 
 export const paywallShape: RenrakuApiShape<PaywallApi> = {
 	stripeLiaison: {
-		unlink: "method",
-		setPremiumAutoRenew: "method",
-		createSessionForLinking: "method",
-		createSessionForPremium: "method",
+		updatePremium: "method",
+		cancelPremium: "method",
+		checkoutPremium: "method",
 	}
 }
 

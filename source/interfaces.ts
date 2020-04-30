@@ -1,6 +1,7 @@
 
 export * from "./business/paywall/interfaces.js"
 export * from "./business/auth-api/interfaces.js"
+export * from "./business/settings/interfaces.js"
 export * from "./business/account-popup/interfaces.js"
 export * from "./business/paywall-popup/interfaces.js"
 export * from "./business/token-storage/interfaces.js"

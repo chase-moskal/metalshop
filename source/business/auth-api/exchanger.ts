@@ -66,7 +66,6 @@ export function makeAuthExchanger({
 						profile: {
 							userId,
 							avatar,
-							adminMode: false,
 							nickname: generateRandomNickname(),
 						}
 					})
