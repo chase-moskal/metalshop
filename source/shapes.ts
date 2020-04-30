@@ -4,10 +4,10 @@ import {ApiShape as CrosscallApiShape} from "crosscall/dist/interfaces.js"
 
 import {
 	AuthApi,
+	VaultApi,
 	PaywallApi,
 	ProfileApi,
 	QuestionsApi,
-	TokenStorageApi,
 } from "./interfaces.js"
 
 //
@@ -47,7 +47,7 @@ export const questionsShape: RenrakuApiShape<QuestionsApi> = {
 }
 
 export const paywallShape: RenrakuApiShape<PaywallApi> = {
-	stripeLiaison: {
+	paywallLiaison: {
 		updatePremium: "method",
 		cancelPremium: "method",
 		checkoutPremium: "method",
@@ -58,8 +58,8 @@ export const paywallShape: RenrakuApiShape<PaywallApi> = {
 // crosscall api's
 //
 
-export const tokenStorageShape: CrosscallApiShape<TokenStorageApi> = {
-	tokenStorage: {
+export const vaultShape: CrosscallApiShape<VaultApi> = {
+	tokenStore: {
 		clearTokens: "method",
 		writeTokens: "method",
 		passiveCheck: "method",

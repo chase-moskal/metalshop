@@ -1,6 +1,6 @@
 
 import {MongoConfig} from "../interfaces.js"
-import {MongoClient, Collection, Db} from "../commonjs/mongodb.js"
+import {MongoClient, Db} from "../commonjs/mongodb.js"
 
 export async function connectMongo(
 	mongo: MongoConfig,

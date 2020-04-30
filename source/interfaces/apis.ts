@@ -6,11 +6,11 @@ export {Topic, RenrakuApi, CrosscallApi}
 
 import {
 	AuthDealerTopic,
+	TokenStoreTopic,
 	AccountPopupTopic,
 	AuthVanguardTopic,
-	TokenStorageTopic,
 	AuthExchangerTopic,
-	StripeLiaisonTopic,
+	PaywallLiaisonTopic,
 	ScheduleSentryTopic,
 	SettingsSheriffTopic,
 	QuestionsBureauTopic,
@@ -37,7 +37,7 @@ export interface ProfileApi extends RenrakuApi<ProfileApi> {
 }
 
 export interface PaywallApi extends RenrakuApi<PaywallApi> {
-	stripeLiaison: StripeLiaisonTopic
+	paywallLiaison: PaywallLiaisonTopic
 }
 
 export interface LiveshowApi extends RenrakuApi<LiveshowApi> {
@@ -56,8 +56,8 @@ export interface ScheduleApi extends RenrakuApi<ScheduleApi> {
 // crosscall api's
 //
 
-export interface TokenStorageApi extends CrosscallApi<TokenStorageApi> {
-	tokenStorage: TokenStorageTopic
+export interface VaultApi extends CrosscallApi<VaultApi> {
+	tokenStore: TokenStoreTopic
 }
 
 export interface AccountPopupApi extends CrosscallApi<AccountPopupApi> {

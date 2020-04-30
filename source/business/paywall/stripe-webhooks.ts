@@ -1,6 +1,6 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {stripeGetId} from "./stripe-helpers.js"
+import {getStripeId} from "./helpers.js"
 import {SimpleConsole} from "../../toolbox/logger.js"
 import {BillingRecord, StripeDatalayer, CardClues, BillingDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, StripeSetupMetadata} from "../../interfaces.js"
 
@@ -34,7 +34,7 @@ export function makeStripeWebhooks({
 		|| subscription.status === "past_due",
 		stripeSubscriptionId: subscription.id,
 		expires: subscription.current_period_end,
-		stripePaymentMethodId: stripeGetId(subscription.default_payment_method),
+		stripePaymentMethodId: getStripeId(subscription.default_payment_method),
 	})
 
 	async function setUserPremiumClaim({userId, premium}: {
@@ -69,7 +69,7 @@ export function makeStripeWebhooks({
 	}) {
 
 		// get more info about the stripe subscription
-		const stripeSubscriptionId = stripeGetId(session.subscription)
+		const stripeSubscriptionId = getStripeId(session.subscription)
 		const {expires} = await stripeDatalayer
 			.fetchSubscriptionDetails(stripeSubscriptionId)
 
@@ -107,7 +107,7 @@ export function makeStripeWebhooks({
 		if (!premiumStripeSubscriptionId) throw err(`subscription id missing`)
 
 		// obtain the payment method
-		const stripeIntentId = stripeGetId(session.setup_intent)
+		const stripeIntentId = getStripeId(session.setup_intent)
 		const stripePaymentMethod = await stripeDatalayer
 			.fetchPaymentMethodByIntentId(stripeIntentId)
 
@@ -202,7 +202,7 @@ export function makeStripeWebhooks({
 
 		async ["customer.subscription.updated"](event: Stripe.Event) {
 			const subscription = <Stripe.Subscription>event.data.object
-			const stripeCustomerId = stripeGetId(subscription.customer)
+			const stripeCustomerId = getStripeId(subscription.customer)
 			const record = await billingDatalayer
 				.getRecordByStripeCustomerId(stripeCustomerId)
 			await respectSubscriptionChange({record, subscription})

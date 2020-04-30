@@ -1,6 +1,6 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {Topic, AccessToken, Settings} from "../../interfaces.js"
+import {Topic, AccessToken} from "../../interfaces.js"
 
 export interface BillingRecord {
 	userId: string
@@ -54,7 +54,7 @@ export interface BillingDatalayer {
 	getRecordByStripeCustomerId(stripeCustomerId: string): Promise<BillingRecord>
 }
 
-export interface StripeLiaisonTopic extends Topic<StripeLiaisonTopic> {
+export interface PaywallLiaisonTopic extends Topic<PaywallLiaisonTopic> {
 	checkoutPremium(options: {
 			popupUrl: string
 			accessToken: AccessToken

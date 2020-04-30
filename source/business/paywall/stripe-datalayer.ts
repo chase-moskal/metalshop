@@ -1,5 +1,5 @@
 
-import {stripeGetId} from "./stripe-helpers.js"
+import {getStripeId} from "./helpers.js"
 import {Stripe} from "../../commonjs/stripe.js"
 import {StripeDatalayer, StripeSetupMetadata} from "../../interfaces.js"
 
@@ -79,7 +79,7 @@ export function makeStripeDatalayer({stripe}: {
 		async fetchPaymentMethodByIntentId(intentId) {
 			const intent = await stripe.setupIntents.retrieve(intentId)
 			const stripePaymentMethod = await stripe.paymentMethods.retrieve(
-				stripeGetId(intent.payment_method)
+				getStripeId(intent.payment_method)
 			)
 			return stripePaymentMethod
 		},
@@ -88,7 +88,7 @@ export function makeStripeDatalayer({stripe}: {
 			const subscription = await stripe.subscriptions
 				.retrieve(stripeSubscriptionId)
 			const paymentMethodId =
-				stripeGetId(subscription.default_payment_method)
+				getStripeId(subscription.default_payment_method)
 			const stripePaymentMethod = await stripe.paymentMethods
 				.retrieve(paymentMethodId)
 			return stripePaymentMethod
