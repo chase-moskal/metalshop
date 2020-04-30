@@ -1,6 +1,6 @@
 
 import {VerifyToken} from "../../interfaces.js"
-import {StripeLiaisonTopic, StripeDatalayer, AccessToken, AuthVanguardTopic, AccessPayload, BillingDatalayer} from "../../interfaces.js"
+import {StripeLiaisonTopic, StripeDatalayer, AccessToken, AccessPayload, BillingDatalayer} from "../../interfaces.js"
 
 export function makeStripeLiaison({
 		verifyToken,

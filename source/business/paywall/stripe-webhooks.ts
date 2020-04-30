@@ -29,7 +29,9 @@ export function makeStripeWebhooks({
 	//
 
 	const getSubscriptionDetails = (subscription: Stripe.Subscription) => ({
-		status: subscription.status,
+		active: subscription.status === "active"
+		|| subscription.status === "trialing"
+		|| subscription.status === "past_due",
 		stripeSubscriptionId: subscription.id,
 		expires: subscription.current_period_end,
 		stripePaymentMethodId: stripeGetId(subscription.default_payment_method),
@@ -130,11 +132,11 @@ export function makeStripeWebhooks({
 		}) {
 
 		const {userId} = record
-		const {status, expires, stripePaymentMethodId} =
-			getSubscriptionDetails(subscription)
-		const active = status === "active"
-			|| status === "trialing"
-			|| status === "past_due"
+		const {
+			active,
+			expires,
+			stripePaymentMethodId,
+		} = getSubscriptionDetails(subscription)
 		if (active) {
 
 			// set our user's claim
