@@ -1,7 +1,7 @@
 
-import {getStripeId} from "./helpers.js"
 import {Stripe} from "../../commonjs/stripe.js"
-import {StripeDatalayer, StripeSetupMetadata} from "../../interfaces.js"
+import {getStripeId, toPaymentDetails, toSubscriptionDetails} from "./helpers.js"
+import {StripeDatalayer, SetupMetadata} from "../../interfaces.js"
 
 export function makeStripeDatalayer({stripe}: {
 		stripe: Stripe
@@ -59,39 +59,9 @@ export function makeStripeDatalayer({stripe}: {
 						subscription_id: stripeSubscriptionId,
 					}
 				},
-				metadata: <StripeSetupMetadata>{flow},
+				metadata: <SetupMetadata>{flow},
 			})
 			return {stripeSessionId}
-		},
-
-		async fetchSubscriptionDetails(subscriptionId) {
-			const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-			return {
-				status: subscription.status,
-				expires: subscription?.current_period_end,
-			}
-		},
-
-		async fetchPaymentMethod(stripePaymentMethodId: string) {
-			return stripe.paymentMethods.retrieve(stripePaymentMethodId)
-		},
-
-		async fetchPaymentMethodByIntentId(intentId) {
-			const intent = await stripe.setupIntents.retrieve(intentId)
-			const stripePaymentMethod = await stripe.paymentMethods.retrieve(
-				getStripeId(intent.payment_method)
-			)
-			return stripePaymentMethod
-		},
-
-		async fetchPaymentMethodBySubscriptionId(stripeSubscriptionId) {
-			const subscription = await stripe.subscriptions
-				.retrieve(stripeSubscriptionId)
-			const paymentMethodId =
-				getStripeId(subscription.default_payment_method)
-			const stripePaymentMethod = await stripe.paymentMethods
-				.retrieve(paymentMethodId)
-			return stripePaymentMethod
 		},
 
 		async updateSubscriptionPaymentMethod({
@@ -109,6 +79,35 @@ export function makeStripeDatalayer({stripe}: {
 			await stripe.subscriptions.update(stripeSubscriptionId, {
 				cancel_at_period_end: true
 			})
+		},
+
+		async fetchSubscriptionDetails(subscriptionId) {
+			const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+			return toSubscriptionDetails(subscription)
+		},
+
+		async fetchPaymentDetails(stripePaymentMethodId: string) {
+			return toPaymentDetails(
+				await stripe.paymentMethods.retrieve(stripePaymentMethodId)
+			)
+		},
+
+		async fetchPaymentDetailsByIntentId(intentId) {
+			const intent = await stripe.setupIntents.retrieve(intentId)
+			return toPaymentDetails(
+				await stripe.paymentMethods.retrieve(
+					getStripeId(intent.payment_method)
+				)
+			)
+		},
+
+		async fetchPaymentDetailsBySubscriptionId(stripeSubscriptionId) {
+			const subscription = await stripe.subscriptions
+				.retrieve(stripeSubscriptionId)
+			const paymentMethodId = getStripeId(subscription.default_payment_method)
+			return toPaymentDetails(
+				await stripe.paymentMethods.retrieve(paymentMethodId)
+			)
 		},
 	}
 }

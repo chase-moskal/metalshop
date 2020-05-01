@@ -1,6 +1,6 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {Topic, AccessToken} from "../../interfaces.js"
+import {Topic, AccessToken, CardClues} from "../../interfaces.js"
 
 export interface BillingRecord {
 	userId: string
@@ -10,8 +10,18 @@ export interface BillingRecord {
 
 export type UpdateFlow = "UpdatePremiumSubscription"
 
-export interface StripeSetupMetadata extends Stripe.Metadata {
+export interface SetupMetadata extends Stripe.Metadata {
 	flow: UpdateFlow
+}
+
+export interface PaymentDetails {
+	card: CardClues
+	stripePaymentMethodId: string
+}
+
+export interface SubscriptionDetails {
+	status: Stripe.Subscription.Status
+	expires: number
 }
 
 export interface StripeDatalayer {
@@ -29,16 +39,6 @@ export interface StripeDatalayer {
 			stripeCustomerId: string
 			stripeSubscriptionId: string
 		}): Promise<{stripeSessionId: string}>
-	fetchPaymentMethod(stripePaymentMethodId: string):
-		Promise<Stripe.PaymentMethod>
-	fetchPaymentMethodByIntentId(stripeIntentId: string):
-		Promise<Stripe.PaymentMethod>
-	fetchPaymentMethodBySubscriptionId(stripeSubscriptionId: string):
-		Promise<Stripe.PaymentMethod>
-	fetchSubscriptionDetails(stripeSubscriptionId: string): Promise<{
-			expires: number
-			status: Stripe.Subscription.Status
-		}>
 	updateSubscriptionPaymentMethod(options: {
 			stripeSubscriptionId: string
 			stripePaymentMethodId: string
@@ -46,6 +46,16 @@ export interface StripeDatalayer {
 	scheduleSubscriptionCancellation(options: {
 			stripeSubscriptionId: string
 		}): Promise<void>
+	fetchSubscriptionDetails(stripeSubscriptionId: string): Promise<{
+			expires: number
+			status: Stripe.Subscription.Status
+		}>
+	fetchPaymentDetails(stripePaymentMethodId: string):
+		Promise<PaymentDetails>
+	fetchPaymentDetailsByIntentId(stripeIntentId: string):
+		Promise<PaymentDetails>
+	fetchPaymentDetailsBySubscriptionId(stripeSubscriptionId: string):
+		Promise<PaymentDetails>
 }
 
 export interface BillingDatalayer {

@@ -2,7 +2,7 @@
 import {Stripe} from "../../commonjs/stripe.js"
 import {getStripeId} from "./helpers.js"
 import {SimpleConsole} from "../../toolbox/logger.js"
-import {BillingRecord, StripeDatalayer, CardClues, BillingDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, StripeSetupMetadata} from "../../interfaces.js"
+import {BillingRecord, StripeDatalayer, CardClues, BillingDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, SetupMetadata} from "../../interfaces.js"
 
 export class StripeWebhookError extends Error {
 	name = this.constructor.name
@@ -46,16 +46,6 @@ export function makeStripeWebhooks({
 		await authVanguard.setClaims({userId, claims})
 	}
 
-	const getCardClues = ({card}: Stripe.PaymentMethod): CardClues => (
-		card && {
-			brand: card.brand,
-			last4: card.last4,
-			country: card.country,
-			expireYear: card.exp_year,
-			expireMonth: card.exp_month,
-		}
-	)
-
 	//
 	// logical actions
 	//
@@ -83,9 +73,8 @@ export function makeStripeWebhooks({
 
 		// update our settings
 		const settings = await settingsDatalayer.getOrCreateSettings(userId)
-		const stripePaymentMethod = await stripeDatalayer
-			.fetchPaymentMethodBySubscriptionId(stripeSubscriptionId)
-		const card = getCardClues(stripePaymentMethod)
+		const {card} = await stripeDatalayer
+			.fetchPaymentDetailsBySubscriptionId(stripeSubscriptionId)
 		if (!card) throw err("card clues missing")
 		settings.premium = {expires}
 		settings.billing.premiumSubscription = {card}
@@ -108,19 +97,20 @@ export function makeStripeWebhooks({
 
 		// obtain the payment method
 		const stripeIntentId = getStripeId(session.setup_intent)
-		const stripePaymentMethod = await stripeDatalayer
-			.fetchPaymentMethodByIntentId(stripeIntentId)
+		const {
+			card,
+			stripePaymentMethodId,
+		} = await stripeDatalayer.fetchPaymentDetailsByIntentId(stripeIntentId)
+		if (!card) throw err("card clues missing")
 
 		// update the stripe subscription's payment method
 		await stripeDatalayer.updateSubscriptionPaymentMethod({
-			stripePaymentMethodId: stripePaymentMethod.id,
+			stripePaymentMethodId,
 			stripeSubscriptionId: premiumStripeSubscriptionId,
 		})
 
 		// save our billing settings
 		const settings = await settingsDatalayer.getOrCreateSettings(userId)
-		const card = getCardClues(stripePaymentMethod)
-		if (!card) throw err("card clues missing")
 		settings.billing.premiumSubscription = {card}
 		await settingsDatalayer.saveSettings(settings)
 	}
@@ -146,8 +136,8 @@ export function makeStripeWebhooks({
 
 			// set our billing settings
 			const settings = await settingsDatalayer.getOrCreateSettings(userId)
-			const paymentMethod = await stripeDatalayer.fetchPaymentMethod(stripePaymentMethodId)
-			const card = getCardClues(paymentMethod)
+			const {card} = await stripeDatalayer
+				.fetchPaymentDetails(stripePaymentMethodId)
 			settings.premium = {expires}
 			settings.billing.premiumSubscription = {card}
 			await settingsDatalayer.saveSettings(settings)
@@ -188,7 +178,7 @@ export function makeStripeWebhooks({
 			// checkout session is in setup mode, no purchase is made
 			else if (session.mode === "setup") {
 				logger.debug(" - checkout in 'setup' mode")
-				const metadata = <StripeSetupMetadata>session.metadata
+				const metadata = <SetupMetadata>session.metadata
 				if (metadata.flow === "UpdatePremiumSubscription") {
 					logger.debug(` - flow "${metadata.flow}"`)
 					await updatePremiumSubscription({userId, session})
