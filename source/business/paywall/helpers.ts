@@ -1,6 +1,6 @@
 
-import {CardClues, PaymentDetails, SubscriptionDetails} from "../../interfaces.js"
 import {Stripe} from "../../commonjs/stripe.js"
+import {CardClues, PaymentDetails, SubscriptionDetails, MinimalCard} from "../../interfaces.js"
 
 export const getStripeId = (x: string | {id: string}) => {
 	return x && (
@@ -8,14 +8,6 @@ export const getStripeId = (x: string | {id: string}) => {
 			? x
 			: x.id
 	)
-}
-
-export interface MinimalCard extends Partial<Stripe.PaymentMethod.Card> {
-	brand: string,
-	last4: string,
-	country: string,
-	exp_year: number,
-	exp_month: number,
 }
 
 export const toCardClues = ({card}: {card?: MinimalCard}): CardClues => (

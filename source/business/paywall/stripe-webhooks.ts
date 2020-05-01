@@ -1,8 +1,8 @@
 
-import {Stripe} from "../../commonjs/stripe.js"
 import {getStripeId} from "./helpers.js"
+import {Stripe} from "../../commonjs/stripe.js"
 import {SimpleConsole} from "../../toolbox/logger.js"
-import {BillingRecord, StripeDatalayer, CardClues, BillingDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, SetupMetadata} from "../../interfaces.js"
+import {BillingRecord, StripeDatalayer, BillingDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, SetupMetadata} from "../../interfaces.js"
 
 export class StripeWebhookError extends Error {
 	name = this.constructor.name

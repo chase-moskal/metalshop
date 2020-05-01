@@ -24,6 +24,14 @@ export interface SubscriptionDetails {
 	expires: number
 }
 
+export interface MinimalCard extends Partial<Stripe.PaymentMethod.Card> {
+	brand: string,
+	last4: string,
+	country: string,
+	exp_year: number,
+	exp_month: number,
+}
+
 export interface StripeDatalayer {
 	createCustomer(): Promise<{stripeCustomerId: string}>
 	checkoutSubscriptionPurchase(options: {

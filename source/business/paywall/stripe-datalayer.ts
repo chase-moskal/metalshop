@@ -1,7 +1,7 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {getStripeId, toPaymentDetails, toSubscriptionDetails} from "./helpers.js"
 import {StripeDatalayer, SetupMetadata} from "../../interfaces.js"
+import {getStripeId, toPaymentDetails, toSubscriptionDetails} from "./helpers.js"
 
 export function makeStripeDatalayer({stripe}: {
 		stripe: Stripe
@@ -22,8 +22,8 @@ export function makeStripeDatalayer({stripe}: {
 	return {
 
 		async createCustomer() {
-			const {id: stripeCustomerId} = await stripe.customers.create()
-			return {stripeCustomerId}
+			const customer = await stripe.customers.create()
+			return {stripeCustomerId: customer.id}
 		},
 
 		async checkoutSubscriptionPurchase({
@@ -32,7 +32,7 @@ export function makeStripeDatalayer({stripe}: {
 				stripePlanId,
 				stripeCustomerId,
 			}) {
-			const {id: stripeSessionId} = await stripe.checkout.sessions.create({
+			const session = await stripe.checkout.sessions.create({
 				...commonSessionParams({userId, popupUrl, stripeCustomerId}),
 				mode: "subscription",
 				subscription_data: {items: [{
@@ -40,7 +40,7 @@ export function makeStripeDatalayer({stripe}: {
 					plan: stripePlanId,
 				}]},
 			})
-			return {stripeSessionId}
+			return {stripeSessionId: session.id}
 		},
 
 		async checkoutSubscriptionUpdate({
@@ -50,7 +50,7 @@ export function makeStripeDatalayer({stripe}: {
 				stripeCustomerId,
 				stripeSubscriptionId,
 			}) {
-			const {id: stripeSessionId} = await stripe.checkout.sessions.create({
+			const session = await stripe.checkout.sessions.create({
 				...commonSessionParams({userId, popupUrl, stripeCustomerId}),
 				mode: "setup",
 				setup_intent_data: {
@@ -61,7 +61,7 @@ export function makeStripeDatalayer({stripe}: {
 				},
 				metadata: <SetupMetadata>{flow},
 			})
-			return {stripeSessionId}
+			return {stripeSessionId: session.id}
 		},
 
 		async updateSubscriptionPaymentMethod({
@@ -73,9 +73,7 @@ export function makeStripeDatalayer({stripe}: {
 			})
 		},
 
-		async scheduleSubscriptionCancellation({
-				stripeSubscriptionId,
-			}) {
+		async scheduleSubscriptionCancellation({stripeSubscriptionId}) {
 			await stripe.subscriptions.update(stripeSubscriptionId, {
 				cancel_at_period_end: true
 			})

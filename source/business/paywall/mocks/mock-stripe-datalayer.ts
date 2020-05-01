@@ -10,6 +10,7 @@ interface MockCustomer extends Partial<Stripe.Customer> {
 
 interface MockSubscription extends Partial<Stripe.Subscription> {
 	id: string
+	plan: {id: string} & any
 	current_period_end: number
 	cancel_at_period_end: boolean
 	default_payment_method: string
@@ -77,7 +78,7 @@ export function mockStripeDatalayer({webhooks}: {
 		return data.setupIntents.find(c => c.id === id)
 	}
 
-	function mockSubscriptionPurchaseSession({
+	function mockSessionForSubscriptionPurchase({
 			userId,
 			customer,
 			subscription,
@@ -95,7 +96,7 @@ export function mockStripeDatalayer({webhooks}: {
 		}
 	}
 
-	function mockSubscriptionUpdateSession({
+	function mockSessionForSubscriptionUpdate({
 			flow,
 			userId,
 			customer,
@@ -161,13 +162,15 @@ export function mockStripeDatalayer({webhooks}: {
 		return setupIntent
 	}
 
-	function mockSubscription({paymentMethod, customer}: {
+	function mockSubscription({planId, customer, paymentMethod}: {
+			planId: string
 			customer: MockCustomer
 			paymentMethod: MockPaymentMethod
 		}): MockSubscription {
 		const subscription: MockSubscription = {
 			id: idTag("mock-stripe-subscription"),
 			status: "active",
+			plan: {id: planId},
 			customer: customer.id,
 			cancel_at_period_end: false,
 			current_period_end: Date.now() + days(30),
@@ -192,8 +195,12 @@ export function mockStripeDatalayer({webhooks}: {
 			}) {
 			const customer = fetchCustomer(stripeCustomerId)
 			const paymentMethod = mockPaymentMethod()
-			const subscription = mockSubscription({customer, paymentMethod})
-			const session = mockSubscriptionPurchaseSession({
+			const subscription = mockSubscription({
+				customer,
+				paymentMethod,
+				planId: stripePlanId,
+			})
+			const session = mockSessionForSubscriptionPurchase({
 				userId,
 				customer,
 				subscription,
@@ -223,7 +230,7 @@ export function mockStripeDatalayer({webhooks}: {
 				subscription,
 				paymentMethod,
 			})
-			const session = mockSubscriptionUpdateSession({
+			const session = mockSessionForSubscriptionUpdate({
 				flow,
 				userId,
 				customer,
