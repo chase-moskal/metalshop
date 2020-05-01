@@ -5,7 +5,7 @@ import {openPopup} from "../../../toolbox/popups/open-popup.js"
 
 export const openAccountPopup = ({
 		authServerOrigin,
-		popupPath = "/html/account-popup",
+		popupPath = "/html/account",
 	}: {
 		popupPath?: string
 		authServerOrigin: string
