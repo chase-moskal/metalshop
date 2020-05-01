@@ -14,28 +14,28 @@ import {
 } from "../../interfaces.js"
 
 export function makeAuthExchanger({
-	signToken,
-	verifyToken,
-	authVanguard,
-	profileMagistrate,
-	verifyGoogleToken,
-	generateRandomNickname,
-	accessTokenExpiresMilliseconds,
-	refreshTokenExpiresMilliseconds,
-}: {
-	signToken: SignToken
-	verifyToken: VerifyToken
-	authVanguard: AuthVanguardTopic
-	generateRandomNickname: () => string
-	verifyGoogleToken: VerifyGoogleToken
-	accessTokenExpiresMilliseconds: number
-	refreshTokenExpiresMilliseconds: number
-	profileMagistrate: ProfileMagistrateTopic
-}): AuthExchangerTopic {
+		signToken,
+		verifyToken,
+		authVanguard,
+		profileMagistrate,
+		verifyGoogleToken,
+		generateRandomNickname,
+		accessTokenExpiresMilliseconds,
+		refreshTokenExpiresMilliseconds,
+	}: {
+		signToken: SignToken
+		verifyToken: VerifyToken
+		authVanguard: AuthVanguardTopic
+		generateRandomNickname: () => string
+		verifyGoogleToken: VerifyGoogleToken
+		accessTokenExpiresMilliseconds: number
+		refreshTokenExpiresMilliseconds: number
+		profileMagistrate: ProfileMagistrateTopic
+	}): AuthExchangerTopic {
 
 	async function authenticateViaGoogle({googleToken}: {
-		googleToken: string
-	}): Promise<AuthTokens> {
+			googleToken: string
+		}): Promise<AuthTokens> {
 		if (googleToken) {
 
 			// verify the google token and extract google user data
@@ -83,8 +83,8 @@ export function makeAuthExchanger({
 	}
 
 	async function authorize({refreshToken}: {
-		refreshToken: RefreshToken
-	}): Promise<AccessToken> {
+			refreshToken: RefreshToken
+		}): Promise<AccessToken> {
 		const {userId} = await verifyToken<RefreshPayload>(refreshToken)
 		const user = await authVanguard.getUser({userId})
 		const accessToken = await signToken<AccessPayload>(

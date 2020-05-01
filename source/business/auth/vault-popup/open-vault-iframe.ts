@@ -6,9 +6,9 @@ import {namespace} from "./common.js"
 import {vaultShape} from "../../../shapes.js"
 import {VaultApi} from "../../../interfaces.js"
 
-export async function createVaultClient({
+export async function openVaultIframe({
 		authServerOrigin,
-		iframePath = "/html/token-storage"
+		iframePath = "/html/vault"
 	}: {
 		iframePath?: string
 		authServerOrigin: string

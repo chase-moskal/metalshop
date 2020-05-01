@@ -7,14 +7,12 @@ export function makeBillingDatalayer({stripeDatalayer, collection}: {
 		stripeDatalayer: StripeDatalayer
 	}): BillingDatalayer {
 
-	const internal = {
-		async writeRecord(record: BillingRecord) {
-			await collection.updateOne(
-				{userId: record.userId},
-				{$set: record},
-				{upsert: true},
-			)
-		}
+	async function writeRecord(record: BillingRecord) {
+		await collection.updateOne(
+			{userId: record.userId},
+			{$set: record},
+			{upsert: true},
+		)
 	}
 
 	return {
@@ -23,7 +21,7 @@ export function makeBillingDatalayer({stripeDatalayer, collection}: {
 			if (!record) {
 				const {stripeCustomerId} = await stripeDatalayer.createCustomer()
 				record = {userId, stripeCustomerId}
-				await internal.writeRecord(record)
+				await writeRecord(record)
 			}
 			return record
 		},
@@ -31,7 +29,7 @@ export function makeBillingDatalayer({stripeDatalayer, collection}: {
 			return await collection.findOne<BillingRecord>({stripeCustomerId})
 		},
 		async setRecord(record) {
-			await internal.writeRecord(record)
+			await writeRecord(record)
 		},
 	}
 }

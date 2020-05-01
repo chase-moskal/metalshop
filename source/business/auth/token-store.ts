@@ -4,7 +4,7 @@ import {
 	AccessToken,
 	TokenStoreTopic,
 	AuthExchangerTopic,
-} from "../../../interfaces.js"
+} from "../../interfaces.js"
 
 import {tokenDecode} from "redcrypto/dist/token-decode.js"
 

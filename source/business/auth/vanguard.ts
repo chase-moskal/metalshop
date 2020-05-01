@@ -12,8 +12,8 @@ const toUser = ({userId, claims}: UserRecord): User => ({
 })
 
 export function makeAuthVanguard({userDatalayer}: {
-	userDatalayer: UserDatalayer
-}): AuthCommon {
+		userDatalayer: UserDatalayer
+	}): AuthCommon {
 
 	async function getUser({userId}: {userId: string}): Promise<User> {
 		const record = await userDatalayer.getRecordByUserId(userId)

@@ -17,6 +17,13 @@ export interface UserRecord extends UserDraft {
 	userId: string
 }
 
+export interface TokenStoreTopic extends Topic<TokenStoreTopic> {
+	clearTokens(): Promise<void>
+	passiveCheck(): Promise<AccessToken>
+	writeTokens(token: AuthTokens): Promise<void>
+	writeAccessToken(accessToken: AccessToken): Promise<void>
+}
+
 export interface UserDatalayer {
 	insertRecord(draft: UserDraft): Promise<UserRecord>
 	getRecordByUserId(userId: string): Promise<UserRecord>

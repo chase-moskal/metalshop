@@ -3,8 +3,8 @@ import {GoogleResult, VerifyGoogleToken} from "./interfaces.js"
 import {OAuth2Client} from "../../commonjs/google-auth-library.js"
 
 export function curryVerifyGoogleToken(
-	googleClientId: string
-): VerifyGoogleToken {
+		googleClientId: string
+	): VerifyGoogleToken {
 
 	const oAuth2Client = new OAuth2Client(googleClientId)
 
@@ -13,11 +13,9 @@ export function curryVerifyGoogleToken(
 			idToken: googleToken,
 			audience: googleClientId
 		})
-	
 		const payload = ticket.getPayload()
 		const googleId = payload.sub
 		const {picture: avatar, name} = payload
-	
 		return {googleId, avatar, name}
 	}
 }

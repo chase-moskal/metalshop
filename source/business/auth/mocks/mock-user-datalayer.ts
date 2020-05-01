@@ -15,20 +15,20 @@ export function mockUserDatalayer(): UserDatalayer {
 	//
 
 	async function getRecordByUserId(
-		userId: string
-	): Promise<UserRecord> {
+			userId: string
+		): Promise<UserRecord> {
 		return records.find(record => record.userId === userId)
 	}
 
 	async function getRecordByGoogleId(
-		googleId: string
-	): Promise<UserRecord> {
+			googleId: string
+		): Promise<UserRecord> {
 		return records.find(record => record.googleId === googleId)
 	}
 
 	async function insertRecord(
-		draft: UserDraft
-	): Promise<UserRecord> {
+			draft: UserDraft
+		): Promise<UserRecord> {
 		const record: UserRecord = {
 			...draft,
 			userId: `mock-${random8()}`,
@@ -37,10 +37,10 @@ export function mockUserDatalayer(): UserDatalayer {
 		return record
 	}
 
-	async function setRecordClaims(
-		userId: string,
-		claims: Claims,
-	): Promise<UserRecord> {
+		async function setRecordClaims(
+			userId: string,
+			claims: Claims,
+		): Promise<UserRecord> {
 		const record = await getRecordByUserId(userId)
 		record.claims = claims
 		return record
