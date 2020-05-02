@@ -39,7 +39,7 @@
 		"koa": "^2.11.0",
 		"mongodb": "^3.5.7",
 		"redcrypto": "0.0.0-dev.5",
-		"renraku": "0.0.0-dev.28",
+		"renraku": "0.0.0-dev.29",
 		"stripe": "^8.48.0"
 	},
 	"keywords": [
