@@ -1,10 +1,11 @@
 
-import {SimpleConsole} from "../../../toolbox/logger.js"
 import {pubsubs, pubsub} from "../../../toolbox/pubsub.js"
-import {StripeWebhooks, AuthVanguardTopic, BillingDatalayer, SettingsDatalayer} from "../../../interfaces.js"
+import {Logger} from "../../../toolbox/logger/interfaces.js"
+import {StripeWebhooks, AuthVanguardTopic, SettingsDatalayer} from "../../../interfaces.js"
 
 import {makeStripeWebhooks} from "../stripe-webhooks.js"
 import {mockStripeDatalayer} from "./mock-stripe-datalayer.js"
+import {mockBillingDatalayer} from "./mock-billing-datalayer.js"
 
 /**
  * create a closed circuit mock of stripe's system
@@ -14,16 +15,15 @@ import {mockStripeDatalayer} from "./mock-stripe-datalayer.js"
  * - instance our genuine stripe webhook implementation
  *   - to exercise our handling logic
  * - we use pubsub to work around the circular dependency here
+ * - we also create a mock billing datalayer
  */
 export function mockStripeCircuit({
 		logger,
 		authVanguard,
-		billingDatalayer,
 		settingsDatalayer,
 	}: {
-		logger: SimpleConsole
+		logger: Logger
 		authVanguard: AuthVanguardTopic
-		billingDatalayer: BillingDatalayer
 		settingsDatalayer: SettingsDatalayer
 	}) {
 
@@ -38,6 +38,7 @@ export function mockStripeCircuit({
 
 	// give the publishers to the mock stripe datalayer
 	const stripeDatalayer = mockStripeDatalayer({webhooks: webhookPublishers})
+	const billingDatalayer = mockBillingDatalayer({stripeDatalayer})
 
 	// now create the a genuine webhooks instance which uses mocks
 	const webhooks = makeStripeWebhooks({
@@ -53,5 +54,5 @@ export function mockStripeCircuit({
 		subscribe(webhooks[key].bind(webhooks))
 	}
 
-	return {stripeDatalayer, webhooks}
+	return {stripeDatalayer, billingDatalayer, webhooks}
 }

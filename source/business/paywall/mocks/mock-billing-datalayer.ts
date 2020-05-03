@@ -1,8 +1,8 @@
 
 import {BillingDatalayer, BillingRecord, StripeDatalayer} from "../../../interfaces.js"
 
-export function mockBillingDatalayer({stripe}: {
-		stripe: StripeDatalayer
+export function mockBillingDatalayer({stripeDatalayer}: {
+		stripeDatalayer: StripeDatalayer
 	}): BillingDatalayer {
 
 	const data = {
@@ -13,7 +13,7 @@ export function mockBillingDatalayer({stripe}: {
 		async getOrCreateRecord(userId) {
 			let record = data.records.find(record => record.userId === userId)
 			if (!record) {
-				const {stripeCustomerId} = await stripe.createCustomer()
+				const {stripeCustomerId} = await stripeDatalayer.createCustomer()
 				record = {userId, stripeCustomerId}
 				data.records.push(record)
 			}

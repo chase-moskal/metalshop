@@ -1,7 +1,7 @@
 
 import {getStripeId} from "./helpers.js"
 import {Stripe} from "../../commonjs/stripe.js"
-import {SimpleConsole} from "../../toolbox/logger.js"
+import {Logger} from "../../toolbox/logger/interfaces.js"
 import {BillingRecord, StripeDatalayer, BillingDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, SetupMetadata} from "../../interfaces.js"
 
 export class StripeWebhookError extends Error {
@@ -17,7 +17,7 @@ export function makeStripeWebhooks({
 		billingDatalayer,
 		settingsDatalayer,
 	}: {
-		logger: SimpleConsole
+		logger: Logger
 		authVanguard: AuthVanguardTopic
 		stripeDatalayer: StripeDatalayer
 		billingDatalayer: BillingDatalayer

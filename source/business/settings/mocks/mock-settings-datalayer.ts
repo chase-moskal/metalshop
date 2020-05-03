@@ -1,10 +1,13 @@
 
 import {Settings} from "../../../interfaces.js"
 import {SettingsDatalayer, SettingsMaker} from "../interfaces.js"
+import {makeDefaultSettings as defaultMaker} from "../default-settings.js"
 
-export function mockSettingsDatalayer({makeDefaultSettings}: {
-		makeDefaultSettings: SettingsMaker
-	}): SettingsDatalayer {
+export function mockSettingsDatalayer({
+		makeDefaultSettings = defaultMaker
+	}: {
+		makeDefaultSettings?: SettingsMaker
+	} = {}): SettingsDatalayer {
 
 	const data = {
 		records: <Settings[]>[]
