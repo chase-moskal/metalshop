@@ -14,6 +14,13 @@ export function makeSettingsSheriff({
 			const {user} = await verifyToken<AccessPayload>(accessToken)
 			const settings = await settingsDatalayer.getOrCreateSettings(user.userId)
 			return settings
-		}
+		},
+		async setAdminMode({accessToken, adminMode}) {
+			const {user} = await verifyToken<AccessPayload>(accessToken)
+			const settings = await settingsDatalayer.getOrCreateSettings(user.userId)
+			settings.admin.actAsAdmin = adminMode
+			await settingsDatalayer.saveSettings(settings)
+			return settings
+		},
 	}
 }

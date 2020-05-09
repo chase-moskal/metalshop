@@ -10,4 +10,8 @@ export interface SettingsDatalayer {
 
 export interface SettingsSheriffTopic extends Topic<SettingsSheriffTopic> {
 	fetchSettings(options: {accessToken: AccessToken}): Promise<Settings>
+	setAdminMode(options: {
+			accessToken: AccessToken
+			adminMode: boolean
+		}): Promise<Settings>
 }

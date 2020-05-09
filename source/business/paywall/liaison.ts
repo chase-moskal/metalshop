@@ -67,6 +67,7 @@ export function makePaywallLiaison({
 			const {userId} = await internal.verify(accessToken)
 			const {premiumStripeSubscriptionId} = await billingDatalayer
 				.getOrCreateRecord(userId)
+
 			if (!premiumStripeSubscriptionId)
 				throw new Error("no subscription to cancel")
 

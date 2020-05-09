@@ -14,7 +14,7 @@
 	},
 	"include": [
 		"source/**/*.ts",
-		"source/**/*.js"
+		"source/**/*.js",
 	],
 	"exclude": [
 		"jwt/**/*"

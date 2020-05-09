@@ -143,17 +143,18 @@ export function makeStripeWebhooks({
 			await settingsDatalayer.saveSettings(settings)
 		}
 		else {
+			const premium = Date.now() < expires
 
 			// set our user's claim
-			setUserPremiumClaim({userId, premium: false})
+			setUserPremiumClaim({userId, premium})
 
 			// set our billing settings
 			const settings = await settingsDatalayer.getOrCreateSettings(userId)
-			settings.premium = null
+			settings.premium = premium ? {expires} : null
 			settings.billing.premiumSubscription = null
 			await settingsDatalayer.saveSettings(settings)
 
-			// set our record
+			// set our billing record
 			record.premiumStripeSubscriptionId = null
 			await billingDatalayer.setRecord(record)
 		}

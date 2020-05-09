@@ -1,6 +1,6 @@
 
 function randomSample<T>(palette: T[], random: number): T {
-	return palette[Math.floor(random * (palette.length + 1))]
+	return palette[Math.floor(random * palette.length)]
 }
 
 export function randomSequence(length: number, palette: string[]): string {
