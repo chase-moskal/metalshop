@@ -69,6 +69,7 @@ export function makeAuthExchanger({
 						accessToken,
 						profile: {
 							userId,
+							joined: Date.now(),
 							avatar: settings.publicity.avatar ? settings.avatar : null,
 							nickname: generateRandomNickname(),
 						}
