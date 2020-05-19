@@ -68,39 +68,44 @@ export type Invite = AdminInvite | StaffInvite | ModeratorInvite
 	| PremiumInvite | TagInvite
 
 export interface AuthAdministrationTopic extends Topic<AuthAdministrationTopic> {
-
-	/** generate an invite for a user */
 	invite(o: {
 			accessToken: AccessToken
 			invite: Invite
 		}): Promise<InviteCode>
-
-	/** user is redeeming an invite they have */
 	redeem(o: {
 			accessToken: AccessToken
 			inviteCode: InviteCode
 		}): Promise<void>
-
-	/** admin assigns arbitrary tags on a user */
+	assignAdmin(o: {
+			userId: string
+			admin: boolean
+			accessToken: AccessToken
+		}): Promise<void>
+	assignStaff(o: {
+			userId: string
+			staff: boolean
+			accessToken: AccessToken
+		}): Promise<void>
+	assignModerator(o: {
+			userId: string
+			staff: boolean
+			accessToken: AccessToken
+		}): Promise<void>
 	assignTags(o: {
-		userId: string
-		tags: string[]
-		accessToken: AccessToken
-	}): Promise<void>
-
-	/** admin assigns banishment on a user */
+			userId: string
+			tags: string[]
+			accessToken: AccessToken
+		}): Promise<void>
 	assignBanishment(o: {
-		userId: string
-		accessToken: AccessToken
-		banishment: BanishmentClaim
-	}): Promise<void>
-
-	/** admin is awarding a user with premium */
+			userId: string
+			accessToken: AccessToken
+			banishment: BanishmentClaim
+		}): Promise<void>
 	castPremiumAward(o: {
-		days: number
-		userId: string
-		accessToken: AccessToken
-	}): Promise<void>
+			days: number
+			userId: string
+			accessToken: AccessToken
+		}): Promise<void>
 }
 
 export type VerifyGoogleToken = (googleToken: string) => Promise<GoogleResult>
