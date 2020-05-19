@@ -1,5 +1,5 @@
 
-import {SettingsSheriffTopic, ProfileMagistrateTopic, VerifyToken, SettingsDatalayer, AccessPayload} from "../../interfaces.js"
+import {SettingsSheriffTopic, Settings, AccessToken, ProfileMagistrateTopic, VerifyToken, SettingsDatalayer, AccessPayload} from "../../interfaces.js"
 
 export function makeSettingsSheriff({
 		verifyToken,
@@ -10,6 +10,17 @@ export function makeSettingsSheriff({
 		settingsDatalayer: SettingsDatalayer
 		profileMagistrate: ProfileMagistrateTopic
 	}): SettingsSheriffTopic {
+
+	async function reflectProfileEffects({userId, settings, accessToken}: {
+		userId: string
+		settings: Settings
+		accessToken: AccessToken
+	}) {
+		const profile = await profileMagistrate.getProfile({userId})
+		profile.avatar = settings.publicity.avatar ? settings.avatar : null
+		await profileMagistrate.setProfile({accessToken, profile})
+		return profile
+	}
 
 	return {
 		async fetchSettings({accessToken}) {
@@ -24,14 +35,29 @@ export function makeSettingsSheriff({
 			await settingsDatalayer.saveSettings(settings)
 			return settings
 		},
+		async setAvatar({accessToken, avatar}) {
+			const {user} = await verifyToken<AccessPayload>(accessToken)
+			const {userId} = user
+			const settings = await settingsDatalayer.getOrCreateSettings(userId)
+			settings.avatar = avatar
+			await settingsDatalayer.saveSettings(settings)
+			const profile = await reflectProfileEffects({
+				userId,
+				settings,
+				accessToken,
+			})
+			return {settings, profile}
+		},
 		async setAvatarPublicity({accessToken, avatar}) {
 			const {user} = await verifyToken<AccessPayload>(accessToken)
 			const {userId} = user
 			const settings = await settingsDatalayer.getOrCreateSettings(userId)
 			settings.publicity.avatar = avatar
-			const profile = await profileMagistrate.getProfile({userId})
-			profile.avatar = avatar ? settings.avatar : null
-			await profileMagistrate.setProfile({accessToken, profile})
+			const profile = await reflectProfileEffects({
+				userId,
+				settings,
+				accessToken,
+			})
 			return {settings, profile}
 		},
 	}

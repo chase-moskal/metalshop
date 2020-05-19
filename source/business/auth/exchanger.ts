@@ -18,6 +18,7 @@ export function makeAuthExchanger({
 		signToken,
 		verifyToken,
 		authVanguard,
+		generateUserId,
 		settingsSheriff,
 		profileMagistrate,
 		verifyGoogleToken,
@@ -27,6 +28,7 @@ export function makeAuthExchanger({
 	}: {
 		signToken: SignToken
 		verifyToken: VerifyToken
+		generateUserId: () => string
 		authVanguard: AuthVanguardTopic
 		generateRandomNickname: () => string
 		verifyGoogleToken: VerifyGoogleToken
@@ -45,8 +47,12 @@ export function makeAuthExchanger({
 			const {googleId, avatar} = await verifyGoogleToken(googleToken)
 
 			// create our own auth user linked to this google id
-			const user = await authVanguard.createUser({googleId})
-			const {userId} = user
+			const userId = generateUserId()
+			const user = await authVanguard.createUser({
+				userId,
+				googleId,
+				claims: {},
+			})
 
 			// generate refresh token so the user can reauthorize
 			const refreshToken = await signToken<RefreshPayload>(
@@ -60,20 +66,20 @@ export function makeAuthExchanger({
 				accessTokenExpiresMilliseconds
 			)
 
-			// create new profile for this user
+			// create default new profile and settings
 			try {
-				const settings = await settingsSheriff.fetchSettings({accessToken})
-				const profile = await profileMagistrate.getProfile({userId})
-				if (!profile)
-					await profileMagistrate.setProfile({
-						accessToken,
-						profile: {
-							userId,
-							joined: Date.now(),
-							avatar: settings.publicity.avatar ? settings.avatar : null,
-							nickname: generateRandomNickname(),
-						}
-					})
+				let profile = await profileMagistrate.getProfile({userId})
+				if (!profile) {
+					profile = {
+						userId,
+						avatar: null,
+						joined: Date.now(),
+						nickname: generateRandomNickname(),
+					}
+					await profileMagistrate.setProfile({accessToken, profile})
+				}
+				await settingsSheriff.setAvatar({accessToken, avatar})
+				await settingsSheriff.setAvatarPublicity({accessToken, avatar: true})
 			}
 			catch (error) {
 				throw new Error(`communications with profile magistrate `

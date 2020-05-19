@@ -1,6 +1,5 @@
 
-import {random8} from "../../../toolbox/random8.js"
-import {UserDraft, UserDatalayer, UserRecord, Claims} from "../../../interfaces.js"
+import {UserDatalayer, UserRecord, Claims} from "../../../interfaces.js"
 
 export function mockUserDatalayer(): UserDatalayer {
 
@@ -27,17 +26,12 @@ export function mockUserDatalayer(): UserDatalayer {
 	}
 
 	async function insertRecord(
-			draft: UserDraft
-		): Promise<UserRecord> {
-		const record: UserRecord = {
-			...draft,
-			userId: `mock-${random8()}`,
-		}
+			record: UserRecord
+		): Promise<void> {
 		records.push(record)
-		return record
 	}
 
-		async function setRecordClaims(
+	async function setRecordClaims(
 			userId: string,
 			claims: Claims,
 		): Promise<UserRecord> {

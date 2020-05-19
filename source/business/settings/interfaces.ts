@@ -10,12 +10,16 @@ export interface SettingsDatalayer {
 
 export interface SettingsSheriffTopic extends Topic<SettingsSheriffTopic> {
 	fetchSettings(options: {accessToken: AccessToken}): Promise<Settings>
+	setAvatar(options: {
+			accessToken: AccessToken
+			avatar: string
+		}): Promise<{settings: Settings; profile: Profile}>
+	setAvatarPublicity(options: {
+			accessToken: AccessToken
+			avatar: boolean
+		}): Promise<{settings: Settings; profile: Profile}>
 	setAdminMode(options: {
 			accessToken: AccessToken
 			adminMode: boolean
 		}): Promise<Settings>
-	setAvatarPublicity(options: {
-			accessToken: AccessToken
-			avatar: boolean
-		}): Promise<{settings: Settings, profile: Profile}>
 }

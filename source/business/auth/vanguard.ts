@@ -20,18 +20,20 @@ export function makeAuthVanguard({userDatalayer}: {
 		return record ? toUser(record) : undefined
 	}
 
-	async function createUser({googleId}): Promise<User> {
+	async function createUser({userId, googleId, claims}): Promise<User> {
 		let record = await userDatalayer.getRecordByGoogleId(googleId)
 		if (!record) {
-			record = await userDatalayer.insertRecord({
+			record = {
+				userId,
+				claims,
 				googleId,
-				claims: {},
-			})
+			}
+			await userDatalayer.insertRecord(record)
 		}
 		return toUser(record)
 	}
 
-	async function setClaims({userId, claims = {}}): Promise<User> {
+	async function setClaims({userId, claims}): Promise<User> {
 		return toUser(await userDatalayer.setRecordClaims(userId, claims))
 	}
 

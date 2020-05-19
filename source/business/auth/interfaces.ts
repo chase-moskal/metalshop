@@ -8,13 +8,10 @@ import {
 	RefreshToken,
 } from "../../interfaces.js"
 
-export interface UserDraft {
+export interface UserRecord {
 	claims: Claims
-	googleId: string
-}
-
-export interface UserRecord extends UserDraft {
 	userId: string
+	googleId: string
 }
 
 export interface TokenStoreTopic extends Topic<TokenStoreTopic> {
@@ -25,7 +22,7 @@ export interface TokenStoreTopic extends Topic<TokenStoreTopic> {
 }
 
 export interface UserDatalayer {
-	insertRecord(draft: UserDraft): Promise<UserRecord>
+	insertRecord(record: UserRecord): Promise<void>
 	getRecordByUserId(userId: string): Promise<UserRecord>
 	getRecordByGoogleId(googleId: string): Promise<UserRecord>
 	setRecordClaims(userId: string, claims: Claims): Promise<UserRecord>
@@ -37,8 +34,8 @@ export interface AuthDealerTopic extends Topic<AuthDealerTopic> {
 
 export interface AuthVanguardTopic
  extends AuthDealerTopic {
-	createUser(o: {googleId: string}): Promise<User>
-	setClaims(o: {userId: string, claims?: Claims}): Promise<User>
+	createUser(o: {userId: string; googleId: string; claims: Claims}): Promise<User>
+	setClaims(o: {userId: string, claims: Claims}): Promise<User>
 }
 
 export interface AuthCommon {

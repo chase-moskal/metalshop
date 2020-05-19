@@ -14,7 +14,9 @@ export function randomSequence(length: number, palette: string[]): string {
 }
 
 export const numbers = [..."0123456789"]
-export const alphabet = [..."abcdefghijklmnopqrstuvwxyz"]
+export const alphahex = [..."abcdef"]
+export const alphabet = [...alphahex, ..."ghijklmnopqrstuvwxyz"]
+export const hex = [...numbers, ...alphahex]
 export const alphanumeric = [...numbers, ...alphabet]
 
-export const random8 = () => randomSequence(8, alphanumeric)
+export const random8 = () => randomSequence(8, hex)
