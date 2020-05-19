@@ -25,6 +25,11 @@ export interface Profile {
 	nickname: string
 	avatar?: string
 	tagline?: string
+	colors?: {
+		alpha: string
+		bravo: string
+		charlie: string
+	}
 }
 
 export interface CardClues {
