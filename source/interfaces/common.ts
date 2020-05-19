@@ -4,12 +4,19 @@ export interface User {
 	claims: Claims
 }
 
+export interface BanishmentClaim {
+	until: number
+	reason: string
+}
+
 export interface Claims {
 	[key: string]: any
+	banned?: BanishmentClaim
 	admin?: boolean
 	staff?: boolean
 	premium?: boolean
 	moderator?: boolean
+	tags?: string[]
 }
 
 export interface Profile {
