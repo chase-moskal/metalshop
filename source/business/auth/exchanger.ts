@@ -10,6 +10,7 @@ import {
 	AuthVanguardTopic,
 	VerifyGoogleToken,
 	AuthExchangerTopic,
+	SettingsSheriffTopic,
 	ProfileMagistrateTopic,
 } from "../../interfaces.js"
 
@@ -17,6 +18,7 @@ export function makeAuthExchanger({
 		signToken,
 		verifyToken,
 		authVanguard,
+		settingsSheriff,
 		profileMagistrate,
 		verifyGoogleToken,
 		generateRandomNickname,
@@ -28,6 +30,7 @@ export function makeAuthExchanger({
 		authVanguard: AuthVanguardTopic
 		generateRandomNickname: () => string
 		verifyGoogleToken: VerifyGoogleToken
+		settingsSheriff: SettingsSheriffTopic
 		accessTokenExpiresMilliseconds: number
 		refreshTokenExpiresMilliseconds: number
 		profileMagistrate: ProfileMagistrateTopic
@@ -59,13 +62,14 @@ export function makeAuthExchanger({
 
 			// create new profile for this user
 			try {
+				const settings = await settingsSheriff.fetchSettings({accessToken})
 				const profile = await profileMagistrate.getProfile({userId})
 				if (!profile)
 					await profileMagistrate.setProfile({
 						accessToken,
 						profile: {
 							userId,
-							avatar,
+							avatar: settings.publicity.avatar ? settings.avatar : null,
 							nickname: generateRandomNickname(),
 						}
 					})

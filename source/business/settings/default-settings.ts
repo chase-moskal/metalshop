@@ -13,5 +13,8 @@ export const makeDefaultSettings: SettingsMaker =
 	billing: {
 		premiumSubscription: null,
 	},
+	publicity: {
+		avatar: true,
+	},
 	premium: null,
 })

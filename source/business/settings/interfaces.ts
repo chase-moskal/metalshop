@@ -1,5 +1,5 @@
 
-import {Topic, AccessToken, Settings} from "../../interfaces.js"
+import {Topic, AccessToken, Settings, Profile} from "../../interfaces.js"
 
 export type SettingsMaker = (userId: string) => Settings
 
@@ -14,4 +14,8 @@ export interface SettingsSheriffTopic extends Topic<SettingsSheriffTopic> {
 			accessToken: AccessToken
 			adminMode: boolean
 		}): Promise<Settings>
+	setAvatarPublicity(options: {
+			accessToken: AccessToken
+			avatar: boolean
+		}): Promise<{settings: Settings, profile: Profile}>
 }
