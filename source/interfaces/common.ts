@@ -15,8 +15,9 @@ export interface Claims {
 export interface Profile {
 	userId: string
 	joined: number
-	avatar?: string
 	nickname: string
+	avatar?: string
+	tagline?: string
 }
 
 export interface CardClues {

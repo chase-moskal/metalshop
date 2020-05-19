@@ -73,6 +73,7 @@ export function makeAuthExchanger({
 					profile = {
 						userId,
 						avatar: null,
+						tagline: null,
 						joined: Date.now(),
 						nickname: generateRandomNickname(),
 					}
