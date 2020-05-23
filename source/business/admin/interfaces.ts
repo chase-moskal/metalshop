@@ -4,7 +4,7 @@ import {
 	Topic,
 	Profile,
 	AccessToken,
-	BanishmentClaim,
+	BanClaim,
 } from "../../interfaces.js"
 
 export type InviteCode = string
@@ -67,7 +67,7 @@ export interface AdminControlTopic extends Topic<AdminControlTopic> {
 	assignBanishment(o: {
 			userId: string
 			accessToken: AccessToken
-			banishment: BanishmentClaim
+			banishment: BanClaim
 		}): Promise<void>
 	castPremiumAward(o: {
 			days: number
