@@ -40,6 +40,10 @@ export interface CardClues {
 	expireMonth: number
 }
 
+export interface PublicitySettings {
+	avatarPublicity: boolean
+}
+
 export interface Settings {
 	userId: string
 	avatar: string
@@ -51,9 +55,7 @@ export interface Settings {
 			card: CardClues
 		}
 	}
-	publicity: {
-		avatar: boolean
-	}
+	publicity: PublicitySettings
 	premium?: {
 		expires: number
 	}

@@ -14,7 +14,7 @@ export const makeDefaultSettings: SettingsMaker =
 		premiumSubscription: null,
 	},
 	publicity: {
-		avatar: true,
+		avatarPublicity: true,
 	},
 	premium: null,
 })

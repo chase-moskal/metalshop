@@ -17,7 +17,9 @@ export function makeSettingsSheriff({
 		accessToken: AccessToken
 	}) {
 		const profile = await profileMagistrate.getProfile({userId})
-		profile.avatar = settings.publicity.avatar ? settings.avatar : null
+		profile.avatar = settings.publicity.avatarPublicity
+			? settings.avatar
+			: null
 		await profileMagistrate.setProfile({accessToken, profile})
 		return profile
 	}
@@ -48,11 +50,11 @@ export function makeSettingsSheriff({
 			})
 			return {settings, profile}
 		},
-		async setAvatarPublicity({accessToken, avatar}) {
+		async setAvatarPublicity({accessToken, avatarPublicity}) {
 			const {user} = await verifyToken<AccessPayload>(accessToken)
 			const {userId} = user
 			const settings = await settingsDatalayer.getOrCreateSettings(userId)
-			settings.publicity.avatar = avatar
+			settings.publicity.avatarPublicity = avatarPublicity
 			const profile = await reflectProfileEffects({
 				userId,
 				settings,

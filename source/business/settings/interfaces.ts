@@ -16,7 +16,7 @@ export interface SettingsSheriffTopic extends Topic<SettingsSheriffTopic> {
 		}): Promise<{settings: Settings; profile: Profile}>
 	setAvatarPublicity(options: {
 			accessToken: AccessToken
-			avatar: boolean
+			avatarPublicity: boolean
 		}): Promise<{settings: Settings; profile: Profile}>
 	setAdminMode(options: {
 			accessToken: AccessToken

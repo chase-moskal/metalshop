@@ -80,7 +80,10 @@ export function makeAuthExchanger({
 					await profileMagistrate.setProfile({accessToken, profile})
 				}
 				await settingsSheriff.setAvatar({accessToken, avatar})
-				await settingsSheriff.setAvatarPublicity({accessToken, avatar: true})
+				await settingsSheriff.setAvatarPublicity({
+					accessToken,
+					avatarPublicity: true,
+				})
 			}
 			catch (error) {
 				throw new Error(`communications with profile magistrate `
