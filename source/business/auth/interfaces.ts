@@ -8,6 +8,12 @@ import {
 	RefreshToken,
 } from "../../interfaces.js"
 
+export type InitializeUser = (o: {
+	userId: string
+	accessToken: AccessToken
+	avatar?: string
+}) => Promise<void>
+
 export interface UserRecord {
 	claims: Claims
 	userId: string

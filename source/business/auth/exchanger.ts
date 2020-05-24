@@ -7,11 +7,10 @@ import {
 	RefreshToken,
 	AccessPayload,
 	RefreshPayload,
+	InitializeUser,
 	AuthVanguardTopic,
 	VerifyGoogleToken,
 	AuthExchangerTopic,
-	SettingsSheriffTopic,
-	ProfileMagistrateTopic,
 } from "../../interfaces.js"
 
 export function makeAuthExchanger({
@@ -19,23 +18,19 @@ export function makeAuthExchanger({
 		verifyToken,
 		authVanguard,
 		generateUserId,
-		settingsSheriff,
-		profileMagistrate,
+		initializeUser,
 		verifyGoogleToken,
-		generateRandomNickname,
 		accessTokenExpiresMilliseconds,
 		refreshTokenExpiresMilliseconds,
 	}: {
 		signToken: SignToken
 		verifyToken: VerifyToken
 		generateUserId: () => string
+		initializeUser: InitializeUser
 		authVanguard: AuthVanguardTopic
-		generateRandomNickname: () => string
 		verifyGoogleToken: VerifyGoogleToken
-		settingsSheriff: SettingsSheriffTopic
 		accessTokenExpiresMilliseconds: number
 		refreshTokenExpiresMilliseconds: number
-		profileMagistrate: ProfileMagistrateTopic
 	}): AuthExchangerTopic {
 
 	async function authenticateViaGoogle({googleToken}: {
@@ -57,37 +52,22 @@ export function makeAuthExchanger({
 			// generate refresh token so the user can reauthorize
 			const refreshToken = await signToken<RefreshPayload>(
 				{userId},
-				refreshTokenExpiresMilliseconds
+				refreshTokenExpiresMilliseconds,
 			)
 
 			// generate access token so the user can prove authorization
 			const accessToken = await signToken<AccessPayload>(
 				{user},
-				accessTokenExpiresMilliseconds
+				accessTokenExpiresMilliseconds,
 			)
 
-			// create default new profile and settings
+			// outsource user initialization
 			try {
-				let profile = await profileMagistrate.getProfile({userId})
-				if (!profile) {
-					profile = {
-						userId,
-						avatar: null,
-						tagline: null,
-						joined: Date.now(),
-						nickname: generateRandomNickname(),
-					}
-					await profileMagistrate.setProfile({accessToken, profile})
-				}
-				await settingsSheriff.setAvatar({accessToken, avatar})
-				await settingsSheriff.setAvatarPublicity({
-					accessToken,
-					avatarPublicity: true,
-				})
+				await initializeUser({userId, avatar, accessToken})
 			}
 			catch (error) {
-				throw new Error(`communications with profile magistrate `
-					+ `failed: ${error.message}`)
+				error.message = `failed to initialize user: ${error.message}`
+				throw error
 			}
 
 			return {refreshToken, accessToken}
