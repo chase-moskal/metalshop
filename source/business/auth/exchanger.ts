@@ -7,7 +7,7 @@ import {
 	RefreshToken,
 	AccessPayload,
 	RefreshPayload,
-	InitializeUser,
+	InitializePersona,
 	AuthVanguardTopic,
 	VerifyGoogleToken,
 	AuthExchangerTopic,
@@ -17,16 +17,14 @@ export function makeAuthExchanger({
 		signToken,
 		verifyToken,
 		authVanguard,
-		generateUserId,
-		initializeUser,
+		initializePersona,
 		verifyGoogleToken,
 		accessTokenExpiresMilliseconds,
 		refreshTokenExpiresMilliseconds,
 	}: {
 		signToken: SignToken
 		verifyToken: VerifyToken
-		generateUserId: () => string
-		initializeUser: InitializeUser
+		initializePersona: InitializePersona
 		authVanguard: AuthVanguardTopic
 		verifyGoogleToken: VerifyGoogleToken
 		accessTokenExpiresMilliseconds: number
@@ -42,12 +40,11 @@ export function makeAuthExchanger({
 			const {googleId, avatar} = await verifyGoogleToken(googleToken)
 
 			// create our own auth user linked to this google id
-			const userId = generateUserId()
 			const user = await authVanguard.createUser({
-				userId,
 				googleId,
 				claims: {},
 			})
+			const {userId} = user 
 
 			// generate refresh token so the user can reauthorize
 			const refreshToken = await signToken<RefreshPayload>(
@@ -63,7 +60,7 @@ export function makeAuthExchanger({
 
 			// outsource user initialization
 			try {
-				await initializeUser({userId, avatar, accessToken})
+				await initializePersona({userId, avatar, accessToken})
 			}
 			catch (error) {
 				error.message = `failed to initialize user: ${error.message}`

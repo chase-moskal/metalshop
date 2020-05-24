@@ -11,8 +11,9 @@ const toUser = ({userId, claims}: UserRecord): User => ({
 	userId,
 })
 
-export function makeAuthVanguard({userDatalayer}: {
+export function makeAuthVanguard({userDatalayer, generateUserId}: {
 		userDatalayer: UserDatalayer
+		generateUserId: () => string
 	}): AuthCommon {
 
 	async function getUser({userId}: {userId: string}): Promise<User> {
@@ -20,13 +21,13 @@ export function makeAuthVanguard({userDatalayer}: {
 		return record ? toUser(record) : undefined
 	}
 
-	async function createUser({userId, googleId, claims}): Promise<User> {
+	async function createUser({googleId, claims}): Promise<User> {
 		let record = await userDatalayer.getRecordByGoogleId(googleId)
 		if (!record) {
 			record = {
-				userId,
 				claims,
 				googleId,
+				userId: generateUserId(),
 			}
 			await userDatalayer.insertRecord(record)
 		}

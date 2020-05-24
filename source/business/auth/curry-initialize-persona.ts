@@ -1,9 +1,9 @@
 
-import {InitializeUser} from "../../interfaces.js"
+import {InitializePersona} from "../../interfaces.js"
 import {SettingsSheriffTopic} from "../settings/interfaces.js"
 import {ProfileMagistrateTopic} from "../profile/interfaces.js"
 
-export function curryInitializeUser({
+export function curryInitializePersona({
 		settingsSheriff,
 		profileMagistrate,
 		generateRandomNickname,
@@ -11,9 +11,14 @@ export function curryInitializeUser({
 		generateRandomNickname: () => string
 		settingsSheriff: SettingsSheriffTopic
 		profileMagistrate: ProfileMagistrateTopic
-	}): InitializeUser {
+	}): InitializePersona {
 
 	return async function({userId, avatar, accessToken}) {
+
+		//
+		// create profile, unless there already is one
+		//
+
 		let profile = await profileMagistrate.getProfile({userId})
 		if (!profile) {
 			profile = {
@@ -25,6 +30,11 @@ export function curryInitializeUser({
 			}
 			await profileMagistrate.setProfile({accessToken, profile})
 		}
+
+		//
+		// initialize settings
+		//
+
 		await settingsSheriff.setAvatar({accessToken, avatar})
 		await settingsSheriff.setAvatarPublicity({
 			accessToken,

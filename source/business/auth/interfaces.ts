@@ -8,7 +8,7 @@ import {
 	RefreshToken,
 } from "../../interfaces.js"
 
-export type InitializeUser = (o: {
+export type InitializePersona = (o: {
 	userId: string
 	accessToken: AccessToken
 	avatar?: string
@@ -40,7 +40,7 @@ export interface AuthDealerTopic extends Topic<AuthDealerTopic> {
 
 export interface AuthVanguardTopic
  extends AuthDealerTopic {
-	createUser(o: {userId: string; googleId: string; claims: Claims}): Promise<User>
+	createUser(o: {googleId: string; claims: Claims}): Promise<User>
 	setClaims(o: {userId: string, claims: Claims}): Promise<User>
 }
 

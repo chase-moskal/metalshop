@@ -21,7 +21,8 @@ const toProfile = (record: ProfileRecord): Profile => (
 )
 
 const limitLength = (limit: number, value: string) => {
-	if (value.length > limit) throw new Error(`bad request`)
+	if (value && value.length > limit)
+		throw new Error(`bad request`)
 }
 
 export function makeProfileMagistrate({verifyToken, profileDatalayer}: {
