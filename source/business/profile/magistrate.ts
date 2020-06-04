@@ -15,6 +15,7 @@ const toProfile = (record: ProfileRecord): Profile => (
 			userId: record.userId,
 			avatar: record.avatar,
 			joined: record.joined,
+			tagline: record.tagline,
 			nickname: record.nickname,
 		}
 		: null
@@ -43,11 +44,11 @@ export function makeProfileMagistrate({verifyToken, profileDatalayer}: {
 		const {user} = await verifyToken<AccessPayload>(accessToken)
 		const {userId} = user
 		const authorized = !!user.claims.admin || (profile.userId === userId)
-
 		if (!authorized) throw new Error(`unauthorized`)
 
-		const {avatar, nickname, joined} = profile
+		const {avatar, nickname, joined, tagline} = profile
 		limitLength(1000, avatar)
+		limitLength(1000, tagline)
 		limitLength(1000, nickname)
 		if (!(typeof joined === "number")) throw new Error(`joined must be number`)
 
@@ -55,6 +56,7 @@ export function makeProfileMagistrate({verifyToken, profileDatalayer}: {
 			userId,
 			avatar,
 			joined,
+			tagline,
 			nickname,
 		})
 	}
