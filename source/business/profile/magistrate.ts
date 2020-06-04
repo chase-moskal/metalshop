@@ -27,20 +27,21 @@ const limitLength = (limit: number, value: string) => {
 }
 
 export function makeProfileMagistrate({verifyToken, profileDatalayer}: {
-	verifyToken: VerifyToken
-	profileDatalayer: ProfileDatalayer
-}): ProfileMagistrateTopic {
+		verifyToken: VerifyToken
+		profileDatalayer: ProfileDatalayer
+	}): ProfileMagistrateTopic {
 
 	async function getProfile({userId}: {
-		userId: string
-	}): Promise<Profile> {
+			userId: string
+		}): Promise<Profile> {
 		return toProfile(await profileDatalayer.getRecordByUserId(userId))
 	}
 
 	async function setProfile({profile, accessToken}: {
-		profile: Profile
-		accessToken: AccessToken
-	}): Promise<void> {
+			profile: Profile
+			accessToken: AccessToken
+		}): Promise<void> {
+
 		const {user} = await verifyToken<AccessPayload>(accessToken)
 		const {userId} = user
 		const authorized = !!user.claims.admin || (profile.userId === userId)
