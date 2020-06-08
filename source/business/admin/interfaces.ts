@@ -1,11 +1,17 @@
 
 import {
-	User,
 	Topic,
-	Profile,
-	AccessToken,
+	Persona,
 	BanClaim,
+	AccessToken,
 } from "../../interfaces.js"
+
+export interface AdminSearchTopic {
+	search(o: {
+			needle: string
+			accessToken: AccessToken
+		}): Promise<Persona[]>
+}
 
 export type InviteCode = string
 export interface InviteBase {
@@ -24,16 +30,6 @@ export interface TagInvite extends InviteBase {
 }
 export type Invite = AdminInvite | StaffInvite | ModeratorInvite
 	| PremiumInvite | TagInvite
-
-
-export interface Persona {
-	user: User
-	profile: Profile
-}
-
-export interface AdminSeekingTopic {
-	search(o: {needle: string}): Promise<Persona[]>
-}
 
 export interface AdminControlTopic extends Topic<AdminControlTopic> {
 	invite(o: {

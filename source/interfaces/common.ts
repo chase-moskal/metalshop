@@ -60,3 +60,12 @@ export interface Settings {
 		expires: number
 	}
 }
+
+export interface Persona {
+	user: User
+	profile: Profile
+}
+
+export interface Personal extends Persona {
+	settings: Settings
+}
