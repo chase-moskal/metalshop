@@ -1,6 +1,6 @@
 
 import {observable, action} from "mobx"
-import {Persona, AdminSearchTopic} from "authoritarian/dist/interfaces.js"
+import {Persona, AdminSearchTopic} from "../../interfaces.js"
 
 import * as loading from "../toolbox/loading.js"
 import {AuthPayload, GetAuthContext} from "../interfaces.js"

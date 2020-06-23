@@ -1,6 +1,6 @@
 
 import {GetAuthContext} from "../interfaces.js"
-import {Profile} from "authoritarian/dist/interfaces.js"
+import {Profile} from "../../interfaces.js"
 
 export class UserLogoutEvent extends CustomEvent<{}> {}
 export class UserLoadingEvent extends CustomEvent<{}> {}

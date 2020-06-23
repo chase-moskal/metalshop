@@ -6,7 +6,7 @@ import {styles} from "./styles/metal-questions-styles.js"
 import {renderQuestion} from "./questions/render-question.js"
 import {QuestionsShare, PrepareHandleLikeClick} from "../interfaces.js"
 import {renderQuestionEditor} from "./questions/render-question-editor.js"
-import {QuestionDraft, QuestionAuthor} from "authoritarian/dist/interfaces.js"
+import {QuestionDraft, QuestionAuthor} from "../../interfaces.js"
 import {MetalshopComponent, property, html, PropertyValues} from "../framework/metalshop-component.js"
 
  @mixinStyles(styles)

@@ -19,7 +19,7 @@ import {
 	QuestionsBureauTopic,
 	LiveshowGovernorTopic,
 	ProfileMagistrateTopic,
-} from "authoritarian/dist/interfaces.js"
+} from "../interfaces.js"
 
 import {AuthModel} from "./models/auth-model.js"
 import {SeekerModel} from "./models/seeker-model.js"
@@ -31,7 +31,7 @@ import {LiveshowViewModel, LiveshowModel} from "./models/liveshow-model.js"
 
 import * as loading from "./toolbox/loading.js"
 import {CSSResult, CSSResultArray} from "lit-element"
-import {Logger} from "authoritarian/dist/toolbox/logger/interfaces.js"
+import {Logger} from "../toolbox/logger/interfaces.js"
 
 export interface MetalConfig {
 	["mock"]: string

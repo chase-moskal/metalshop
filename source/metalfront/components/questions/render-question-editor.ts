@@ -2,7 +2,7 @@
 import {html} from "lit-element"
 import {renderAuthor} from "./render-author.js"
 import {QuestionValidation} from "../../interfaces.js"
-import {QuestionAuthor} from "authoritarian/dist/interfaces.js"
+import {QuestionAuthor} from "../../../interfaces.js"
 
 export function renderQuestionEditor({
 	expand,

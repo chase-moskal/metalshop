@@ -1,6 +1,6 @@
 
 import {action, computed} from "mobx"
-import {PaywallLiaisonTopic} from "authoritarian/dist/interfaces.js"
+import {PaywallLiaisonTopic} from "../../interfaces.js"
 
 import {AuthModel} from "./auth-model.js"
 import {PersonalModel} from "./personal-model.js"

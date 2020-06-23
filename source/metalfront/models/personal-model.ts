@@ -1,8 +1,8 @@
 
 import {observable, action, computed} from "mobx"
-import {Personal} from "authoritarian/dist/interfaces.js"
-import {Logger} from "authoritarian/dist/toolbox/logger/interfaces.js"
-import {ProfileMagistrateTopic, SettingsSheriffTopic, Profile} from "authoritarian/dist/interfaces.js"
+import {Personal} from "../../interfaces.js"
+import {Logger} from "../../toolbox/logger/interfaces.js"
+import {ProfileMagistrateTopic, SettingsSheriffTopic, Profile} from "../../interfaces.js"
 
 import * as loading from "../toolbox/loading.js"
 import {makeTicketbooth} from "../toolbox/ticketbooth.js"

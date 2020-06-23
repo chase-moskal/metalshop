@@ -3,8 +3,8 @@ import * as loading from "../toolbox/loading.js"
 import {observable, action, computed} from "mobx"
 import {makeTicketbooth} from "../toolbox/ticketbooth.js"
 import {GetAuthContext, AuthPayload} from "../interfaces.js"
-import {Logger} from "authoritarian/dist/toolbox/logger/interfaces.js"
-import {SettingsSheriffTopic, Settings} from "authoritarian/dist/interfaces.js"
+import {Logger} from "../../toolbox/logger/interfaces.js"
+import {SettingsSheriffTopic, Settings} from "../../interfaces.js"
 
 export class SettingsModel {
 	@observable settingsLoad = loading.load<Settings>()

@@ -1,7 +1,7 @@
 
 import {observable, action} from "mobx"
 import * as loading from "../toolbox/loading.js"
-import {User, AccessToken, TokenStoreTopic} from "authoritarian/dist/interfaces.js"
+import {User, AccessToken, TokenStoreTopic} from "../../interfaces.js"
 import {AuthPayload, TriggerAccountPopup, DecodeAccessToken, AuthContext, GetAuthContext} from "../interfaces.js"
 
 export class AuthModel {

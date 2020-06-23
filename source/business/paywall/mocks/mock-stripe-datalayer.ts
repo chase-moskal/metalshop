@@ -138,6 +138,7 @@ export function mockStripeDatalayer({webhooks}: {
 				funding: "credit",
 				checks: null,
 				wallet: null,
+				networks: null,
 				three_d_secure_usage: null,
 			},
 		}

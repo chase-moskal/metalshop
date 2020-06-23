@@ -1,5 +1,5 @@
 
-import {User, Question, QuestionAuthor} from "authoritarian/dist/interfaces.js"
+import {User, Question, QuestionAuthor} from "../../../interfaces.js"
 
 export function ascertainOwnership(question: Question, me: QuestionAuthor) {
 	if (!me || !me.user) return {mine: false, authority: false}

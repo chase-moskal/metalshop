@@ -1,7 +1,7 @@
 
 import {html} from "lit-element"
 import {heart} from "../../system/icons.js"
-import {QuestionAuthor, LikeInfo} from "authoritarian/dist/interfaces.js"
+import {QuestionAuthor, LikeInfo} from "../../../interfaces.js"
 
 export function renderAuthor({
 	time,

@@ -1,7 +1,7 @@
 
 import {DecodeAccessToken} from "../interfaces.js"
 import {tokenDecode} from "redcrypto/dist/token-decode.js"
-import {AccessPayload} from "authoritarian/dist/interfaces.js"
+import {AccessPayload} from "../../interfaces.js"
 
 /**
  * Simply read what's in an access token

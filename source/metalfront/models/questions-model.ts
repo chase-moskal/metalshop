@@ -2,7 +2,7 @@
 import {observable, action} from "mobx"
 import * as loading from "../toolbox/loading.js"
 import {GetAuthContext, AuthPayload, QuestionsBureauUi} from "../interfaces.js"
-import {Profile, Question, QuestionsBureauTopic} from "authoritarian/dist/interfaces.js"
+import {Profile, Question, QuestionsBureauTopic} from "../../interfaces.js"
 
 export class QuestionsModel {
 	@observable questions: Question[] = []

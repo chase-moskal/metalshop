@@ -1,6 +1,6 @@
 
 import {html} from "lit-element"
-import {Question, QuestionAuthor} from "authoritarian/dist/interfaces.js"
+import {Question, QuestionAuthor} from "../../../interfaces.js"
 
 import {PrepareHandleLikeClick}
 	from "../../interfaces.js"

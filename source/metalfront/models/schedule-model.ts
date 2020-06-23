@@ -2,7 +2,7 @@
 import {observable, action} from "mobx"
 import * as loading from "../toolbox/loading.js"
 import {GetAuthContext, AuthPayload} from "../interfaces.js"
-import {ScheduleSentryTopic, ScheduleEvent} from "authoritarian/dist/interfaces.js"
+import {ScheduleSentryTopic, ScheduleEvent} from "../../interfaces.js"
 
 export class ScheduleModel {
 	@observable events: {[name: string]: ScheduleEvent} = {}
