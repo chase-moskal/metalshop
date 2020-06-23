@@ -1,0 +1,271 @@
+
+@charset "utf-8";
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+*:focus {
+	outline: var(--focus-outline);
+}
+
+[initially-hidden] {
+	display: none;
+}
+
+a {
+	color: #ff7f10;
+	text-decoration: none;
+}
+
+a:hover, a:focus {
+	color: #ffcf86;
+	text-shadow: 0 0 7px rgba(255, 129, 0, 0.5);
+	text-decoration: underline;
+}
+
+a:active {
+	color: #fb4a37;
+}
+
+html, body {
+	font-size: 16px;
+	min-height: 100%;
+	font-family: Oxanium, sans-serif;
+	background: #212123;
+	color: rgba(255,255,255, 0.9);
+	--metal-admin-color: #5cff60;
+	/* --metal-admin-color: #fd34e2; */
+	--focus-outline: 2px solid #ff4d17;
+}
+
+metal-account {
+	--metal-admin-color: green;
+}
+
+body {
+	max-width: 960px;
+	padding: 0 5%;
+	margin: 0 auto;
+	transition: padding 1s ease;
+}
+
+@media (max-width: 600px) {
+	body {
+		padding: 0;
+	}
+}
+
+body > header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 1rem;
+	background: rgba(255,255,255, 0.2);
+	box-shadow: 2px 4px 25px rgba(0,0,0, 0.1);
+}
+
+body > header h1 {
+	color: white;
+	text-shadow: 0 0 10px rgba(255,255,255, 0.5);
+}
+
+body > header > * {
+	flex: 0 1 auto;
+}
+
+main {
+	padding: 1rem;
+	background: rgba(255,255,255, 0.1);
+	box-shadow: 2px 4px 25px rgba(0,0,0, 0.3);
+}
+
+.content h2 {
+	color: white;
+	font-size: 1.3em;
+	text-transform: uppercase;
+	text-shadow: 0 0 10px rgba(255,255,255, 0.5);
+}
+
+.content h3 {
+	color: white;
+	font-size: 1.1em;
+	text-transform: uppercase;
+}
+
+.content h4 {
+	font-size: 1.1em;
+}
+
+.twoside {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	font-size: 0.8em;
+	margin-bottom: 4em;
+}
+
+.twoside > section {
+	flex: 0 0 48%;
+}
+
+.twoside * + p {
+	padding-top: 0.25em;
+}
+
+.twoside * + h2,
+.twoside * + h3,
+.twoside * + h4 {
+	padding-top: 0.5em;
+}
+
+.twoside ol, .twoside ul {
+	padding-left: 1.5em;
+}
+
+@media (max-width: 550px) {
+	.twoside {
+		flex-direction: column;
+	}
+	.twoside > section + section {
+		margin-top: 2em;
+	}
+}
+
+.component-demos > h2 {
+	margin-bottom: 1em;
+}
+
+details {
+	display: block;
+	padding: 0 1em 1em 1em;
+	margin-bottom: 1em;
+	overflow: hidden;
+	background: rgba(0,0,0, 0.2);
+	border-radius: 5px;
+	box-shadow: inset 2px 6px 24px rgba(0,0,0, 0.2);
+}
+
+details > summary {
+	margin-bottom: 1em;
+	padding: 1em;
+	outline-offset: -2px;
+	background: rgba(0,0,0, 0.2);
+	cursor: pointer;
+	user-select: none;
+}
+
+details > summary:hover {
+	background: rgba(0,0,0, 0.25);
+}
+
+details[open] > summary {
+	background: rgba(0,0,0, 0.8);
+}
+
+details > div {
+	margin: auto;
+}
+
+details[open] > div {
+	animation: sweep 1s ease-out;
+}
+
+details[open] > summary {
+	animation: none;
+}
+
+@keyframes sweep {
+	0% {
+		opacity: 0;
+		transform: translateY(-10em);
+	}
+	70% {
+		transform: translateY(-0.2em);
+	}
+	98% {
+		transform: translateY(-0.15em);
+	}
+	100% {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/******************************************************************************/
+
+/* make the menu system positioning relative to the header */
+body > header {
+	position: relative;
+}
+
+menu-system {
+	--menu-margin: 0.67rem 0 0 0;
+}
+
+menu-display {
+	color: rgba(49, 33, 4, 0.72);
+	--menu-panel-width: 540px;
+	--menu-panel-padding: 1rem;
+	--menu-panel-box-shadow: none;
+	--menu-panel-border-radius: none;
+	--menu-panel-background: rgba(255, 247, 215, 0.36);
+}
+
+metal-my-avatar {
+	color: white;
+}
+
+menu-system metal-profile {
+	--metal-admin-color: #316f31;
+}
+
+metal-account {
+	text-align: left;
+	--coolbutton-background: #463b35;
+	--user-panel-login-justify: center;
+	--user-panel-logout-justify: flex-end;
+}
+
+metal-account > * {
+	padding: 1rem;
+}
+
+menu-system metal-account > * {
+	background: rgba(255, 255, 255, 0.4);
+	box-shadow: 1px 4px 3px rgba(0,0,0, 0.1);
+}
+
+metal-account metal-settings {
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
+}
+
+metal-paywall {
+	--coolbutton-background: #00a464;
+}
+
+metal-account > h2 {
+	font-size: 1.2rem;
+	opacity: 0.3;
+	padding: 0;
+	text-align: center;
+	text-transform: uppercase;
+	color: white;
+	background: transparent;
+	box-shadow: none;
+}
+
+metal-questions {
+	max-width: 800px;
+	--question-like-color: rgba(64,255,64, 0.8);
+	--question-avatar-border-radius: 5em;
+}
+
+metal-liveshow {
+	padding: 0.5em;
+	max-width: 640px;
+	border: 1px solid rgba(255,255,255, 0.1);
+}

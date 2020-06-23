@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+helm upgrade metaldev . --install -f dev.yaml

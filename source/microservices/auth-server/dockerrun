@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+docker run \
+	--name auth-server \
+	--mount type=bind,source=$(pwd)/config,target=/app/config \
+	--network br0 \
+	-p 8000:8000 \
+	--rm \
+	chasemoskal/auth-server

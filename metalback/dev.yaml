@@ -1,0 +1,15 @@
+
+ingress:
+  domain: metaldev.chasemoskal.com
+  tls: null
+
+microservices:
+  auth:
+    image: chasemoskal/auth-server:latest
+    replicas: 1
+  profile:
+    image: chasemoskal/profile-server:latest
+    replicas: 1
+  questions:
+    image: chasemoskal/questions-server:latest
+    replicas: 1

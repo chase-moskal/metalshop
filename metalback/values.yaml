@@ -1,0 +1,21 @@
+
+ingress:
+  class: nginx
+  domain: metalback.chasemoskal.com
+  tls:
+    production: true
+    email: chasemoskal@gmail.com
+
+microservices:
+  auth:
+    port: 8000
+    replicas: 2
+    image: chasemoskal/auth-server:v0.0.0-dev.17
+  profile:
+    port: 8001
+    replicas: 2
+    image: chasemoskal/profile-server:v0.0.0-dev.12
+  questions:
+    port: 8002
+    replicas: 2
+    image: chasemoskal/profile-server:v0.0.0-dev.0

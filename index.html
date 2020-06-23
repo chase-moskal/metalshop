@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width,initial-scale=1"/>
+		<title>🤘 metalshop</title>
+
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oxanium&display=swap"/>
+		<link rel="stylesheet" href="demo.css"/>
+
+		<script type="importmap-shim" src="./dist/importmap.json"></script>
+		<script async defer type="module-shim" src="./dist/start-metalshop-demo.js"></script>
+		<script async defer src="https://unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.js"></script>
+
+		<!-- metalshop is configured by this element -->
+		<metal-config mock></metal-config>
+	</head>
+	<body>
+		<header>
+			<h1>🤘 metalshop</h1>
+
+			<!-- menu system comes from the "menutown" library -->
+			<menu-system sticky initially-hidden>
+				<menu-display>
+
+					<!-- metalshop ui components -->
+					<metal-my-avatar slot="button" title="Your Account"></metal-my-avatar>
+					<metal-account initially-hidden>
+						<h2 slot="top">Your account</h2>
+						<metal-personal></metal-personal>
+						<metal-paywall></metal-paywall>
+					</metal-account>
+
+				</menu-display>
+			</menu-system>
+		</header>
+		<main class="content">
+			<section class="twoside">
+				<section>
+					<h2>metalshop is open source love</h2>
+					<p>hi, i'm chase moskal, and metalshop is my open source journey into modern javascript app architecture and infrastructure</p>
+					<p></p>
+					<p><a href="https://github.com/chase-moskal/metalshop">metalshop on github</a></p>
+					<h3>app features as web components</h3>
+					<p>features like user logins and paywalls and stuff are implemented as web components, whose pastable and customizable html snippets can be freely sprinked around your web apps</p>
+					<h3>authentication and authorization</h3>
+					<p>metalshop's plug-and-play token-based auth system works cross-domain and is built for node microservices</p>
+					<h3>microservices orchestrated on kubernetes</h3>
+					<p>metalshop comes with a bunch of node microservices, which are organized as a helm chart called "metalback", deployable to any cloud provider</p>
+				</section>
+				<section>
+					<h2>this is the demo/dev page</h2>
+					<p>so go ahead and play around, login at the top right!</p>
+					<p>remember, this stuff is work-in-progress, so some stuff doesn't work yet in various modes</p>
+					<h3>Mix-and-match mock mode</h3>
+					<ul>
+						<li><a href="/?mock">/?mock</a> ← start logged out</li>
+						<li><a href="/?mock=loggedin">/?mock=loggedin</a> ← start logged in</li>
+						<li><a href="/?mock=loggedin+open">/?mock=loggedin+open</a> ← with menu open</li>
+						<li><a href="/?mock=loggedin+admin">/?mock=loggedin+admin</a> ← be an administrator</li>
+						<li><a href="/?mock=loggedin+premium">/?mock=loggedin+premium</a> ← be a premium user</li>
+						<li><a href="/?mock=loggedin+premium+admin">/?mock=loggedin+premium+admin</a> ← god mode</li>
+					</ul>
+					<!-- <h3>choose your microservices</h3>
+					<ul>
+						<li><a href="/">/</a> ← mock mode by default for now</li>
+						<li><a href="/?dev=node">/?dev=node</a> ← local node microservices</li>
+						<li><a href="/?dev=minikube">/?dev=minikube</a> ← local kubernetes cluster</li>
+						<li><a href="/?dev=prod">/?dev=prod</a> ← production cluster</li>
+					</ul> -->
+				</section>
+			</section>
+			<section class="component-demos">
+				<h2>
+					component demos
+					<small>
+						<metal-admin-mode initially-hidden>Admin mode</metal-admin-mode>
+					</small>
+				</h2>
+				<details open>
+					<summary>&lt;metal-seeker&gt;</summary>
+					<div>
+						<metal-seeker></metal-seeker>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;demo-cobalt&gt;</summary>
+					<div>
+						<demo-cobalt></demo-cobalt>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;iron-text-input&gt;</summary>
+					<div>
+						<iron-text-input value="Che">
+							Nickname
+						</iron-text-input>
+						<br/>
+						<br/>
+						<iron-text-input readonly value="Che">
+							Nickname
+						</iron-text-input>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;metal-is-*&gt; components</summary>
+					<div>
+						<p><strong>&lt;metal-is-loggedin&gt;</strong></p>
+						<metal-is-loggedin initially-hidden>
+							<p>you are logged in</p>
+							<p slot="not">you are logged out</p>
+						</metal-is-loggedin>
+						<br/>
+						<p><strong>&lt;metal-is-premium&gt;</strong></p>
+						<metal-is-premium initially-hidden>
+							<p>you are premium</p>
+							<p slot="not">you are NOT premium</p>
+						</metal-is-premium>
+						<br/>
+						<p><strong>&lt;metal-is-admin&gt;</strong></p>
+						<metal-is-admin fancy initially-hidden>
+							<p>you are admin</p>
+							<p slot="not">you are NOT admin</p>
+						</metal-is-admin>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;metal-button-*&gt;</summary>
+					<div>
+						<metal-button-auth></metal-button-auth>
+						<metal-button-premium></metal-button-premium>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;iron-loading&gt;</summary>
+					<div>
+						<demo-iron-loading></demo-iron-loading>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;metal-questions&gt;</summary>
+					<div>
+						<metal-questions board="qa1" initially-hidden>
+							<h2 slot="post">Post your question!</h2>
+							<h2 slot="rate">Rate other submitted questions</h2>
+						</metal-questions>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;metal-countdown&gt;</summary>
+					<div>
+						<metal-countdown event-name="countdown1" initially-hidden>
+							<h2>Countdown to next stream</h2>
+						</metal-countdown>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;metal-liveshow&gt;</summary>
+					<div>
+						<metal-liveshow video-name="livestream" initially-hidden>
+							<h2>Welcome to the private livestream!</h2>
+							<p>You are logged in as a premium supporter</p>
+						</metal-liveshow>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;metal-account&gt;</summary>
+					<div>
+						<metal-account initially-hidden>
+							<h2 slot="top">Your account</h2>
+							<metal-profile></metal-profile>
+							<metal-settings></metal-settings>
+							<metal-paywall></metal-paywall>
+						</metal-account>
+					</div>
+				</details>
+				<details>
+					<summary>&lt;metal-account&gt; disassembled</summary>
+					<div>
+						<br/><h3>profile:</h3>
+						<metal-profile></metal-profile>
+						<br/><h3>settings:</h3>
+						<metal-settings></metal-settings>
+						<br/><h3>paywall:</h3>
+						<metal-paywall></metal-paywall>
+					</div>
+				</details>
+			</section>
+		</main>
+	</body>
+</html>
