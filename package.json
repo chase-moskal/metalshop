@@ -17,7 +17,7 @@
 		"watch": "tsc -w",
 		"start": "serve",
 		"generate-keys": "./node_modules/redcrypto/generate-keys && mv private.pem metalback/config/auth-server.private.pem && mv public.pem metalback/config/auth-server.public.pem",
-		"test": "exit 0"
+		"test": "cynic node dist/tests.test.js"
 	},
 	"devDependencies": {
 		"@types/gapi.auth2": "0.0.52",
@@ -27,17 +27,18 @@
 		"@types/koa-mount": "^4.0.0",
 		"@types/koa-static": "^4.0.1",
 		"@types/koa__cors": "^3.0.1",
+		"@types/mongodb": "^3.5.23",
 		"@types/node": "^14.0.13",
 		"@types/pug": "^2.0.4",
-		"@types/mongodb": "^3.5.23",
+		"cynic": "0.1.0-dev.9",
+		"feather-icons": "^4.28.0",
 		"importly": "0.1.0-dev.0",
 		"mkdirp": "^1.0.4",
 		"npm-run-all": "^4.1.5",
+		"octicons": "^8.5.0",
 		"rimraf": "^3.0.2",
 		"serve": "^11.3.2",
-		"typescript": "^3.9.5",
-		"feather-icons": "^4.28.0",
-		"octicons": "^8.5.0"
+		"typescript": "^3.9.5"
 	},
 	"dependencies": {
 		"@adobe/lit-mobx": "0.0.4",
@@ -46,7 +47,6 @@
 		"chalk": "^4.1.0",
 		"commotion": "^0.1.0-dev.0",
 		"crosscall": "0.0.6-dev.19",
-		"cynic": "0.1.0-dev.8",
 		"google-auth-library": "^6.0.2",
 		"js-yaml": "^3.14.0",
 		"koa": "^2.13.0",
