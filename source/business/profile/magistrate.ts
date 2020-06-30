@@ -3,23 +3,10 @@ import {
 	Profile,
 	VerifyToken,
 	AccessToken,
-	ProfileRecord,
 	AccessPayload,
 	ProfileDatalayer,
 	ProfileMagistrateTopic,
 } from "../../interfaces.js"
-
-const toProfile = (record: ProfileRecord): Profile => (
-	record
-		? {
-			userId: record.userId,
-			avatar: record.avatar,
-			joined: record.joined,
-			tagline: record.tagline,
-			nickname: record.nickname,
-		}
-		: null
-)
 
 const limitLength = (limit: number, value: string) => {
 	if (value && value.length > limit)
@@ -34,7 +21,7 @@ export function makeProfileMagistrate({verifyToken, profileDatalayer}: {
 	async function getProfile({userId}: {
 			userId: string
 		}): Promise<Profile> {
-		return toProfile(await profileDatalayer.getRecordByUserId(userId))
+		return await profileDatalayer.getRecordByUserId(userId)
 	}
 
 	async function setProfile({profile, accessToken}: {

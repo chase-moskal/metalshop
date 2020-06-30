@@ -2,14 +2,10 @@
 import {
 	User,
 	AuthCommon,
-	UserRecord,
 	UserDatalayer,
 } from "../../interfaces.js"
 
-const toUser = ({userId, claims}: UserRecord): User => ({
-	claims,
-	userId,
-})
+import * as convertUserRecord from "./convert-user-record.js"
 
 export function makeAuthVanguard({userDatalayer, generateUserId}: {
 		userDatalayer: UserDatalayer
@@ -18,7 +14,9 @@ export function makeAuthVanguard({userDatalayer, generateUserId}: {
 
 	async function getUser({userId}: {userId: string}): Promise<User> {
 		const record = await userDatalayer.getRecordByUserId(userId)
-		return record ? toUser(record) : undefined
+		return record
+			? convertUserRecord.toUser(record)
+			: undefined
 	}
 
 	async function createUser({googleId, claims}): Promise<User> {
@@ -31,11 +29,13 @@ export function makeAuthVanguard({userDatalayer, generateUserId}: {
 			}
 			await userDatalayer.insertRecord(record)
 		}
-		return toUser(record)
+		return convertUserRecord.toUser(record)
 	}
 
 	async function setClaims({userId, claims}): Promise<User> {
-		return toUser(await userDatalayer.setRecordClaims(userId, claims))
+		return convertUserRecord.toUser(
+			await userDatalayer.setRecordClaims(userId, claims)
+		)
 	}
 
 	return {

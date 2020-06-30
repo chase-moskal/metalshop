@@ -1,11 +1,9 @@
 
 import {Profile, AccessToken, Topic} from "../../interfaces.js"
 
-export interface ProfileRecord extends Profile {}
-
 export interface ProfileDatalayer {
-	getRecordByUserId(userId: string): Promise<ProfileRecord>
-	upsertRecord(record: ProfileRecord): Promise<void>
+	getRecordByUserId(userId: string): Promise<Profile>
+	upsertRecord(record: Profile): Promise<void>
 }
 
 export interface ProfileMagistrateTopic extends

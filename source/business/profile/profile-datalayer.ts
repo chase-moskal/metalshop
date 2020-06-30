@@ -1,6 +1,6 @@
 
 import {Collection} from "../../commonjs/mongodb.js"
-import {ProfileDatalayer, ProfileRecord} from "../../interfaces.js"
+import {ProfileDatalayer, Profile} from "../../interfaces.js"
 
 export function mongoProfileDatalayer({collection}: {
 		collection: Collection
@@ -13,7 +13,7 @@ export function mongoProfileDatalayer({collection}: {
 		},
 
 		async getRecordByUserId(userId) {
-			return collection.findOne<ProfileRecord>({userId})
+			return collection.findOne<Profile>({userId})
 		},
 	}
 }

@@ -1,14 +1,14 @@
 
-import {ProfileDatalayer, ProfileRecord} from "../../../interfaces.js"
+import {ProfileDatalayer, Profile} from "../../../interfaces.js"
 
 export function mockProfileDatalayer(): ProfileDatalayer {
-	const records: ProfileRecord[] = []
+	const records: Profile[] = []
 
-	async function getRecordByUserId(userId: string): Promise<ProfileRecord> {
+	async function getRecordByUserId(userId: string): Promise<Profile> {
 		return records.find(record => record.userId === userId)
 	}
 
-	async function upsertRecord(record: ProfileRecord): Promise<void> {
+	async function upsertRecord(record: Profile): Promise<void> {
 		const existing = await getRecordByUserId(record.userId)
 		if (existing && existing !== record)
 			Object.assign(existing, record)

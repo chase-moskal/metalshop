@@ -1,5 +1,5 @@
 
-export * from "./business/admin/interfaces.js"
+export * from "./business/admin/types.js"
 export * from "./business/auth/interfaces.js"
 export * from "./business/paywall/interfaces.js"
 export * from "./business/profile/interfaces.js"

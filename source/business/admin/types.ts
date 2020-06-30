@@ -2,16 +2,20 @@
 import {
 	Topic,
 	Persona,
+	Profile,
 	BanClaim,
+	UserRecord,
 	AccessToken,
 } from "../../interfaces.js"
 
-export interface AdminSearchTopic {
-	search(o: {
-			needle: string
-			accessToken: AccessToken
-		}): Promise<Persona[]>
-}
+import {DbbyTable} from "../../toolbox/dbby/types.js"
+
+export type UserTable = DbbyTable<UserRecord>
+export type ProfileTable = DbbyTable<Profile>
+
+//
+// CONCEPT OF INVITE CODES
+//
 
 export type InviteCode = string
 export interface InviteBase {
@@ -30,6 +34,17 @@ export interface TagInvite extends InviteBase {
 }
 export type Invite = AdminInvite | StaffInvite | ModeratorInvite
 	| PremiumInvite | TagInvite
+
+//
+// TOPICS AVAILABLE TO FRONTEND
+//
+
+export interface AdminSearchTopic {
+	search(o: {
+			needle: string
+			accessToken: AccessToken
+		}): Promise<Persona[]>
+}
 
 export interface AdminControlTopic extends Topic<AdminControlTopic> {
 	invite(o: {
