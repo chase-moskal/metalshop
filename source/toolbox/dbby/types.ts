@@ -8,15 +8,33 @@ export interface DbbyConditions<Row extends {}> {
 	includes?: Partial<Row>
 }
 
-export interface DbbyReadOptions {
-	max?: number
-	offset?: number
+export interface DbbyNonConditional {
+	conditions: false | null
 }
+
+export interface DbbySingleConditional<Row extends {}> {
+	conditions: DbbyConditions<Row>
+}
+
+export interface DbbyMultiConditional<Row extends {}> {
+	multi: "and" | "or"
+	conditions: DbbyConditions<Row>[]
+}
+
+export type DbbyConditional<Row extends {}> =
+	| DbbySingleConditional<Row>
+	| DbbyMultiConditional<Row>
+	| DbbyNonConditional
 
 export interface DbbyTable<Row extends {}> {
 	create(row: Row): Promise<void>
-	read(conditions?: DbbyConditions<Row>, options?: DbbyReadOptions): Promise<Row[]>
-	update(conditions: DbbyConditions<Row>, update: Partial<Row>): Promise<void>
-	delete(conditions: DbbyConditions<Row>): Promise<void>
-	count(conditions?: DbbyConditions<Row>): Promise<number>
+	read(options: DbbyConditional<Row> & {
+			max?: number
+			offset?: number
+		}): Promise<Row[]>
+	update(options: DbbyConditional<Row> & {
+			replace: Partial<Row>
+		}): Promise<void>
+	delete(options: DbbyConditional<Row>): Promise<void>
+	count(options: DbbyConditional<Row>): Promise<number>
 }

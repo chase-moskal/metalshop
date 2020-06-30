@@ -1,11 +1,11 @@
 
-import {DbbyTable, DbbyConditions} from "./types.js"
+import {DbbyTable, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional} from "./types.js"
 
 export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 	let table: Row[] = []
 
-	function select(conditions: DbbyConditions<Row>): Row[] {
-		const filterRow = (row: Row) => filterRowByConditions(row, conditions)
+	function select(conditional: DbbyConditional<Row>): Row[] {
+		const filterRow = (row: Row) => rowVersusConditional(row, conditional)
 		return table.filter(filterRow)
 	}
 
@@ -15,25 +15,25 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 			table.push(copy(row))
 		},
 
-		async read(conditions = {}, {max = 1000, offset = 0} = {}) {
-			return copy(select(conditions).slice(offset * max, offset + max))
+		async read({max = 1000, offset = 0, ...conditional}) {
+			return copy(select(conditional).slice(offset * max, offset + max))
 		},
 
-		async update(conditions, update) {
-			const rows = select(conditions)
+		async update({replace, ...conditional}) {
+			const rows = select(conditional)
 			for (const row of rows) {
-				for (const [key, value] of Object.entries(update))
+				for (const [key, value] of Object.entries(replace))
 					row[key] = value
 			}
 		},
 
-		async delete(conditions) {
-			const flippedFilterRow = (row: Row) => !filterRowByConditions(row, conditions)
+		async delete(conditional) {
+			const flippedFilterRow = (row: Row) => !rowVersusConditional(row, conditional)
 			table = table.filter(flippedFilterRow)
 		},
 
-		async count(conditions = {}) {
-			return select(conditions).length
+		async count(conditional) {
+			return select(conditional).length
 		}
 	}
 }
@@ -58,9 +58,37 @@ function compare<Row>(
 	return !failures
 }
 
-function filterRowByConditions<Row extends {}>(
+function rowVersusConditional<Row extends {}>(
 		row: Row,
-		conditions: DbbyConditions<Row>,
+		conditional: DbbyConditional<Row>,
+	): boolean {
+
+	// evaluate multi conditional
+	if ((<DbbyMultiConditional<Row>>conditional).multi) {
+		const multipleConditional = <DbbyMultiConditional<Row>>conditional
+		const and = multipleConditional.multi === "and"
+		let finalResult = and
+		for (const conditions of multipleConditional.conditions) {
+			const result = rowVersusConditions<Row>(row, conditions)
+			finalResult = and
+				? finalResult && result
+				: finalResult || result
+		}
+	}
+
+	// evaluate single conditional
+	else if ((<DbbySingleConditional<Row>>conditional).conditions) {
+		const singleConditional = <DbbySingleConditional<Row>>conditional
+		return rowVersusConditions<Row>(row, singleConditional.conditions)
+	}
+
+	// no conditions
+	else return true
+}
+
+function rowVersusConditions<Row extends {}>(
+		row: Row,
+		conditions: DbbyConditions<Row>
 	): boolean {
 
 	if (!Object.keys(conditions).length) return true
