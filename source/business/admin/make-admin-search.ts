@@ -22,8 +22,8 @@ export function makeAdminSearch({userTable, profileTable, verifyToken}: {
 			if (!needle) return []
 
 			const results = await Promise.all([
-				profileTable.read({equal: {userId: needle}}),
-				profileTable.read({includes: {nickname: needle}}),
+				profileTable.read({conditions: {equal: {userId: needle}}}),
+				profileTable.read({conditions: {includes: {nickname: needle}}}),
 			])
 
 			const profiles: Profile[] = []
@@ -35,8 +35,8 @@ export function makeAdminSearch({userTable, profileTable, verifyToken}: {
 
 			const promisedPersonas: Promise<Persona>[] = profiles.map(
 				async profile => {
-					const record = first(await userTable.read({equal: {
-						userId: profile.userId
+					const record = first(await userTable.read({conditions: {
+						equal: {userId: profile.userId}
 					}}))
 					const user = convertUserRecord.toUser(record)
 					return {profile, user}
