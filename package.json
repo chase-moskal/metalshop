@@ -38,7 +38,7 @@
 		"octicons": "^8.5.0",
 		"rimraf": "^3.0.2",
 		"serve": "^11.3.2",
-		"typescript": "^3.9.5"
+		"typescript": "^4.0.0-beta"
 	},
 	"dependencies": {
 		"@adobe/lit-mobx": "0.0.4",
