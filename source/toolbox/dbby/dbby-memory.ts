@@ -1,5 +1,4 @@
 
-import {first} from "./first.js"
 import {DbbyTable, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional, DbbyReplace, DbbyUpsert} from "./types.js"
 
 export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
