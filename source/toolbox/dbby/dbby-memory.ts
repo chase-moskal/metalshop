@@ -5,13 +5,11 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 	let table: Row[] = []
 
 	function select(conditional: DbbyConditional<Row>): Row[] {
-		const filterRow = (row: Row) => rowVersusConditional(row, conditional)
-		return table.filter(filterRow)
+		return table.filter(row => rowVersusConditional(row, conditional))
 	}
 
 	function selectOne(conditional: DbbyConditional<Row>): Row {
-		const filterRow = (row: Row) => rowVersusConditional(row, conditional)
-		return table.find(filterRow)
+		return table.find(row => rowVersusConditional(row, conditional))
 	}
 
 	function updateRow(rows: Row[], update: Partial<Row>) {
