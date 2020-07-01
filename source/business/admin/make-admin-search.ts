@@ -1,9 +1,8 @@
 
+import {AdminSearchTopic} from "./types.js"
 import {isUserAdmin} from "./is-user-admin.js"
-import {first} from "../../toolbox/dbby/first.js"
 import * as convertUserRecord from "../auth/convert-user-record.js"
-import {AdminSearchTopic, UserTable, ProfileTable} from "./types.js"
-import {AccessToken, VerifyToken, AccessPayload, Profile, Persona} from "../../interfaces.js"
+import {AccessToken, VerifyToken, AccessPayload, Profile, Persona, UserTable, ProfileTable} from "../../interfaces.js"
 
 export function makeAdminSearch({userTable, profileTable, verifyToken}: {
 		userTable: UserTable
@@ -35,9 +34,9 @@ export function makeAdminSearch({userTable, profileTable, verifyToken}: {
 
 			const promisedPersonas: Promise<Persona>[] = profiles.map(
 				async profile => {
-					const record = first(await userTable.read({conditions: {
+					const record = await userTable.one({conditions: {
 						equal: {userId: profile.userId}
-					}}))
+					}})
 					const user = convertUserRecord.toUser(record)
 					return {profile, user}
 				}

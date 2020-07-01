@@ -1,5 +1,5 @@
 
-import {User, Profile, AccessToken} from "../../interfaces.js"
+import {User, Profile, AccessToken, QuestionRecord} from "../../interfaces.js"
 
 export interface QuestionAuthor {
 	user: User
@@ -23,15 +23,15 @@ export interface Question extends QuestionDraft {
 	author: QuestionAuthor
 }
 
-export interface QuestionRecord {
-	time: number
-	board: string
-	content: string
-	archive: boolean
-	questionId: string
-	authorUserId: string
-	likes: {userId: string}[]
-}
+// export interface QuestionRecord {
+// 	time: number
+// 	board: string
+// 	content: string
+// 	archive: boolean
+// 	questionId: string
+// 	authorUserId: string
+// 	likes: {userId: string}[]
+// }
 
 export interface QuestionsDatalayer {
 	fetchRecords(board: string): Promise<QuestionRecord[]>

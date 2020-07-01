@@ -3,6 +3,7 @@ import {
 	User,
 	Topic,
 	Claims,
+	UserRecord,
 	AuthTokens,
 	AccessToken,
 	RefreshToken,
@@ -14,11 +15,11 @@ export type InitializePersona = (o: {
 	avatar?: string
 }) => Promise<void>
 
-export interface UserRecord {
-	claims: Claims
-	userId: string
-	googleId: string
-}
+// export interface UserRecord {
+// 	claims: Claims
+// 	userId: string
+// 	googleId: string
+// }
 
 export interface TokenStoreTopic extends Topic<TokenStoreTopic> {
 	clearTokens(): Promise<void>

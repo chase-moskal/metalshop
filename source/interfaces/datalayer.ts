@@ -2,9 +2,9 @@
 import {
 	User,
 	Profile,
-} from "./interfaces.js"
+} from "./common.js"
 
-import {DbbyTable} from "./toolbox/dbby/types.js"
+import {DbbyTable} from "../toolbox/dbby/types.js"
 
 export interface ProfileRecord extends Profile {}
 

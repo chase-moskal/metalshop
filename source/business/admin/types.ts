@@ -8,10 +8,10 @@ import {
 	AccessToken,
 } from "../../interfaces.js"
 
-import {DbbyTable} from "../../toolbox/dbby/types.js"
+// import {DbbyTable} from "../../toolbox/dbby/types.js"
 
-export type UserTable = DbbyTable<UserRecord>
-export type ProfileTable = DbbyTable<Profile>
+// export type UserTable = DbbyTable<UserRecord>
+// export type ProfileTable = DbbyTable<Profile>
 
 //
 // CONCEPT OF INVITE CODES

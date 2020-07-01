@@ -1,6 +1,5 @@
 
-import {User} from "../../interfaces.js"
-import {UserRecord} from "./interfaces.js"
+import {User, UserRecord} from "../../interfaces.js"
 
 export const toUser = ({userId, claims}: UserRecord): User => ({
 	claims,
