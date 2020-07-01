@@ -21,12 +21,12 @@ async function setupThreeUserDemo() {
 
 export default <Suite>{
 	"dbby-memory": {
-		"can create rows and read 'em back": async() => {
+		"create rows and read 'em back": async() => {
 			const dbby = await setupThreeUserDemo()
 			const users = await dbby.read({conditions: false})
 			return expect(users.length).equals(3)
 		},
-		"read with single conditions": async() => {
+		"read with single set of conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true
 				&& expect([
@@ -35,6 +35,12 @@ export default <Suite>{
 						...await dbby.read({conditions: {equal: {userId: "u125"}}}),
 					].length).equals(3)
 				&& expect((
+						await dbby.read({conditions: {
+							greater: {balance: 50},
+							equal: {location: "america"}
+						}})
+					).length).equals(1)
+				&& expect((
 						await dbby.read({conditions: {less: {balance: 50}}})
 					).length).equals(2)
 				&& expect((
@@ -42,44 +48,44 @@ export default <Suite>{
 					).length).equals(2)
 			)
 		},
-		"read with multi conditional, and/or": async() => {
+		"read with multiple conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true
 				&& expect((
-					await dbby.read({
-						multi: "and",
-						conditions: [
-							{less: {balance: 200}},
-							{equal: {location: "canada"}},
-						]
-					})
-				).length).equals(2)
+						await dbby.read({
+							multi: "and",
+							conditions: [
+								{less: {balance: 200}},
+								{equal: {location: "canada"}},
+							]
+						})
+					).length).equals(2)
 				&& expect((
-					await dbby.read({
-						multi: "or",
-						conditions: [
-							{less: {balance: 50}},
-							{equal: {location: "america"}},
-						]
-					})
-				).length).equals(3)
+						await dbby.read({
+							multi: "or",
+							conditions: [
+								{less: {balance: 50}},
+								{equal: {location: "america"}},
+							]
+						})
+					).length).equals(3)
 			)
 		},
 		"read with no conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true
 				&& expect((
-					await dbby.read({conditions: false})
-				).length).equals(3)
+						await dbby.read({conditions: false})
+					).length).equals(3)
 			)
 		},
-		"can delete a row and it's gone": async() => {
+		"delete a row and it's gone": async() => {
 			const dbby = await setupThreeUserDemo()
 			await dbby.delete({conditions: {equal: {userId: "u123"}}})
 			const users = await dbby.read({conditions: false})
 			return expect(users.length).equals(2)
 		},
-		"can update a row and it sticks": async() => {
+		"update a row and it sticks": async() => {
 			const dbby = await setupThreeUserDemo()
 			await dbby.update({
 				conditions: {equal: {userId: "u123"}},
@@ -88,7 +94,7 @@ export default <Suite>{
 			const user = first(await dbby.read({conditions: {equal: {userId: "u123"}}}))
 			return expect(user.location).equals("argentina")
 		},
-		"can run count queries": async() => {
+		"count rows with conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			const countAll = await dbby.count({conditions: false})
 			const countCanadians = await dbby.count({conditions: {equal: {location: "canada"}}})
