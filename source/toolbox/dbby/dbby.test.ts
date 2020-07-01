@@ -1,5 +1,4 @@
 
-import {first} from "./first.js"
 import {Suite, expect} from "cynic"
 import {dbbyMemory} from "./dbby-memory.js"
 
@@ -25,6 +24,17 @@ export default <Suite>{
 			const dbby = await setupThreeUserDemo()
 			const users = await dbby.read({conditions: false})
 			return expect(users.length).equals(3)
+		},
+		"read one": async() => {
+			const dbby = await setupThreeUserDemo()
+			return (true
+				&& expect(
+						await dbby.one({conditions: {equal: {userId: "u123"}}})
+					).ok()
+				&& expect(
+						await dbby.one({conditions: false})
+					).ok()
+			)
 		},
 		"read with single sets of conditions": async() => {
 			const dbby = await setupThreeUserDemo()
@@ -88,8 +98,35 @@ export default <Suite>{
 				conditions: {equal: {userId: "u123"}},
 				replace: {location: "argentina"},
 			})
-			const user = first(await dbby.read({conditions: {equal: {userId: "u123"}}}))
+			const user = await dbby.one({conditions: {equal: {userId: "u123"}}})
 			return expect(user.location).equals("argentina")
+		},
+		"update upsert can update or insert": async() => {
+			const dbby = await setupThreeUserDemo()
+			await Promise.all([
+				dbby.update({
+					conditions: {equal: {userId: "u123"}},
+					upsert: {
+						userId: "u123",
+						balance: 500,
+						location: "america",
+					},
+				}),
+				dbby.update({
+					conditions: {equal: {userId: "u126"}},
+					upsert: {
+						userId: "u126",
+						balance: 1000,
+						location: "argentina",
+					},
+				}),
+			])
+			const america = await dbby.one({conditions: {equal: {userId: "u123"}}})
+			const argentina = await dbby.one({conditions: {equal: {userId: "u126"}}})
+			return (true
+				&& expect(america.balance).equals(500)
+				&& expect(argentina.balance).equals(1000)
+			)
 		},
 		"count rows with conditions": async() => {
 			const dbby = await setupThreeUserDemo()

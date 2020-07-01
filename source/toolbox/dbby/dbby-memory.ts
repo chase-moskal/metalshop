@@ -1,5 +1,6 @@
 
-import {DbbyTable, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional} from "./types.js"
+import {first} from "./first.js"
+import {DbbyTable, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional, DbbyReplace, DbbyUpsert} from "./types.js"
 
 export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 	let table: Row[] = []
@@ -9,22 +10,43 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 		return table.filter(filterRow)
 	}
 
+	function selectOne(conditional: DbbyConditional<Row>): Row {
+		const filterRow = (row: Row) => rowVersusConditional(row, conditional)
+		return table.find(filterRow)
+	}
+
+	function updateRow(rows: Row[], update: Partial<Row>) {
+		for (const row of rows)
+			for (const [key, value] of Object.entries(update))
+				row[key] = value
+	}
+
+	function insertCopy(row: Row) {
+		table.push(copy(row))
+	}
+
 	return {
 
 		async create(row) {
-			table.push(copy(row))
+			insertCopy(row)
 		},
 
 		async read({max = 1000, offset = 0, ...conditional}) {
 			return copy(select(conditional).slice(offset * max, offset + max))
 		},
 
-		async update({replace, ...conditional}) {
+		async one(conditional) {
+			return copy(selectOne(conditional))
+		},
+
+		async update({replace, upsert, ...conditional}: DbbyReplace<Row> & DbbyUpsert<Row>) {
 			const rows = select(conditional)
-			for (const row of rows) {
-				for (const [key, value] of Object.entries(replace))
-					row[key] = value
+			if (replace) updateRow(rows, replace)
+			else if (upsert) {
+				if (rows.length) updateRow(rows, upsert)
+				else insertCopy(upsert)
 			}
+			else throw new Error("invalid update")
 		},
 
 		async delete(conditional) {

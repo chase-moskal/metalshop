@@ -32,20 +32,24 @@ export interface DbbyMultiConditional<Row extends {}> {
 	conditions: DbbyConditions<Row>[]
 }
 
+export type DbbyUpsert<Row extends {}> = DbbyConditional<Row> & {upsert: Row}
+export type DbbyReplace<Row extends {}> = DbbyConditional<Row> & {replace: Partial<Row>}
+
 export type DbbyConditional<Row extends {}> =
 	| DbbySingleConditional<Row>
 	| DbbyMultiConditional<Row>
 	| DbbyNonConditional
 
+export type DbbyPaginated<Row extends {}> = DbbyConditional<Row> & {
+	max?: number
+	offset?: number
+}
+
 export interface DbbyTable<Row extends {}> {
 	create(row: Row): Promise<void>
-	read(options: DbbyConditional<Row> & {
-			max?: number
-			offset?: number
-		}): Promise<Row[]>
-	update(options: DbbyConditional<Row> & {
-			replace: Partial<Row>
-		}): Promise<void>
+	read(options: DbbyPaginated<Row>): Promise<Row[]>
+	one(options: DbbyConditional<Row>): Promise<Row>
+	update(options: DbbyReplace<Row> | DbbyUpsert<Row>): Promise<void>
 	delete(options: DbbyConditional<Row>): Promise<void>
 	count(options: DbbyConditional<Row>): Promise<number>
 }
