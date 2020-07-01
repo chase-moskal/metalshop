@@ -74,6 +74,7 @@ function rowVersusConditional<Row extends {}>(
 				? finalResult && result
 				: finalResult || result
 		}
+		return finalResult
 	}
 
 	// evaluate single conditional

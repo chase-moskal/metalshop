@@ -26,7 +26,7 @@ export default <Suite>{
 			const users = await dbby.read({conditions: false})
 			return expect(users.length).equals(3)
 		},
-		"read by various conditions": async() => {
+		"read with single conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true
 				&& expect([
@@ -40,6 +40,37 @@ export default <Suite>{
 				&& expect((
 						await dbby.read({conditions: {includes: {location: "can"}}})
 					).length).equals(2)
+			)
+		},
+		"read with multi conditional, and/or": async() => {
+			const dbby = await setupThreeUserDemo()
+			return (true
+				&& expect((
+					await dbby.read({
+						multi: "and",
+						conditions: [
+							{less: {balance: 200}},
+							{equal: {location: "canada"}},
+						]
+					})
+				).length).equals(2)
+				&& expect((
+					await dbby.read({
+						multi: "or",
+						conditions: [
+							{less: {balance: 50}},
+							{equal: {location: "america"}},
+						]
+					})
+				).length).equals(3)
+			)
+		},
+		"read with no conditions": async() => {
+			const dbby = await setupThreeUserDemo()
+			return (true
+				&& expect((
+					await dbby.read({conditions: false})
+				).length).equals(3)
 			)
 		},
 		"can delete a row and it's gone": async() => {

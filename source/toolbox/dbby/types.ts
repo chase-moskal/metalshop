@@ -4,7 +4,9 @@ export interface DbbyConditions<Row extends {}> {
 	truthy?: Partial<Row>
 	falsy?: Partial<Row>
 	less?: Partial<Row>
+	lessy?: Partial<Row>
 	greater?: Partial<Row>
+	greatery?: Partial<Row>
 	includes?: Partial<Row>
 }
 
