@@ -21,12 +21,12 @@ async function setupThreeUserDemo() {
 
 export default <Suite>{
 	"dbby-memory": {
-		"create rows and read 'em back": async() => {
+		"create rows and read 'em back unconditionally": async() => {
 			const dbby = await setupThreeUserDemo()
 			const users = await dbby.read({conditions: false})
 			return expect(users.length).equals(3)
 		},
-		"read with single set of conditions": async() => {
+		"read with single sets of conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true
 				&& expect([
@@ -40,6 +40,11 @@ export default <Suite>{
 							equal: {location: "america"}
 						}})
 					).length).equals(1)
+				&& expect((
+						await dbby.read({conditions: {
+							notEqual: {location: "america"}
+						}})
+					).length).equals(2)
 				&& expect((
 						await dbby.read({conditions: {less: {balance: 50}}})
 					).length).equals(2)
@@ -68,14 +73,6 @@ export default <Suite>{
 								{equal: {location: "america"}},
 							]
 						})
-					).length).equals(3)
-			)
-		},
-		"read with no conditions": async() => {
-			const dbby = await setupThreeUserDemo()
-			return (true
-				&& expect((
-						await dbby.read({conditions: false})
 					).length).equals(3)
 			)
 		},

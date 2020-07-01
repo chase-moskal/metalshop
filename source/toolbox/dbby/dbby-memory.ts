@@ -108,8 +108,19 @@ function rowVersusConditions<Row extends {}>(
 	check(conditions.truthy, a => !!a)
 	check(conditions.falsy, a => !a)
 	check(conditions.greater, (a, b) => a > b)
+	check(conditions.greatery, (a, b) => a >= b)
 	check(conditions.less, (a, b) => a < b)
+	check(conditions.lessy, (a, b) => a <= b)
 	check(conditions.includes, (a, b) => !!a.includes && a.includes(b))
+
+	check(conditions.notEqual, (a, b) => !(a === b))
+	check(conditions.notTruthy, a => !(!!a))
+	check(conditions.notFalsy, a => !(!a))
+	check(conditions.notGreater, (a, b) => !(a > b))
+	check(conditions.notGreatery, (a, b) => !(a >= b))
+	check(conditions.notLess, (a, b) => !(a < b))
+	check(conditions.notLessy, (a, b) => !(a <= b))
+	check(conditions.notIncludes, (a, b) => !(!!a.includes && a.includes(b)))
 
 	return !failures
 }

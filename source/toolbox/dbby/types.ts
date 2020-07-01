@@ -8,6 +8,15 @@ export interface DbbyConditions<Row extends {}> {
 	greater?: Partial<Row>
 	greatery?: Partial<Row>
 	includes?: Partial<Row>
+
+	notEqual?: Partial<Row>
+	notTruthy?: Partial<Row>
+	notFalsy?: Partial<Row>
+	notLess?: Partial<Row>
+	notLessy?: Partial<Row>
+	notGreater?: Partial<Row>
+	notGreatery?: Partial<Row>
+	notIncludes?: Partial<Row>
 }
 
 export interface DbbyNonConditional {
