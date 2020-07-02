@@ -2,7 +2,7 @@
 import {getStripeId} from "./helpers.js"
 import {Stripe} from "../../commonjs/stripe.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
-import {BillingRecord, StripeDatalayer, BillingDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, SetupMetadata} from "../../interfaces.js"
+import {BillingRecord, StripeDatalayer, SettingsDatalayer, AuthVanguardTopic, StripeWebhooks, SetupMetadata, BillingDatalayer} from "../../interfaces.js"
 
 export class StripeWebhookError extends Error {
 	name = this.constructor.name
@@ -18,9 +18,9 @@ export function makeStripeWebhooks({
 		settingsDatalayer,
 	}: {
 		logger: Logger
+		billingDatalayer: BillingDatalayer
 		authVanguard: AuthVanguardTopic
 		stripeDatalayer: StripeDatalayer
-		billingDatalayer: BillingDatalayer
 		settingsDatalayer: SettingsDatalayer
 	}): StripeWebhooks {
 
@@ -66,7 +66,7 @@ export function makeStripeWebhooks({
 		// update our billing record
 		const record = await billingDatalayer.getOrCreateRecord(userId)
 		record.premiumStripeSubscriptionId = stripeSubscriptionId
-		await billingDatalayer.setRecord(record)
+		await billingDatalayer.writeRecord(record)
 
 		// update our premium claim
 		await setUserPremiumClaim({userId, premium: true})
@@ -156,7 +156,7 @@ export function makeStripeWebhooks({
 
 			// set our billing record
 			record.premiumStripeSubscriptionId = null
-			await billingDatalayer.setRecord(record)
+			await billingDatalayer.writeRecord(record)
 		}
 	}
 

@@ -1,12 +1,6 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {Topic, AccessToken, CardClues} from "../../interfaces.js"
-
-export interface BillingRecord {
-	userId: string
-	stripeCustomerId: string
-	premiumStripeSubscriptionId?: string
-}
+import {Topic, AccessToken, CardClues, BillingRecord} from "../../interfaces.js"
 
 export type UpdateFlow = "UpdatePremiumSubscription"
 
@@ -67,7 +61,7 @@ export interface StripeDatalayer {
 }
 
 export interface BillingDatalayer {
-	setRecord(record: BillingRecord): Promise<void>
+	writeRecord(record: BillingRecord): Promise<void>
 	getOrCreateRecord(userId: string): Promise<BillingRecord>
 	getRecordByStripeCustomerId(stripeCustomerId: string): Promise<BillingRecord>
 }

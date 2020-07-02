@@ -14,18 +14,15 @@ export function makePaywallLiaison({
 		billingDatalayer: BillingDatalayer
 	}): PaywallLiaisonTopic {
 
-	const internal = {
-		async verify(accessToken: AccessToken) {
-			const {user} = await verifyToken<AccessPayload>(accessToken)
-			return user
-		},
+	async function verify(accessToken: AccessToken) {
+		const {user} = await verifyToken<AccessPayload>(accessToken)
+		return user
 	}
 
 	return {
 		async checkoutPremium({accessToken, popupUrl}) {
-			const {userId} = await internal.verify(accessToken)
-			const {stripeCustomerId} = await billingDatalayer
-				.getOrCreateRecord(userId)
+			const {userId} = await verify(accessToken)
+			const {stripeCustomerId} = await billingDatalayer.getOrCreateRecord(userId)
 
 			// initiate a stripe checkout to purchase premium subscription
 			const {stripeSessionId} = await stripeDatalayer
@@ -41,7 +38,7 @@ export function makePaywallLiaison({
 		},
 
 		async updatePremium({accessToken, popupUrl}) {
-			const {userId} = await internal.verify(accessToken)
+			const {userId} = await verify(accessToken)
 			const {
 				stripeCustomerId,
 				premiumStripeSubscriptionId,
@@ -64,9 +61,8 @@ export function makePaywallLiaison({
 		},
 
 		async cancelPremium({accessToken}) {
-			const {userId} = await internal.verify(accessToken)
-			const {premiumStripeSubscriptionId} = await billingDatalayer
-				.getOrCreateRecord(userId)
+			const {userId} = await verify(accessToken)
+			const {premiumStripeSubscriptionId} = await billingDatalayer.getOrCreateRecord(userId)
 
 			if (!premiumStripeSubscriptionId)
 				throw new Error("no subscription to cancel")

@@ -24,7 +24,7 @@ import {mockQuestionsDatalayer} from "../../business/questions/mocks/mock-questi
 import {random8} from "../../toolbox/random8.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
-import {AccessToken, LiveshowGovernorTopic, AccessPayload, UserTable, ProfileTable} from "../../interfaces.js"
+import {AccessToken, LiveshowGovernorTopic, AccessPayload, UserTable, ProfileTable, BillingTable} from "../../interfaces.js"
 
 import {nap} from "../toolbox/nap.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"

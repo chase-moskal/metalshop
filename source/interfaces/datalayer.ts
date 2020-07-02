@@ -22,6 +22,13 @@ export interface QuestionRecord {
 	likes: {userId: string}[]
 }
 
+export interface BillingRecord {
+	userId: string
+	stripeCustomerId: string
+	premiumStripeSubscriptionId?: string
+}
+
 export type UserTable = DbbyTable<UserRecord>
 export type ProfileTable = DbbyTable<ProfileRecord>
 export type QuestionTable = DbbyTable<QuestionRecord>
+export type BillingTable = DbbyTable<BillingRecord>

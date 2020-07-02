@@ -3,7 +3,6 @@ import {
 	User,
 	Topic,
 	Claims,
-	UserRecord,
 	AuthTokens,
 	AccessToken,
 	RefreshToken,
@@ -14,12 +13,6 @@ export type InitializePersona = (o: {
 	accessToken: AccessToken
 	avatar?: string
 }) => Promise<void>
-
-// export interface UserRecord {
-// 	claims: Claims
-// 	userId: string
-// 	googleId: string
-// }
 
 export interface TokenStoreTopic extends Topic<TokenStoreTopic> {
 	clearTokens(): Promise<void>
@@ -32,8 +25,7 @@ export interface AuthDealerTopic extends Topic<AuthDealerTopic> {
 	getUser(o: {userId: string}): Promise<User>
 }
 
-export interface AuthVanguardTopic
- extends AuthDealerTopic {
+export interface AuthVanguardTopic extends AuthDealerTopic {
 	createUser(o: {googleId: string; claims: Claims}): Promise<User>
 	setClaims(o: {userId: string, claims: Claims}): Promise<User>
 }

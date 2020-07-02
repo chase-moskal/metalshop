@@ -1,11 +1,12 @@
 
 import {pubsubs, pubsub} from "../../../toolbox/pubsub.js"
 import {Logger} from "../../../toolbox/logger/interfaces.js"
+import {dbbyMemory} from "../../../toolbox/dbby/dbby-memory.js"
 import {StripeWebhooks, AuthVanguardTopic, SettingsDatalayer} from "../../../interfaces.js"
 
 import {makeStripeWebhooks} from "../stripe-webhooks.js"
+import {makeBillingDatalayer} from "../billing-datalayer.js"
 import {mockStripeDatalayer} from "./mock-stripe-datalayer.js"
-import {mockBillingDatalayer} from "./mock-billing-datalayer.js"
 
 /**
  * create a closed circuit mock of stripe's system
@@ -38,7 +39,10 @@ export function mockStripeCircuit({
 
 	// give the publishers to the mock stripe datalayer
 	const stripeDatalayer = mockStripeDatalayer({webhooks: webhookPublishers})
-	const billingDatalayer = mockBillingDatalayer({stripeDatalayer})
+	const billingDatalayer = makeBillingDatalayer({
+		stripeDatalayer,
+		billingTable: dbbyMemory(),
+	})
 
 	// now create the a genuine webhooks instance which uses mocks
 	const webhooks = makeStripeWebhooks({
