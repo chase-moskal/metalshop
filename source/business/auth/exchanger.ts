@@ -44,7 +44,7 @@ export function makeAuthExchanger({
 				googleId,
 				claims: {},
 			})
-			const {userId} = user 
+			const {userId} = user
 
 			// generate refresh token so the user can reauthorize
 			const refreshToken = await signToken<RefreshPayload>(

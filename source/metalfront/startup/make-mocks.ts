@@ -13,10 +13,8 @@ import {makeQuestionsBureau} from "../../business/questions/bureau.js"
 import {makeProfileMagistrate} from "../../business/profile/magistrate.js"
 import {mockAdminSearch} from "../../business/admin/mocks/mock-admin-search.js"
 import {makeSettingsSheriff} from "../../business/settings/settings-sheriff.js"
-import {mockUserDatalayer} from "../../business/auth/mocks/mock-user-datalayer.js"
 import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circuit.js"
 import {curryInitializePersona} from "../../business/auth/curry-initialize-persona.js"
-import {mockProfileDatalayer} from "../../business/profile/mocks/mock-profile-datalayer.js"
 import {mockVerifyGoogleToken} from "../../business/auth/mocks/mock-verify-google-token.js"
 import {mockScheduleDatalayer} from "../../business/schedule/mocks/mock-schedule-datalayer.js"
 import {mockSettingsDatalayer} from "../../business/settings/mocks/mock-settings-datalayer.js"
@@ -25,7 +23,8 @@ import {mockQuestionsDatalayer} from "../../business/questions/mocks/mock-questi
 
 import {random8} from "../../toolbox/random8.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
-import {AccessToken, LiveshowGovernorTopic, AccessPayload} from "../../interfaces.js"
+import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
+import {AccessToken, LiveshowGovernorTopic, AccessPayload, UserTable, ProfileTable} from "../../interfaces.js"
 
 import {nap} from "../toolbox/nap.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
@@ -57,10 +56,11 @@ export const makeMocks = async({
 	const googleToken = `mock-google-token-${random8()}`
 	const premiumStripePlanId = `mock-premium-stripe-plan-${random8()}`
 
+	const userTable: UserTable = dbbyMemory()
+	const profileTable: ProfileTable = dbbyMemory()
+
 	const signToken = mockSignToken()
 	const verifyToken = mockVerifyToken()
-	const userDatalayer = mockUserDatalayer()
-	const profileDatalayer = mockProfileDatalayer()
 	const verifyGoogleToken = mockVerifyGoogleToken({
 		googleResult: {
 			googleId,
@@ -70,13 +70,13 @@ export const makeMocks = async({
 	})
 
 	const {authVanguard, authDealer} = makeAuthVanguard({
-		userDatalayer,
+		userTable,
 		generateUserId,
 	})
 
 	const profileMagistrate = makeProfileMagistrate({
 		verifyToken,
-		profileDatalayer,
+		profileTable,
 	})
 
 	const minute = 1000 * 60

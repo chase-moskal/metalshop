@@ -28,13 +28,6 @@ export interface TokenStoreTopic extends Topic<TokenStoreTopic> {
 	writeAccessToken(accessToken: AccessToken): Promise<void>
 }
 
-export interface UserDatalayer {
-	insertRecord(record: UserRecord): Promise<void>
-	getRecordByUserId(userId: string): Promise<UserRecord>
-	getRecordByGoogleId(googleId: string): Promise<UserRecord>
-	setRecordClaims(userId: string, claims: Claims): Promise<UserRecord>
-}
-
 export interface AuthDealerTopic extends Topic<AuthDealerTopic> {
 	getUser(o: {userId: string}): Promise<User>
 }
