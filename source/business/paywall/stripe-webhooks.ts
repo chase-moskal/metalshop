@@ -18,9 +18,9 @@ export function makeStripeWebhooks({
 		settingsDatalayer,
 	}: {
 		logger: Logger
-		billingDatalayer: BillingDatalayer
 		authVanguard: AuthVanguardTopic
 		stripeDatalayer: StripeDatalayer
+		billingDatalayer: BillingDatalayer
 		settingsDatalayer: SettingsDatalayer
 	}): StripeWebhooks {
 
@@ -30,8 +30,8 @@ export function makeStripeWebhooks({
 
 	const getSubscriptionDetails = (subscription: Stripe.Subscription) => ({
 		active: subscription.status === "active"
-		|| subscription.status === "trialing"
-		|| subscription.status === "past_due",
+			|| subscription.status === "trialing"
+			|| subscription.status === "past_due",
 		stripeSubscriptionId: subscription.id,
 		expires: subscription.current_period_end,
 		stripePaymentMethodId: getStripeId(subscription.default_payment_method),
@@ -72,13 +72,13 @@ export function makeStripeWebhooks({
 		await setUserPremiumClaim({userId, premium: true})
 
 		// update our settings
-		const settings = await settingsDatalayer.getOrCreateSettings(userId)
+		const settingsRecord = await settingsDatalayer.getOrCreateRecord(userId)
 		const {card} = await stripeDatalayer
 			.fetchPaymentDetailsBySubscriptionId(stripeSubscriptionId)
 		if (!card) throw err("card clues missing")
-		settings.premium = {expires}
-		settings.billing.premiumSubscription = {card}
-		await settingsDatalayer.saveSettings(settings)
+		settingsRecord.premium = {expires}
+		settingsRecord.billing.premiumSubscription = {card}
+		await settingsDatalayer.saveRecord(settingsRecord)
 	}
 
 	/**
@@ -110,9 +110,9 @@ export function makeStripeWebhooks({
 		})
 
 		// save our billing settings
-		const settings = await settingsDatalayer.getOrCreateSettings(userId)
-		settings.billing.premiumSubscription = {card}
-		await settingsDatalayer.saveSettings(settings)
+		const settingsRecord = await settingsDatalayer.getOrCreateRecord(userId)
+		settingsRecord.billing.premiumSubscription = {card}
+		await settingsDatalayer.saveRecord(settingsRecord)
 	}
 
 	/**
@@ -135,12 +135,12 @@ export function makeStripeWebhooks({
 			setUserPremiumClaim({userId, premium: true})
 
 			// set our billing settings
-			const settings = await settingsDatalayer.getOrCreateSettings(userId)
+			const settingsRecord = await settingsDatalayer.getRecord(userId)
 			const {card} = await stripeDatalayer
 				.fetchPaymentDetails(stripePaymentMethodId)
-			settings.premium = {expires}
-			settings.billing.premiumSubscription = {card}
-			await settingsDatalayer.saveSettings(settings)
+			settingsRecord.premium = {expires}
+			settingsRecord.billing.premiumSubscription = {card}
+			await settingsDatalayer.saveRecord(settingsRecord)
 		}
 		else {
 			const premium = Date.now() < expires
@@ -149,10 +149,10 @@ export function makeStripeWebhooks({
 			setUserPremiumClaim({userId, premium})
 
 			// set our billing settings
-			const settings = await settingsDatalayer.getOrCreateSettings(userId)
-			settings.premium = premium ? {expires} : null
-			settings.billing.premiumSubscription = null
-			await settingsDatalayer.saveSettings(settings)
+			const settingsRecord = await settingsDatalayer.getOrCreateRecord(userId)
+			settingsRecord.premium = premium ? {expires} : null
+			settingsRecord.billing.premiumSubscription = null
+			await settingsDatalayer.saveRecord(settingsRecord)
 
 			// set our billing record
 			record.premiumStripeSubscriptionId = null

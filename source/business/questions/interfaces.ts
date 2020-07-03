@@ -1,5 +1,5 @@
 
-import {User, Profile, AccessToken, QuestionRecord} from "../../interfaces.js"
+import {User, Profile, AccessToken} from "../../interfaces.js"
 
 export interface QuestionAuthor {
 	user: User

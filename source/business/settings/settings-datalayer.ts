@@ -1,12 +1,32 @@
 
-import {SettingsDatalayer} from "./interfaces.js"
-import {Collection} from "../../commonjs/mongodb.js"
+import {SettingsDatalayer, SettingsRecord, SettingsTable} from "../../interfaces.js"
 
-export function makeSettingsDatalayer({collection}: {
-		collection: Collection
+import {makeDefaultSettings} from "./default-settings.js"
+
+export function makeSettingsDatalayer({settingsTable}: {
+		settingsTable: SettingsTable
 	}): SettingsDatalayer {
 
-	// TODO implement
-	throw new Error("TODO implement")
-	return null
+	return {
+
+		async getRecord(userId: string): Promise<SettingsRecord> {
+			return settingsTable.one({conditions: {equal: {userId}}})
+		},
+	
+		async getOrCreateRecord(userId: string): Promise<SettingsRecord> {
+			let record = await settingsTable.one({conditions: {equal: {userId}}})
+			if (!record) {
+				record = makeDefaultSettings(userId)
+				await settingsTable.create(record)
+			}
+			return record
+		},
+	
+		async saveRecord(record: SettingsRecord) {
+			await settingsTable.update({
+				conditions: {equal: {userId: record.userId}},
+				upsert: record,
+			})
+		},
+	}
 }

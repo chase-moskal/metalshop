@@ -1,5 +1,11 @@
 
-import {SettingsSheriffTopic, Settings, AccessToken, ProfileMagistrateTopic, VerifyToken, SettingsDatalayer, AccessPayload} from "../../interfaces.js"
+import {SettingsSheriffTopic, Settings, SettingsRecord, SettingsDatalayer, AccessToken, ProfileMagistrateTopic, VerifyToken, AccessPayload} from "../../interfaces.js"
+
+const convertToSettings = (record: SettingsRecord): Settings => (
+	record
+		? {...record}
+		: null
+)
 
 export function makeSettingsSheriff({
 		verifyToken,
@@ -11,56 +17,67 @@ export function makeSettingsSheriff({
 		profileMagistrate: ProfileMagistrateTopic
 	}): SettingsSheriffTopic {
 
-	async function reflectProfileEffects({userId, settings, accessToken}: {
-		userId: string
-		settings: Settings
-		accessToken: AccessToken
-	}) {
+	async function reflectProfileEffects({userId, record, accessToken}: {
+			userId: string
+			record: SettingsRecord
+			accessToken: AccessToken
+		}) {
 		const profile = await profileMagistrate.getProfile({userId})
-		profile.avatar = settings.publicity.avatarPublicity
-			? settings.avatar
+		profile.avatar = record.publicity.avatarPublicity
+			? record.avatar
 			: null
 		await profileMagistrate.setProfile({accessToken, profile})
 		return profile
 	}
 
 	return {
+
 		async fetchSettings({accessToken}) {
 			const {user} = await verifyToken<AccessPayload>(accessToken)
-			const settings = await settingsDatalayer.getOrCreateSettings(user.userId)
-			return settings
+			return convertToSettings(await settingsDatalayer.getRecord(user.userId))
 		},
+
 		async setAdminMode({accessToken, adminMode}) {
 			const {user} = await verifyToken<AccessPayload>(accessToken)
-			const settings = await settingsDatalayer.getOrCreateSettings(user.userId)
-			settings.admin.actAsAdmin = adminMode
-			await settingsDatalayer.saveSettings(settings)
-			return settings
+
+			const record = await settingsDatalayer.getRecord(user.userId)
+			record.admin.actAsAdmin = adminMode
+
+			await settingsDatalayer.saveRecord(record)
+			return convertToSettings(record)
 		},
+
 		async setAvatar({accessToken, avatar}) {
 			const {user} = await verifyToken<AccessPayload>(accessToken)
 			const {userId} = user
-			const settings = await settingsDatalayer.getOrCreateSettings(userId)
-			settings.avatar = avatar
-			await settingsDatalayer.saveSettings(settings)
+
+			const record = await settingsDatalayer.getOrCreateRecord(userId)
+			record.avatar = avatar
+
+			await settingsDatalayer.saveRecord(record)
 			const profile = await reflectProfileEffects({
 				userId,
-				settings,
+				record,
 				accessToken,
 			})
-			return {settings, profile}
+
+			return {settings: convertToSettings(record), profile}
 		},
+
 		async setAvatarPublicity({accessToken, avatarPublicity}) {
 			const {user} = await verifyToken<AccessPayload>(accessToken)
 			const {userId} = user
-			const settings = await settingsDatalayer.getOrCreateSettings(userId)
-			settings.publicity.avatarPublicity = avatarPublicity
+
+			const record = await settingsDatalayer.getOrCreateRecord(userId)
+			record.publicity.avatarPublicity = avatarPublicity
+
 			const profile = await reflectProfileEffects({
 				userId,
-				settings,
+				record,
 				accessToken,
 			})
-			return {settings, profile}
+
+			return {settings: convertToSettings(record), profile}
 		},
 	}
 }

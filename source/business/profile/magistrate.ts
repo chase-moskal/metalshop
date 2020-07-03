@@ -18,9 +18,7 @@ export function makeProfileMagistrate({verifyToken, profileTable}: {
 		profileTable: ProfileTable
 	}): ProfileMagistrateTopic {
 
-	const identify = (userId: string) => ({
-		conditions: {equal: {userId}}
-	})
+	const identify = (userId: string) => ({conditions: {equal: {userId}}})
 
 	return {
 

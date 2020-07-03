@@ -13,18 +13,19 @@ import {makeQuestionsBureau} from "../../business/questions/bureau.js"
 import {makeProfileMagistrate} from "../../business/profile/magistrate.js"
 import {mockAdminSearch} from "../../business/admin/mocks/mock-admin-search.js"
 import {makeSettingsSheriff} from "../../business/settings/settings-sheriff.js"
+import {makeLiveshowGovernor} from "../../business/liveshow/liveshow-governor.js"
+import {makeSettingsDatalayer} from "../../business/settings/settings-datalayer.js"
 import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circuit.js"
 import {curryInitializePersona} from "../../business/auth/curry-initialize-persona.js"
 import {mockVerifyGoogleToken} from "../../business/auth/mocks/mock-verify-google-token.js"
 import {mockScheduleDatalayer} from "../../business/schedule/mocks/mock-schedule-datalayer.js"
-import {mockSettingsDatalayer} from "../../business/settings/mocks/mock-settings-datalayer.js"
 
 import {nap} from "../toolbox/nap.js"
 import {random8} from "../../toolbox/random8.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
 import {generateId as defaultGenerateUserId} from "../../toolbox/generate-id.js"
-import {AccessToken, LiveshowGovernorTopic, AccessPayload, UserTable, ProfileTable, BillingTable, QuestionTable} from "../../interfaces.js"
+import {AccessPayload, UserTable, ProfileTable} from "../../interfaces.js"
 
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
 import {TriggerAccountPopup, TriggerCheckoutPopup, MetalOptions, DecodeAccessToken} from "../interfaces.js"
@@ -51,6 +52,9 @@ export const makeMocks = async({
 		generateRandomNickname?: () => string
 	}): Promise<MetalOptions> => {
 
+	const minute = 1000 * 60
+	const day = minute * 60 * 24
+
 	const googleId = `mock-google-user-${random8()}`
 	const googleToken = `mock-google-token-${random8()}`
 	const premiumStripePlanId = `mock-premium-stripe-plan-${random8()}`
@@ -68,6 +72,13 @@ export const makeMocks = async({
 		}
 	})
 
+	const mockAdminAccessToken = await signToken<AccessPayload>({
+			user: {
+				claims: {admin: true, premium: true},
+				userId: "u123"
+			}
+		}, day * 365)
+
 	const {authVanguard, authDealer} = makeAuthVanguard({
 		userTable,
 		generateUserId,
@@ -78,16 +89,14 @@ export const makeMocks = async({
 		profileTable,
 	})
 
-	const minute = 1000 * 60
-	const day = minute * 60 * 24
-	const accessTokenExpiresMilliseconds = 20 * minute
-	const refreshTokenExpiresMilliseconds = day * 365
+	const settingsDatalayer = makeSettingsDatalayer({
+		settingsTable: dbbyMemory()
+	})
 
-	const settingsDatalayer = mockSettingsDatalayer()
 	const settingsSheriff = makeSettingsSheriff({
 		verifyToken,
-		settingsDatalayer,
 		profileMagistrate,
+		settingsDatalayer,
 	})
 
 	const initializePersona = curryInitializePersona({
@@ -102,8 +111,8 @@ export const makeMocks = async({
 		authVanguard,
 		verifyGoogleToken,
 		initializePersona,
-		accessTokenExpiresMilliseconds,
-		refreshTokenExpiresMilliseconds,
+		refreshTokenExpiresMilliseconds: day * 365,
+		accessTokenExpiresMilliseconds: minute * 20,
 	})
 
 	const tokenStore = new TokenStore({
@@ -118,22 +127,15 @@ export const makeMocks = async({
 		questionTable: dbbyMemory(),
 	})
 
-	let vimeoId = "109943349"
-	const liveshowGovernor: LiveshowGovernorTopic = {
-		async getShow(options: {
-			accessToken: AccessToken
-			videoName: string
-		}): Promise<{vimeoId: string}> {
-			return {vimeoId}
-		},
-		async setShow({vimeoId}: {
-			accessToken: AccessToken
-			vimeoId: string
-			videoName: string
-		}) {
-			this._vimeoId = vimeoId
-		}
-	}
+	const liveshowGovernor = makeLiveshowGovernor({
+		verifyToken,
+		liveshowTable: dbbyMemory(),
+	})
+	await liveshowGovernor.setShow({
+		videoName: "liveshow",
+		accessToken: mockAdminAccessToken,
+		vimeoId: "109943349",
+	})
 
 	const {stripeDatalayer, billingDatalayer} = mockStripeCircuit({
 		authVanguard,

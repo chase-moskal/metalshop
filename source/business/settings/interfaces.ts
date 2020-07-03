@@ -1,11 +1,12 @@
 
-import {Topic, AccessToken, Settings, Profile} from "../../interfaces.js"
+import {Topic, AccessToken, Settings, SettingsRecord, Profile} from "../../interfaces.js"
 
-export type SettingsMaker = (userId: string) => Settings
+export type SettingsMaker = (userId: string) => SettingsRecord
 
 export interface SettingsDatalayer {
-	saveSettings(settings: Settings): Promise<void>
-	getOrCreateSettings(userId: string): Promise<Settings>
+	getRecord(userId: string): Promise<SettingsRecord>
+	getOrCreateRecord(userId: string): Promise<SettingsRecord>
+	saveRecord(record: SettingsRecord): Promise<void>
 }
 
 export interface SettingsSheriffTopic extends Topic<SettingsSheriffTopic> {
