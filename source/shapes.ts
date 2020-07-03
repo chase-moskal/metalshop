@@ -40,9 +40,9 @@ export const questionsShape: RenrakuApiShape<QuestionsApi> = {
 	questionsBureau: {
 		likeQuestion: "method",
 		postQuestion: "method",
-		deleteQuestion: "method",
+		archiveBoard: "method",
 		fetchQuestions: "method",
-		purgeQuestions: "method",
+		archiveQuestion: "method",
 	}
 }
 

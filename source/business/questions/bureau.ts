@@ -7,68 +7,68 @@ import {
 	VerifyToken,
 	AccessToken,
 	QuestionDraft,
+	QuestionTable,
 	QuestionRecord,
 	AuthDealerTopic,
-	QuestionsDatalayer,
 	QuestionsBureauTopic,
 	ProfileMagistrateTopic,
 } from "../../interfaces.js"
 
+import {generateId} from "../../toolbox/generate-id.js"
 import {AccessPayload} from "../../interfaces/tokens.js"
 
+interface Cache {
+	fetchUser(userId: string): Promise<User>
+	fetchProfile(userId: string): Promise<Profile>
+}
+
 export function makeQuestionsBureau({
-	authDealer,
-	verifyToken,
-	profileMagistrate,
-	questionsDatalayer,
-}: {
-	verifyToken: VerifyToken
-	authDealer: AuthDealerTopic
-	questionsDatalayer: QuestionsDatalayer
-	profileMagistrate: ProfileMagistrateTopic
-}): QuestionsBureauTopic {
+		authDealer,
+		verifyToken,
+		questionTable,
+		profileMagistrate,
+	}: {
+		verifyToken: VerifyToken
+		authDealer: AuthDealerTopic
+		questionTable: QuestionTable
+		profileMagistrate: ProfileMagistrateTopic
+	}): QuestionsBureauTopic {
 
 	//
 	// private
 	//
 
-	const cache: {users: User[]; profiles: Profile[]} = {
-		users: [],
-		profiles: [],
-	}
-
-	const getUser = async(userId: string): Promise<User> => {
-		const cachedUser = cache.users.find(u => u.userId === userId)
-		if (cachedUser) return cachedUser
-		else {
-			const user = await authDealer.getUser({userId})
-			cache.users.push(user)
-			return user
+	function makeCache(): Cache {
+		const users: User[] = []
+		const profiles: Profile[] = []
+		return {
+			async fetchUser(userId: string) {
+				let user = users.find(u => u.userId === userId)
+				if (!user) {
+					user = await authDealer.getUser({userId})
+					users.push(user)
+				}
+				return user
+			},
+			async fetchProfile(userId: string) {
+				let profile = profiles.find(p => p.userId === userId)
+				if (!profile) {
+					profile = await profileMagistrate.getProfile({userId})
+					profiles.push(profile)
+				}
+				return profile
+			},
 		}
-	}
-
-	const getProfile = async(userId: string): Promise<Profile> => {
-		const cachedProfile = cache.profiles.find(p => p.userId === userId)
-		if (cachedProfile) return cachedProfile
-		else {
-			const profile = await profileMagistrate.getProfile({userId})
-			cache.profiles.push(profile)
-			return profile
-		}
-	}
-
-	const clearCache = () => {
-		cache.users = []
-		cache.profiles = []
 	}
 
 	async function resolveQuestion(
-		record: QuestionRecord
-	): Promise<Question> {
+			record: QuestionRecord,
+			cache: Cache
+		): Promise<Question> {
 		const {authorUserId: userId} = record
 		const author = {
-			user: await getUser(userId),
-			profile: await getProfile(userId),
+			user: await cache.fetchUser(userId),
+			profile: await cache.fetchProfile(userId),
 		}
 		const likeInfo: LikeInfo = {
 			likes: record.likes.length,
@@ -88,26 +88,26 @@ export function makeQuestionsBureau({
 	// not private
 	//
 
-	async function fetchQuestions({board}: {
-		board: string
-	}): Promise<Question[]> {
-		clearCache()
-		const records = await questionsDatalayer.fetchRecords(board)
+	async function fetchQuestions({board}: {board: string}): Promise<Question[]> {
+		const cache = makeCache()
+		const records = await questionTable.read({
+			conditions: {equal: {board, archive: false}}
+		})
 		const questions = await Promise.all(
-			records.map(record => resolveQuestion(record))
+			records.map(record => resolveQuestion(record, cache))
 		)
-		clearCache()
 		return questions
 	}
 
 	async function postQuestion({draft, accessToken}: {
-		draft: QuestionDraft
-		accessToken: AccessToken
-	}): Promise<Question> {
+			draft: QuestionDraft
+			accessToken: AccessToken
+		}): Promise<Question> {
+
 		const {user} = await verifyToken<AccessPayload>(accessToken)
 		const {userId: authorUserId} = user
-		if (!user.claims.premium)
-			throw new Error(`must be premium to post question`)
+		if (!user.claims.premium) throw new Error(`must be premium to post question`)
+
 		const record: QuestionRecord = {
 			likes: [],
 			authorUserId,
@@ -115,61 +115,82 @@ export function makeQuestionsBureau({
 			time: Date.now(),
 			board: draft.board,
 			content: draft.content,
-			questionId: null,
+			questionId: generateId(),
 		}
-		await questionsDatalayer.saveRecord(record)
-		clearCache()
-		const question = await resolveQuestion(record)
-		clearCache()
-		return question
+
+		await questionTable.update({
+			conditions: {equal: {questionId: record.questionId}},
+			upsert: record,
+		})
+
+		return resolveQuestion(record, makeCache())
 	}
 
-	async function deleteQuestion({questionId, accessToken}: {
-		questionId: string
-		accessToken: AccessToken
-	}): Promise<void> {
+	async function archiveQuestion({questionId, accessToken}: {
+			questionId: string
+			accessToken: AccessToken
+		}): Promise<void> {
+
 		const {user} = await verifyToken<AccessPayload>(accessToken)
-		const record = await questionsDatalayer.getRecordById(questionId)
+		const record = await questionTable.one({conditions: {equal: {questionId}}})
 
 		const owner = user.userId === record.authorUserId
 		const admin = !!user.claims.admin
 
 		if (owner || admin)
-			await questionsDatalayer.archiveRecord(questionId)
+			await questionTable.update({
+				conditions: {equal: {questionId}},
+				replace: {archive: true}
+			})
 		else
 			throw new Error(`not authorized to archive record`)
 	}
 
 	async function likeQuestion({like, questionId, accessToken}: {
-		like: boolean
-		questionId: string
-		accessToken: AccessToken
-	}): Promise<Question> {
+			like: boolean
+			questionId: string
+			accessToken: AccessToken
+		}): Promise<Question> {
+
 		const {user} = await verifyToken<AccessPayload>(accessToken)
-		const record = await questionsDatalayer.likeRecord({
-			like,
-			questionId,
-			userId: user.userId,
+		const {userId} = user
+		const record = await questionTable.one({
+			conditions: {equal: {questionId}}
 		})
-		clearCache()
-		const question = await resolveQuestion(record)
-		clearCache()
-		return question
+		const alreadyLike = record.likes.find(
+			likeEntry => likeEntry.userId === userId
+		)
+
+		// add the like
+		if (like && !alreadyLike) record.likes.push({userId})
+
+		// remove the like
+		if (!like && alreadyLike) record.likes = record.likes.filter(
+			likeEntry => likeEntry.userId !== userId
+		)
+
+		return resolveQuestion(record, makeCache())
 	}
 
-	async function purgeQuestions({board, accessToken}: {
-		board: string
-		accessToken: AccessToken
-	}): Promise<void> {
-		await verifyToken<AccessPayload>(accessToken)
-		await questionsDatalayer.purgeRecords(board)
+	async function archiveBoard({board, accessToken}: {
+			board: string
+			accessToken: AccessToken
+		}): Promise<void> {
+
+		const {user} = await verifyToken<AccessPayload>(accessToken)
+		const admin = !!user.claims.admin
+
+		await questionTable.update({
+			conditions: {equal: {board}},
+			replace: {archive: true},
+		})
 	}
 
 	return {
 		likeQuestion,
 		postQuestion,
+		archiveBoard,
 		fetchQuestions,
-		deleteQuestion,
-		purgeQuestions,
+		archiveQuestion,
 	}
 }

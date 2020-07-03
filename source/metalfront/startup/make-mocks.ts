@@ -18,15 +18,14 @@ import {curryInitializePersona} from "../../business/auth/curry-initialize-perso
 import {mockVerifyGoogleToken} from "../../business/auth/mocks/mock-verify-google-token.js"
 import {mockScheduleDatalayer} from "../../business/schedule/mocks/mock-schedule-datalayer.js"
 import {mockSettingsDatalayer} from "../../business/settings/mocks/mock-settings-datalayer.js"
-import {generateUserId as defaultGenerateUserId} from "../../business/auth/generate-user-id.js"
-import {mockQuestionsDatalayer} from "../../business/questions/mocks/mock-questions-datalayer.js"
 
+import {nap} from "../toolbox/nap.js"
 import {random8} from "../../toolbox/random8.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
-import {AccessToken, LiveshowGovernorTopic, AccessPayload, UserTable, ProfileTable, BillingTable} from "../../interfaces.js"
+import {generateId as defaultGenerateUserId} from "../../toolbox/generate-id.js"
+import {AccessToken, LiveshowGovernorTopic, AccessPayload, UserTable, ProfileTable, BillingTable, QuestionTable} from "../../interfaces.js"
 
-import {nap} from "../toolbox/nap.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
 import {TriggerAccountPopup, TriggerCheckoutPopup, MetalOptions, DecodeAccessToken} from "../interfaces.js"
 
@@ -112,12 +111,11 @@ export const makeMocks = async({
 		storage: mockStorage(),
 	})
 
-	const questionsDatalayer = mockQuestionsDatalayer()
 	const questionsBureau = makeQuestionsBureau({
 		authDealer,
 		verifyToken,
 		profileMagistrate,
-		questionsDatalayer,
+		questionTable: dbbyMemory(),
 	})
 
 	let vimeoId = "109943349"

@@ -49,7 +49,7 @@ export class QuestionsModel {
 			return question
 		},
 		deleteQuestion: async(options) => {
-			await this.#questionsBureau.deleteQuestion(
+			await this.#questionsBureau.archiveQuestion(
 				await this.addTokenToOptions(options)
 			)
 			this.deleteLocalQuestion(options.questionId)
@@ -65,7 +65,7 @@ export class QuestionsModel {
 		},
 		purgeQuestions: async(options: {board: string}) => {
 			const optionsWithToken = await this.addTokenToOptions(options)
-			await this.#questionsBureau.purgeQuestions(optionsWithToken)
+			await this.#questionsBureau.archiveBoard(optionsWithToken)
 			this.deleteAllCachedQuestions()
 		},
 	}
