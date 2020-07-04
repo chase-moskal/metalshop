@@ -163,9 +163,9 @@ export const makeMocks = async({
 	//
 
 	await liveshowGovernor.setShow({
-		videoName: "liveshow1",
-		accessToken: mockAdminAccessToken,
 		vimeoId: "109943349",
+		videoName: "livestream",
+		accessToken: mockAdminAccessToken,
 	})
 
 	await scheduleSentry.setEvent({

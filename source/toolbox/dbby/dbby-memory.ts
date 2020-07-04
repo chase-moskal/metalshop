@@ -58,6 +58,7 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 }
 
 function copy<T>(x: T): T {
+	if (x === undefined) return undefined
 	return JSON.parse(JSON.stringify(x))
 }
 

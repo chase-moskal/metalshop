@@ -29,7 +29,7 @@ export function makeLiveshowGovernor({
 			const record = await liveshowTable.one({
 				conditions: {equal: {videoName}}
 			})
-			return {vimeoId: record.vimeoId}
+			return record ? {vimeoId: record.vimeoId} : null
 		},
 
 		async setShow({accessToken, videoName, vimeoId}) {

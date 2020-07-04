@@ -120,7 +120,7 @@ export class LiveshowViewModel {
 				// load video
 				if (privilege === PrivilegeLevel.Privileged) {
 					runInAction(() => this.videoLoad = loading.loading())
-					const {vimeoId} = await this.loadVideo(accessToken)
+					const {vimeoId} = (await this.loadVideo(accessToken)) || {}
 					runInAction(() => this.videoLoad = loading.ready({
 						vimeoId
 					}))
