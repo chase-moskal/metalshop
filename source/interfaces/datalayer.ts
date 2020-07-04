@@ -3,6 +3,7 @@ import {
 	User,
 	Profile,
 	Settings,
+	ScheduleEvent,
 } from "./common.js"
 
 import {DbbyTable} from "../toolbox/dbby/types.js"
@@ -35,9 +36,12 @@ export interface LiveshowRecord {
 	videoName: string
 }
 
+export interface ScheduleRecord extends ScheduleEvent {}
+
 export type UserTable = DbbyTable<UserRecord>
 export type ProfileTable = DbbyTable<ProfileRecord>
 export type QuestionTable = DbbyTable<QuestionRecord>
 export type BillingTable = DbbyTable<BillingRecord>
 export type LiveshowTable = DbbyTable<LiveshowRecord>
 export type SettingsTable = DbbyTable<SettingsRecord>
+export type ScheduleTable = DbbyTable<ScheduleRecord>

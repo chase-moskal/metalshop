@@ -1,7 +1,6 @@
 
-import {SettingsDatalayer, SettingsRecord, SettingsTable} from "../../interfaces.js"
-
 import {makeDefaultSettings} from "./default-settings.js"
+import {SettingsDatalayer, SettingsRecord, SettingsTable} from "../../interfaces.js"
 
 export function makeSettingsDatalayer({settingsTable}: {
 		settingsTable: SettingsTable
@@ -12,7 +11,7 @@ export function makeSettingsDatalayer({settingsTable}: {
 		async getRecord(userId: string): Promise<SettingsRecord> {
 			return settingsTable.one({conditions: {equal: {userId}}})
 		},
-	
+
 		async getOrCreateRecord(userId: string): Promise<SettingsRecord> {
 			let record = await settingsTable.one({conditions: {equal: {userId}}})
 			if (!record) {
@@ -21,7 +20,7 @@ export function makeSettingsDatalayer({settingsTable}: {
 			}
 			return record
 		},
-	
+
 		async saveRecord(record: SettingsRecord) {
 			await settingsTable.update({
 				conditions: {equal: {userId: record.userId}},

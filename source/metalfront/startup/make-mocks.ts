@@ -18,7 +18,6 @@ import {makeSettingsDatalayer} from "../../business/settings/settings-datalayer.
 import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circuit.js"
 import {curryInitializePersona} from "../../business/auth/curry-initialize-persona.js"
 import {mockVerifyGoogleToken} from "../../business/auth/mocks/mock-verify-google-token.js"
-import {mockScheduleDatalayer} from "../../business/schedule/mocks/mock-schedule-datalayer.js"
 
 import {nap} from "../toolbox/nap.js"
 import {random8} from "../../toolbox/random8.js"
@@ -131,11 +130,6 @@ export const makeMocks = async({
 		verifyToken,
 		liveshowTable: dbbyMemory(),
 	})
-	await liveshowGovernor.setShow({
-		videoName: "liveshow",
-		accessToken: mockAdminAccessToken,
-		vimeoId: "109943349",
-	})
 
 	const {stripeDatalayer, billingDatalayer} = mockStripeCircuit({
 		authVanguard,
@@ -149,8 +143,10 @@ export const makeMocks = async({
 		premiumStripePlanId,
 	})
 
-	const scheduleDatalayer = mockScheduleDatalayer()
-	const scheduleSentry = makeScheduleSentry({verifyToken, scheduleDatalayer})
+	const scheduleSentry = makeScheduleSentry({
+		verifyToken,
+		scheduleTable: dbbyMemory(),
+	})
 
 	const checkoutPopupUrl = "http://metaldev.chasemoskal.com:8003/html/checkout"
 
@@ -166,9 +162,18 @@ export const makeMocks = async({
 	// starting conditions
 	//
 
-	const days = 1000 * 60 * 60 * 24
-	await scheduleDatalayer.setEvent("countdown1", {
-		time: Date.now() + (3.14159 * days)
+	await liveshowGovernor.setShow({
+		videoName: "liveshow1",
+		accessToken: mockAdminAccessToken,
+		vimeoId: "109943349",
+	})
+
+	await scheduleSentry.setEvent({
+		accessToken: mockAdminAccessToken,
+		event: {
+			name: "countdown1",
+			time: Date.now() + (day * 3.14159)
+		},
 	})
 
 	await tokenStore.clearTokens()

@@ -215,10 +215,10 @@ export interface QuestionsShare {
 }
 
 export interface CountdownShare {
+	events: ScheduleEvent[]
 	authLoad: loading.Load<AuthPayload>
-	events: {[key: string]: ScheduleEvent}
 	loadEvent: (name: string) => Promise<ScheduleEvent>
-	saveEvent: (name: string, event: ScheduleEvent) => Promise<void>
+	saveEvent: (event: ScheduleEvent) => Promise<void>
 }
 
 export interface LiveshowShare {

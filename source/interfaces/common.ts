@@ -61,6 +61,11 @@ export interface Settings {
 	}
 }
 
+export interface ScheduleEvent {
+	name: string
+	time: number
+}
+
 export interface Persona {
 	user: User
 	profile: Profile

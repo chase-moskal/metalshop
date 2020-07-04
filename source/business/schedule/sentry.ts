@@ -1,17 +1,29 @@
 
-import {VerifyToken, AccessPayload} from "../../interfaces/tokens.js"
-import {ScheduleSentryTopic, ScheduleDatalayer} from "./interfaces.js"
+import {User, VerifyToken, AccessPayload, ScheduleSentryTopic, ScheduleTable} from "../../interfaces.js"
 
-export const makeScheduleSentry = ({verifyToken, scheduleDatalayer}: {
+const authorizeControl = (user: User) => (false
+	|| !!user.claims.admin
+	|| !!user.claims.staff
+)
+
+export const makeScheduleSentry = ({verifyToken, scheduleTable}: {
 		verifyToken: VerifyToken
-		scheduleDatalayer: ScheduleDatalayer
+		scheduleTable: ScheduleTable
 	}): ScheduleSentryTopic => ({
 
-	getEvent: async({name}) => scheduleDatalayer.getEvent(name),
+	async getEvent({name}) {
+		return scheduleTable.one({conditions: {equal: {name}}})
+	},
 
-	setEvent: async({accessToken, name, event}) => {
+	async setEvent({accessToken, event}) {
 		const {user} = await verifyToken<AccessPayload>(accessToken)
-		if (!user?.claims?.admin) throw new Error("must be admin to set schedule")
-		scheduleDatalayer.setEvent(name, event ? {time: event.time} : undefined)
-	}
+		if (!authorizeControl(user)) throw new Error("not authorized")
+
+		// TODO validate event
+
+		await scheduleTable.update({
+			conditions: {equal: {name}},
+			upsert: event,
+		})
+	},
 })

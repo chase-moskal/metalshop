@@ -34,11 +34,14 @@ export class MetalCountdown extends MetalshopComponent<CountdownShare> {
 	}
 
 	render() {
-		const {["event-name"]: eventName} = this
-		if (!eventName) return null
-		const time = this.share.events[eventName]?.time
+		const {["event-name"]: name} = this
+		if (!name) return null
+
+		const {time} = this.share.events.find(e => e.name === name) || {}
+
 		const scheduled: boolean = time !== undefined
 			&& ((time - Date.now()) > 0)
+
 		return html`
 			<div class="icon-area">
 				${clock}
@@ -163,12 +166,12 @@ export class MetalCountdown extends MetalshopComponent<CountdownShare> {
 	}
 
 	private _handleScheduleClick = async() => {
-		const {adminDateTime: time, ["event-name"]: eventName} = this
-		await this.share.saveEvent(eventName, {time})
+		const {adminDateTime: time, ["event-name"]: name} = this
+		await this.share.saveEvent({name, time})
 	}
 
 	private _handleUnscheduleClick = async() => {
-		const {["event-name"]: eventName} = this
-		await this.share.saveEvent(eventName, undefined)
+		const {["event-name"]: name} = this
+		await this.share.saveEvent({name, time: undefined})
 	}
 }
