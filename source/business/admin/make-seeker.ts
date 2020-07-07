@@ -1,14 +1,14 @@
 
-import {AdminSearchTopic} from "./types.js"
+import {SeekerTopic} from "./types.js"
 import {isUserAdmin} from "./is-user-admin.js"
 import * as convertUserRecord from "../auth/convert-user-record.js"
 import {AccessToken, VerifyToken, AccessPayload, Profile, Persona, UserTable, ProfileTable} from "../../interfaces.js"
 
-export function makeAdminSearch({userTable, profileTable, verifyToken}: {
+export function makeSeeker({userTable, profileTable, verifyToken}: {
 		userTable: UserTable
 		verifyToken: VerifyToken
 		profileTable: ProfileTable
-	}): AdminSearchTopic {
+	}): SeekerTopic {
 	return {
 
 		async search({needle, accessToken}: {

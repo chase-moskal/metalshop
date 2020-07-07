@@ -1,5 +1,5 @@
 
-import {AdminSearchTopic, Persona} from "../../../interfaces.js"
+import {SeekerTopic, Persona} from "../../../interfaces.js"
 
 const mockResult: Persona[] = [
 	{
@@ -15,7 +15,7 @@ const mockResult: Persona[] = [
 	}
 ]
 
-export function mockAdminSearch(): AdminSearchTopic {
+export function mockAdminSearch(): SeekerTopic {
 	return {
 		async search({accessToken, needle}) {
 			return needle

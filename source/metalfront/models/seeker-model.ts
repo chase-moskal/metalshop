@@ -1,6 +1,6 @@
 
 import {observable, action} from "mobx"
-import {Persona, AdminSearchTopic} from "../../interfaces.js"
+import {Persona, SeekerTopic} from "../../interfaces.js"
 
 import * as loading from "../toolbox/loading.js"
 import {AuthPayload, GetAuthContext} from "../interfaces.js"
@@ -8,9 +8,9 @@ import {AuthPayload, GetAuthContext} from "../interfaces.js"
 export class SeekerModel {
 	@observable resultsLoad: loading.Load<Persona[]> = loading.ready([])
 
-	private adminSearch: AdminSearchTopic
+	private adminSearch: SeekerTopic
 	private getAuthContext: GetAuthContext
-	constructor({adminSearch}: {adminSearch: AdminSearchTopic}) {
+	constructor({adminSearch}: {adminSearch: SeekerTopic}) {
 		this.adminSearch = adminSearch
 	}
 

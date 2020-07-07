@@ -12,7 +12,7 @@ import {
 	QuestionDraft,
 	AuthDealerTopic,
 	TokenStoreTopic,
-	AdminSearchTopic,
+	SeekerTopic,
 	PaywallLiaisonTopic,
 	ScheduleSentryTopic,
 	SettingsSheriffTopic,
@@ -51,7 +51,7 @@ export interface MetalOptions {
 	logger: Logger
 	authDealer: AuthDealerTopic
 	tokenStore: TokenStoreTopic
-	adminSearch: AdminSearchTopic
+	adminSearch: SeekerTopic
 	paywallLiaison: PaywallLiaisonTopic
 	scheduleSentry: ScheduleSentryTopic
 	settingsSheriff: SettingsSheriffTopic
@@ -233,3 +233,7 @@ export interface SeekerShare {
 	resultsLoad: loading.Load<Persona[]>
 	query: (needle: string) => Promise<void>
 }
+
+// export interface GoldStatsShare {
+// 	statsLoad: loading.Load<Stats>
+// }

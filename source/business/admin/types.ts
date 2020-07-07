@@ -2,16 +2,16 @@
 import {
 	Topic,
 	Persona,
-	Profile,
 	BanClaim,
-	UserRecord,
 	AccessToken,
 } from "../../interfaces.js"
 
-// import {DbbyTable} from "../../toolbox/dbby/types.js"
-
-// export type UserTable = DbbyTable<UserRecord>
-// export type ProfileTable = DbbyTable<Profile>
+export interface SystemStats {
+	userCount: number
+	adminCount: number
+	staffCount: number
+	billingCount: number
+}
 
 //
 // CONCEPT OF INVITE CODES
@@ -39,21 +39,27 @@ export type Invite = AdminInvite | StaffInvite | ModeratorInvite
 // TOPICS AVAILABLE TO FRONTEND
 //
 
-export interface AdminSearchTopic {
+export interface SeekerTopic extends Topic<SeekerTopic> {
 	search(o: {
 			needle: string
 			accessToken: AccessToken
 		}): Promise<Persona[]>
 }
 
-export interface AdminControlTopic extends Topic<AdminControlTopic> {
-	invite(o: {
+export interface StatisticianTopic extends Topic<StatisticianTopic> {
+	fetchStats(o: {
 			accessToken: AccessToken
+		}): Promise<SystemStats>
+}
+
+export interface AdministrativeTopic extends Topic<AdministrativeTopic> {
+	invite(o: {
 			invite: Invite
+			accessToken: AccessToken
 		}): Promise<InviteCode>
 	redeem(o: {
-			accessToken: AccessToken
 			inviteCode: InviteCode
+			accessToken: AccessToken
 		}): Promise<void>
 	assignAdmin(o: {
 			userId: string
@@ -67,7 +73,7 @@ export interface AdminControlTopic extends Topic<AdminControlTopic> {
 		}): Promise<void>
 	assignModerator(o: {
 			userId: string
-			staff: boolean
+			moderator: boolean
 			accessToken: AccessToken
 		}): Promise<void>
 	assignTags(o: {
@@ -77,8 +83,8 @@ export interface AdminControlTopic extends Topic<AdminControlTopic> {
 		}): Promise<void>
 	assignBanishment(o: {
 			userId: string
-			accessToken: AccessToken
 			banishment: BanClaim
+			accessToken: AccessToken
 		}): Promise<void>
 	castPremiumAward(o: {
 			days: number
