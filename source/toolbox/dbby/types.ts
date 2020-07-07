@@ -1,5 +1,17 @@
 
-export interface DbbyConditions<Row extends {}> {
+export type DbbyValue =
+	| undefined
+	| null
+	| boolean
+	| number
+	| string
+	| bigint
+
+export type DbbyRow<T extends {} = {}> = {
+	[P in keyof T]: DbbyValue
+}
+
+export interface DbbyConditions<Row extends DbbyRow> {
 	equal?: Partial<Row>
 	truthy?: Partial<Row>
 	falsy?: Partial<Row>
@@ -23,29 +35,29 @@ export interface DbbyNonConditional {
 	conditions: false | null
 }
 
-export interface DbbySingleConditional<Row extends {}> {
+export interface DbbySingleConditional<Row extends DbbyRow> {
 	conditions: DbbyConditions<Row>
 }
 
-export interface DbbyMultiConditional<Row extends {}> {
+export interface DbbyMultiConditional<Row extends DbbyRow> {
 	multi: "and" | "or"
 	conditions: DbbyConditions<Row>[]
 }
 
-export type DbbyUpsert<Row extends {}> = DbbyConditional<Row> & {upsert: Row}
-export type DbbyReplace<Row extends {}> = DbbyConditional<Row> & {replace: Partial<Row>}
+export type DbbyUpsert<Row extends DbbyRow> = DbbyConditional<Row> & {upsert: Row}
+export type DbbyReplace<Row extends DbbyRow> = DbbyConditional<Row> & {replace: Partial<Row>}
 
-export type DbbyConditional<Row extends {}> =
+export type DbbyConditional<Row extends DbbyRow> =
 	| DbbySingleConditional<Row>
 	| DbbyMultiConditional<Row>
 	| DbbyNonConditional
 
-export type DbbyPaginated<Row extends {}> = DbbyConditional<Row> & {
+export type DbbyPaginated<Row extends DbbyRow> = DbbyConditional<Row> & {
 	max?: number
 	offset?: number
 }
 
-export interface DbbyTable<Row extends {}> {
+export interface DbbyTable<Row extends DbbyRow> {
 	create(row: Row): Promise<void>
 	read(options: DbbyPaginated<Row>): Promise<Row[]>
 	one(options: DbbyConditional<Row>): Promise<Row>
