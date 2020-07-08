@@ -64,7 +64,7 @@ export interface QuestionQuarryTopic extends Topic<QuestionQuarryTopic> {
 		}): Promise<void>
 }
 
-export interface LiveshowListerTopic extends Topic<LiveshowListerTopic> {
+export interface LiveshowLizardTopic extends Topic<LiveshowLizardTopic> {
 	getShow(o: {
 			accessToken: AccessToken
 			videoName: string
@@ -84,4 +84,19 @@ export interface ScheduleSentryTopic extends Topic<ScheduleSentryTopic> {
 			event: ScheduleEvent
 			accessToken: AccessToken
 		}): Promise<void>
+}
+
+//
+// CROSSCALL TOPICS
+//
+
+export interface TokenStoreTopic extends Topic<TokenStoreTopic> {
+	clearTokens(): Promise<void>
+	passiveCheck(): Promise<AccessToken>
+	writeTokens(token: AuthTokens): Promise<void>
+	writeAccessToken(accessToken: AccessToken): Promise<void>
+}
+
+export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
+	login(): Promise<AuthTokens>
 }
