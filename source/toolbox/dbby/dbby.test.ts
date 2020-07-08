@@ -36,6 +36,28 @@ export default <Suite>{
 					).ok()
 			)
 		},
+		"assert one": async() => {
+			const dbby = await setupThreeUserDemo()
+			const fallback: DemoUser = {
+				userId: "u000",
+				balance: 1000,
+				location: "russia",
+			}
+			return (true
+				&& expect(
+						(await dbby.assert({
+							conditions: {equal: {userId: "u123"}},
+							fallback,
+						})).location
+					).equals("america")
+				&& expect(
+						(await dbby.assert({
+							conditions: {equal: {userId: "u000"}},
+							fallback,
+						})).location
+					).equals("russia")
+			)
+		},
 		"read with single sets of conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true

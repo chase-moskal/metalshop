@@ -1,7 +1,6 @@
 
 export type DbbyValue =
 	| undefined
-	| null
 	| boolean
 	| number
 	| string
@@ -57,10 +56,15 @@ export type DbbyPaginated<Row extends DbbyRow> = DbbyConditional<Row> & {
 	offset?: number
 }
 
+export type DbbyAssertion<Row extends DbbyRow> = DbbyConditional<Row> & {
+	fallback: Row
+}
+
 export interface DbbyTable<Row extends DbbyRow> {
 	create(row: Row): Promise<void>
 	read(options: DbbyPaginated<Row>): Promise<Row[]>
 	one(options: DbbyConditional<Row>): Promise<Row>
+	assert(options: DbbyAssertion<Row>): Promise<Row>
 	update(options: DbbyReplace<Row> | DbbyUpsert<Row>): Promise<void>
 	delete(options: DbbyConditional<Row>): Promise<void>
 	count(options: DbbyConditional<Row>): Promise<number>

@@ -36,6 +36,15 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 			return copy(selectOne(conditional))
 		},
 
+		async assert({fallback, ...conditional}) {
+			let row = copy(selectOne(conditional))
+			if (!row) {
+				insertCopy(fallback)
+				row = copy(fallback)
+			}
+			return row
+		},
+
 		async update({replace, upsert, ...conditional}: DbbyReplace<Row> & DbbyUpsert<Row>) {
 			const rows = select(conditional)
 			if (replace) updateRow(rows, replace)
