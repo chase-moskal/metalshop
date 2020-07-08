@@ -57,7 +57,7 @@ export type DbbyPaginated<Row extends DbbyRow> = DbbyConditional<Row> & {
 }
 
 export type DbbyAssertion<Row extends DbbyRow> = DbbyConditional<Row> & {
-	fallback: Row
+	make: () => Row
 }
 
 export interface DbbyTable<Row extends DbbyRow> {
