@@ -36,11 +36,12 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 			return copy(selectOne(conditional))
 		},
 
-		async assert({fallback, ...conditional}) {
+		async assert({make, ...conditional}) {
 			let row = copy(selectOne(conditional))
 			if (!row) {
-				insertCopy(fallback)
-				row = copy(fallback)
+				const made = make()
+				insertCopy(made)
+				row = copy(made)
 			}
 			return row
 		},
