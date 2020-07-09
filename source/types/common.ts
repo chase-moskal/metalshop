@@ -1,31 +1,27 @@
 
+export interface User {
+	userId: string
+	claims: Claims
+	profile: Profile
+}
+
 export interface Claims {
+	joined: number
 	admin: boolean
 	staff: boolean
-	premium: boolean
 	moderator: boolean
-	banned: boolean
+	premiumUntil: number
+	banUntil: number
+	banReason: string
+	tags: string[]
 }
 
 export interface Profile {
 	nickname: string
 	tagline: string
-	tags: string[]
 	avatarPublicity: boolean
-	colors?: string
-	avatar?: string
-}
-
-export interface Details {
-	banReason?: string
-	premiumUntil?: number
-}
-
-export interface User {
-	userId: string
-	claims: Claims
-	profile: Profile
-	details: Details
+	colors: string
+	avatar: string
 }
 
 export interface QuestionDraft {

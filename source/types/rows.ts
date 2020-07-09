@@ -3,6 +3,7 @@ import {DbbyRow} from "../toolbox/dbby/types.js"
 
 export interface AccountRow extends DbbyRow<AccountRow> {
 	userId: string
+	name: string
 	googleId: string
 	lastLogin: number
 	joined: number
@@ -43,6 +44,7 @@ export interface BillingRow extends DbbyRow<BillingRow> {
 export interface StripePremiumRow extends DbbyRow<StripePremiumRow> {
 	userId: string
 	subscriptionId: string
+	until: number
 	brand: string
 	last4: string
 	country: string
@@ -52,7 +54,7 @@ export interface StripePremiumRow extends DbbyRow<StripePremiumRow> {
 
 export interface PremiumGiftRow extends DbbyRow<PremiumGiftRow> {
 	userId: string
-	expire: string
+	until: number
 }
 
 export interface QuestionRow extends DbbyRow<QuestionRow> {
