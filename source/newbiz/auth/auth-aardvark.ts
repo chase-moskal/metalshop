@@ -14,22 +14,22 @@ import {
 	VerifyGoogleToken,
 } from "../../types.js"
 
-export function makeAuthAardvark<U>({
+export function makeAuthAardvark({
 		accountTable,
 		userDatalayer,
+		expireAccessToken,
+		expireRefreshToken,
 		signToken,
 		verifyToken,
 		verifyGoogleToken,
-		expireAccessToken,
-		expireRefreshToken,
 	}: {
 		accountTable: DbbyTable<AccountRow>
 		userDatalayer: UserDatalayer
+		expireAccessToken: number
+		expireRefreshToken: number
 		signToken: SignToken
 		verifyToken: VerifyToken
 		verifyGoogleToken: VerifyGoogleToken
-		expireAccessToken: number
-		expireRefreshToken: number
 	}): AuthAardvarkTopic {
 
 	return {
