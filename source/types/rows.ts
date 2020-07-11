@@ -1,5 +1,5 @@
 
-import {DbbyRow} from "../toolbox/dbby/types.js"
+import {DbbyRow, DbbyValue} from "../toolbox/dbby/types.js"
 
 export interface AccountRow extends DbbyRow<AccountRow> {
 	userId: string
@@ -13,27 +13,26 @@ export interface ClaimRow extends DbbyRow<ClaimRow> {
 	userId: string
 	admin: boolean
 	staff: boolean
-	moderator: boolean
-}
-
-export interface BanRow extends DbbyRow<BanRow> {
-	userId: string
-	until: number
-	reason: string
-}
-
-export interface TagRow extends DbbyRow<TagRow> {
-	userId: string
-	tag: string
+	banUntil: number
+	banReason: string
+	[key: string]: DbbyValue
 }
 
 export interface ProfileRow extends DbbyRow<ProfileRow> {
 	userId: string
 	nickname: string
 	tagline: string
-	colors: string
 	avatar: string
 	avatarPublicity: boolean
+	[key: string]: DbbyValue
+}
+
+const lol: ProfileRow = {
+	userId: "string",
+	nickname: "string",
+	tagline: "string",
+	avatar: "string",
+	avatarPublicity: true,
 }
 
 export interface BillingRow extends DbbyRow<BillingRow> {

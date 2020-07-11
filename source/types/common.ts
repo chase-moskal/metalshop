@@ -1,28 +1,36 @@
 
+import {DbbyValue} from "../toolbox/dbby/types.js"
+
 export interface User {
 	userId: string
 	claims: Claims
 	profile: Profile
+	details: Details
 }
 
 export interface Claims {
-	joined: number
 	admin: boolean
 	staff: boolean
-	moderator: boolean
-	premiumUntil: number
 	banUntil: number
 	banReason: string
-	tags: string[]
+	[key: string]: DbbyValue
+}
+
+export interface Details {
+	joined: number
 }
 
 export interface Profile {
 	nickname: string
 	tagline: string
-	avatarPublicity: boolean
-	colors: string
 	avatar: string
+	avatarPublicity: boolean
+	[key: string]: DbbyValue
 }
+
+//
+//
+//
 
 export interface QuestionDraft {
 	board: string
@@ -32,9 +40,10 @@ export interface QuestionDraft {
 export interface Question extends QuestionDraft {
 	questionId: string
 	authorUserId: string
+	posted: number
 	liked: boolean
 	likes: number
-	posted: number
+	reported: boolean
 }
 
 export interface ScheduleEvent {

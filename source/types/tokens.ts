@@ -1,16 +1,22 @@
 
 import {User} from "./common.js"
+import {DbbyValue} from "../toolbox/dbby/types.js"
 
 export type AccessToken = string
 export type RefreshToken = string
+
+export interface Scope {
+	[key: string]: DbbyValue
+}
 
 export interface AuthTokens {
 	accessToken: AccessToken
 	refreshToken: RefreshToken
 }
 
-export interface AccessPayload {
+export interface AccessPayload<S extends Scope = Scope> {
 	user: User
+	scope: S
 }
 
 export interface RefreshPayload {
@@ -32,5 +38,5 @@ export type VerifyToken = <Payload extends {}>(
 	token: string
 ) => Promise<Payload>
 
-export type VerifyAccessToken = (accessToken: AccessToken) => Promise<AccessPayload>
 export type VerifyRefreshToken = (refreshToken: RefreshToken) => Promise<RefreshPayload>
+export type VerifyAccessToken = <S extends Scope = Scope>(accessToken: AccessToken) => Promise<AccessPayload<S>>

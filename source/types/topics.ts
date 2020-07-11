@@ -4,14 +4,18 @@ import {RefreshToken, AccessToken, AuthTokens} from "../interfaces.js"
 
 import {
 	User,
+	Scope,
 	Profile,
 	Question,
 	QuestionDraft,
 	ScheduleEvent,
-} from "./common.js"
+} from "../types.js"
 
 export interface AuthAardvarkTopic extends Topic<AuthAardvarkTopic> {
-	authorize(o: {refreshToken: RefreshToken}): Promise<AccessToken>
+	authorize<S extends Scope = Scope>(o: {
+			scope: S
+			refreshToken: RefreshToken
+		}): Promise<AccessToken>
 	authenticateViaGoogle(o: {googleToken: string}): Promise<AuthTokens>
 }
 

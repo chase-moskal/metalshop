@@ -4,6 +4,7 @@ import {concurrent} from "../../toolbox/concurrent.js"
 import {generateId} from "../../toolbox/generate-id.js"
 
 import {
+	Scope,
 	SignToken,
 	AccountRow,
 	VerifyToken,
@@ -48,7 +49,10 @@ export function makeAuthAardvark({
 			})
 			const user = await userDatalayer.assertUser({accountRow, avatar})
 			return concurrent({
-				accessToken: signToken<AccessPayload>({user}, expireAccessToken),
+				accessToken: signToken<AccessPayload>(
+					{user, scope: {master: true}},
+					expireAccessToken
+				),
 				refreshToken: signToken<RefreshPayload>(
 					{userId: accountRow.userId},
 					expireRefreshToken
@@ -56,10 +60,10 @@ export function makeAuthAardvark({
 			})
 		},
 
-		async authorize({refreshToken}) {
+		async authorize({refreshToken, scope}) {
 			const {userId} = await verifyToken<RefreshPayload>(refreshToken)
 			const user = await userDatalayer.getUser({userId})
-			return signToken<AccessPayload>({user}, expireAccessToken)
+			return signToken<AccessPayload>({user, scope}, expireAccessToken)
 		},
 	}
 }
