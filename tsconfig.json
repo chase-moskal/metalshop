@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
 		"rootDir": "source",
 		"outDir": "dist",
 		"target": "esnext",
