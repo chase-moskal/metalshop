@@ -140,7 +140,7 @@ export function makeQuestionsBureau({
 		if (owner || admin)
 			await questionTable.update({
 				conditions: {equal: {questionId}},
-				replace: {archive: true}
+				write: {archive: true}
 			})
 		else
 			throw new Error(`not authorized to archive record`)
@@ -182,7 +182,7 @@ export function makeQuestionsBureau({
 
 		await questionTable.update({
 			conditions: {equal: {board}},
-			replace: {archive: true},
+			write: {archive: true},
 		})
 	}
 

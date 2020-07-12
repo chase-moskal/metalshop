@@ -1,38 +1,19 @@
 
-import {DbbyRow, DbbyValue} from "../toolbox/dbby/types.js"
+import {DbbyRow} from "../toolbox/dbby/types.js"
+import {Claims, Profile} from "../types.js"
 
 export interface AccountRow extends DbbyRow<AccountRow> {
 	userId: string
 	name: string
 	googleId: string
-	lastLogin: number
-	joined: number
 }
 
-export interface ClaimRow extends DbbyRow<ClaimRow> {
+export interface ClaimsRow extends Claims {
 	userId: string
-	admin: boolean
-	staff: boolean
-	banUntil: number
-	banReason: string
-	[key: string]: DbbyValue
 }
 
-export interface ProfileRow extends DbbyRow<ProfileRow> {
+export interface ProfileRow extends Profile {
 	userId: string
-	nickname: string
-	tagline: string
-	avatar: string
-	avatarPublicity: boolean
-	[key: string]: DbbyValue
-}
-
-const lol: ProfileRow = {
-	userId: "string",
-	nickname: "string",
-	tagline: "string",
-	avatar: "string",
-	avatarPublicity: true,
 }
 
 export interface BillingRow extends DbbyRow<BillingRow> {

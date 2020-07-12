@@ -3,6 +3,8 @@ import {Api as RenrakuApi} from "renraku/dist/interfaces.js"
 import {Api as CrosscallApi} from "crosscall/dist/interfaces.js"
 
 import {
+	User,
+
 	AuthAardvarkTopic,
 	UserUmbrellaTopic,
 	PaywallPachydermTopic,
@@ -23,7 +25,7 @@ export interface AuthApi extends RenrakuApi<AuthApi> {
 }
 
 export interface UserApi extends RenrakuApi<UserApi> {
-	userUmbrella: UserUmbrellaTopic
+	userUmbrella: UserUmbrellaTopic<User>
 }
 
 export interface PaywallApi extends RenrakuApi<PaywallApi> {

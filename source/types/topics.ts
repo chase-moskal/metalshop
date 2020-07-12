@@ -5,6 +5,7 @@ import {RefreshToken, AccessToken, AuthTokens} from "../interfaces.js"
 import {
 	User,
 	Scope,
+	Claims,
 	Profile,
 	Question,
 	QuestionDraft,
@@ -19,16 +20,20 @@ export interface AuthAardvarkTopic extends Topic<AuthAardvarkTopic> {
 	authenticateViaGoogle(o: {googleToken: string}): Promise<AuthTokens>
 }
 
-export interface UserUmbrellaTopic extends Topic<UserUmbrellaTopic> {
-	getUser(o: {
-			userId: string
-			accessToken?: AccessToken
-		}): Promise<User>
+export interface UserUmbrellaTopic<U extends User> extends Topic<UserUmbrellaTopic<U>> {
+	getUser(o: {userId: string}): Promise<U>
 	setProfile(o: {
 			userId: string
-			profile: Profile
+			profile: U["profile"]
 			accessToken: AccessToken
-		}): Promise<User>
+		}): Promise<void>
+}
+
+export interface ClaimsCardinalTopic<U extends User> extends Topic<ClaimsCardinalTopic<U>> {
+	setClaims(o: {
+			userId: string
+			claims: U["claims"]
+		}): Promise<void>
 }
 
 export interface PaywallPachydermTopic extends Topic<PaywallPachydermTopic> {

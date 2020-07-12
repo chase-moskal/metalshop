@@ -43,7 +43,7 @@ export function makeAuthVanguard({userTable, generateUserId}: {
 	async function setClaims({userId, claims}): Promise<User> {
 		await userTable.update({
 			conditions: {equal: {userId}},
-			replace: {claims},
+			write: {claims},
 		})
 		return convertUserRecord.toUser(
 			await getUserRecordByUserId(userId)

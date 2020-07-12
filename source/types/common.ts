@@ -1,31 +1,27 @@
 
 import {DbbyValue} from "../toolbox/dbby/types.js"
 
-export interface User {
+export interface User<C extends Claims = Claims, P extends Profile = Profile> {
 	userId: string
-	claims: Claims
-	profile: Profile
-	details: Details
+	claims: C
+	profile: P
 }
 
 export interface Claims {
+	[key: string]: DbbyValue
 	admin: boolean
 	staff: boolean
 	banUntil: number
 	banReason: string
-	[key: string]: DbbyValue
-}
-
-export interface Details {
 	joined: number
+	lastLogin: number
 }
 
 export interface Profile {
+	[key: string]: DbbyValue
 	nickname: string
 	tagline: string
 	avatar: string
-	avatarPublicity: boolean
-	[key: string]: DbbyValue
 }
 
 //
