@@ -114,14 +114,30 @@ export default <Suite>{
 			const users = await dbby.read({conditions: false})
 			return expect(users.length).equals(2)
 		},
-		"update a row and it sticks": async() => {
+		"update write to a row": async() => {
 			const dbby = await setupThreeUserDemo()
 			await dbby.update({
 				conditions: {equal: {userId: "u123"}},
-				replace: {location: "argentina"},
+				write: {location: "argentina"},
 			})
 			const user = await dbby.one({conditions: {equal: {userId: "u123"}}})
-			return expect(user.location).equals("argentina")
+			return (true
+				&& expect(user.location).equals("argentina")
+				&& expect(user.balance).equals(100)
+			)
+		},
+		"update whole row": async() => {
+			const dbby = await setupThreeUserDemo()
+			const userId = "u123"
+			await dbby.update({
+				conditions: {equal: {userId}},
+				whole: {userId, balance: 50, location: "argentina"},
+			})
+			const user = await dbby.one({conditions: {equal: {userId}}})
+			return (true
+				&& expect(user.location).equals("argentina")
+				&& expect(user.balance).equals(50)
+			)
 		},
 		"update upsert can update or insert": async() => {
 			const dbby = await setupThreeUserDemo()

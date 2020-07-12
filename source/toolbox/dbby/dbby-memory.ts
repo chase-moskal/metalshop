@@ -1,5 +1,5 @@
 
-import {DbbyTable, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional, DbbyReplace, DbbyUpsert} from "./types.js"
+import {DbbyTable, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional, DbbyUpdateAmbiguated} from "./types.js"
 
 export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 	let table: Row[] = []
@@ -20,6 +20,11 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 
 	function insertCopy(row: Row) {
 		table.push(copy(row))
+	}
+
+	function eliminateRow(conditional: DbbyConditional<Row>) {
+		const flippedFilterRow = (row: Row) => !rowVersusConditional(row, conditional)
+		table = table.filter(flippedFilterRow)
 	}
 
 	return {
@@ -46,9 +51,16 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 			return row
 		},
 
-		async update({replace, upsert, ...conditional}: DbbyReplace<Row> & DbbyUpsert<Row>) {
+		async update({write, whole, upsert, ...conditional}: DbbyUpdateAmbiguated<Row>) {
 			const rows = select(conditional)
-			if (replace) updateRow(rows, replace)
+			if (write) {
+				if (rows.length) updateRow(rows, write)
+				else throw new Error("no row to update")
+			}
+			else if (whole) {
+				eliminateRow(conditional)
+				insertCopy(whole)
+			}
 			else if (upsert) {
 				if (rows.length) updateRow(rows, upsert)
 				else insertCopy(upsert)
@@ -57,8 +69,7 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 		},
 
 		async delete(conditional) {
-			const flippedFilterRow = (row: Row) => !rowVersusConditional(row, conditional)
-			table = table.filter(flippedFilterRow)
+			eliminateRow(conditional)
 		},
 
 		async count(conditional) {

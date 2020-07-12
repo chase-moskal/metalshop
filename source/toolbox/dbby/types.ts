@@ -44,7 +44,10 @@ export interface DbbyMultiConditional<Row extends DbbyRow> {
 }
 
 export type DbbyUpsert<Row extends DbbyRow> = DbbyConditional<Row> & {upsert: Row}
-export type DbbyReplace<Row extends DbbyRow> = DbbyConditional<Row> & {replace: Partial<Row>}
+export type DbbyWrite<Row extends DbbyRow> = DbbyConditional<Row> & {write: Partial<Row>}
+export type DbbyWhole<Row extends DbbyRow> = DbbyConditional<Row> & {whole: Row}
+export type DbbyUpdate<Row extends DbbyRow> = DbbyWrite<Row> | DbbyWhole<Row> | DbbyUpsert<Row>
+export type DbbyUpdateAmbiguated<Row extends DbbyRow> = DbbyWrite<Row> & DbbyWhole<Row> & DbbyUpsert<Row>
 
 export type DbbyConditional<Row extends DbbyRow> =
 	| DbbySingleConditional<Row>
@@ -65,7 +68,7 @@ export interface DbbyTable<Row extends DbbyRow> {
 	read(options: DbbyPaginated<Row>): Promise<Row[]>
 	one(options: DbbyConditional<Row>): Promise<Row>
 	assert(options: DbbyAssertion<Row>): Promise<Row>
-	update(options: DbbyReplace<Row> | DbbyUpsert<Row>): Promise<void>
+	update(options: DbbyUpdate<Row>): Promise<void>
 	delete(options: DbbyConditional<Row>): Promise<void>
 	count(options: DbbyConditional<Row>): Promise<number>
 }
