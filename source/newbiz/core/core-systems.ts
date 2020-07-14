@@ -75,7 +75,7 @@ export function makeCoreSystems<U extends User>({
 			...await concurrent({
 				claimsRow: claimsTable.assert({
 					...userIdConditions,
-					make: () => ({
+					make: async() => ({
 						userId,
 						admin: false,
 						staff: false,
@@ -87,7 +87,7 @@ export function makeCoreSystems<U extends User>({
 				}),
 				profileRow: profileTable.assert({
 					...userIdConditions,
-					make: () => ({
+					make: async() => ({
 						userId,
 						avatar,
 						tagline: "",
@@ -120,7 +120,7 @@ export function makeCoreSystems<U extends User>({
 				const {googleId, avatar, name} = await verifyGoogleToken(googleToken)
 				const accountRow = await accountTable.assert({
 					conditions: {equal: {googleId}},
-					make: () => ({
+					make: async() => ({
 						userId: generateId(),
 						name,
 						googleId,

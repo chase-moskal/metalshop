@@ -3,41 +3,35 @@ import {ApiShape as RenrakuApiShape} from "renraku/dist/interfaces.js"
 import {ApiShape as CrosscallApiShape} from "crosscall/dist/interfaces.js"
 
 import {
-	AuthApi,
+	User,
+	CoreApi,
 	VaultApi,
 	PaywallApi,
-	ProfileApi,
 	QuestionsApi,
-} from "./interfaces.js"
+} from "./types.js"
 
 //
 // renraku api's
 //
 
-export const authShape: RenrakuApiShape<AuthApi> = {
-	authExchanger: {
-		authorize: "method",
-		authenticateViaGoogle: "method",
-	},
-	authVanguard: {
-		getUser: "method",
-		setClaims: "method",
-		createUser: "method",
-	},
-	authDealer: {
-		getUser: "method",
-	}
-}
-
-export const profileShape: RenrakuApiShape<ProfileApi> = {
-	profileMagistrate: {
-		setProfile: "method",
-		getProfile: "method",
+function makeCoreApiShape<U extends User>(): RenrakuApiShape<CoreApi<U>> {
+	return {
+		authAardvark: {
+			authorize: "method",
+			authenticateViaGoogle: "method",
+		},
+		userUmbrella: {
+			getUser: "method",
+			setProfile: "method",
+		},
+		claimsCardinal: {
+			setClaims: "method",
+		},
 	}
 }
 
 export const questionsShape: RenrakuApiShape<QuestionsApi> = {
-	questionsBureau: {
+	questionQuarry: {
 		likeQuestion: "method",
 		postQuestion: "method",
 		archiveBoard: "method",
@@ -47,7 +41,7 @@ export const questionsShape: RenrakuApiShape<QuestionsApi> = {
 }
 
 export const paywallShape: RenrakuApiShape<PaywallApi> = {
-	paywallLiaison: {
+	paywallPachyderm: {
 		updatePremium: "method",
 		cancelPremium: "method",
 		checkoutPremium: "method",

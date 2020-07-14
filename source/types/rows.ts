@@ -16,9 +16,9 @@ export interface ProfileRow extends Profile {
 	userId: string
 }
 
-export interface BillingRow extends DbbyRow<BillingRow> {
+export interface StripeBillingRow extends DbbyRow<StripeBillingRow> {
 	userId: string
-	stripeCustomerId: string
+	customerId: string
 }
 
 export interface StripePremiumRow extends DbbyRow<StripePremiumRow> {

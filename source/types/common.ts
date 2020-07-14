@@ -24,6 +24,13 @@ export interface Profile {
 	avatar: string
 }
 
+export interface Settings {
+	[key: string]: DbbyValue
+	actAsAdmin: boolean
+	googleName: string
+	googleAvatar: string
+}
+
 //
 //
 //

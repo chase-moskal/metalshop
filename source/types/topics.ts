@@ -1,12 +1,12 @@
 
 import {Topic} from "renraku/dist/interfaces.js"
-import {RefreshToken, AccessToken, AuthTokens} from "../interfaces.js"
+import {RefreshToken, AccessToken, AuthTokens} from "../types.js"
+
+export {Topic}
 
 import {
 	User,
 	Scope,
-	Claims,
-	Profile,
 	Question,
 	QuestionDraft,
 	ScheduleEvent,
@@ -44,7 +44,7 @@ export interface PaywallPachydermTopic extends Topic<PaywallPachydermTopic> {
 	updatePremium(o: {
 			popupUrl: string
 			accessToken: string
-		}): Promise<void>
+		}): Promise<{stripeSessionId: string}>
 	cancelPremium(o: {
 			accessToken: string
 		}): Promise<void>
@@ -76,11 +76,11 @@ export interface QuestionQuarryTopic extends Topic<QuestionQuarryTopic> {
 export interface LiveshowLizardTopic extends Topic<LiveshowLizardTopic> {
 	getShow(o: {
 			accessToken: AccessToken
-			videoName: string
+			label: string
 		}): Promise<{vimeoId: string}>
 	setShow(o: {
 			accessToken: AccessToken
-			videoName: string
+			label: string
 			vimeoId: string
 		}): Promise<void>
 }
