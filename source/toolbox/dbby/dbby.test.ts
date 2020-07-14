@@ -47,13 +47,13 @@ export default <Suite>{
 				&& expect(
 						(await dbby.assert({
 							conditions: {equal: {userId: "u123"}},
-							make: () => fallback,
+							make: async() => fallback,
 						})).location
 					).equals("america")
 				&& expect(
 						(await dbby.assert({
 							conditions: {equal: {userId: "u000"}},
-							make: () => fallback,
+							make: async() => fallback,
 						})).location
 					).equals("russia")
 			)

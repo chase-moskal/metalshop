@@ -44,7 +44,7 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 		async assert({make, ...conditional}) {
 			let row = copy(selectOne(conditional))
 			if (!row) {
-				const made = make()
+				const made = await make()
 				insertCopy(made)
 				row = copy(made)
 			}
