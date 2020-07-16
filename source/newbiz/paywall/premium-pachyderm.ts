@@ -17,7 +17,7 @@ export function makePremiumPachyderm({
 
 	async function verify(accessToken: AccessToken) {
 		const {user, scope} = await verifyToken<AccessPayload>(accessToken)
-		if (!scope.master) throw new Error("scope forbidden")
+		if (!scope.core) throw new Error("scope forbidden")
 		return user
 	}
 

@@ -7,6 +7,7 @@ export type RefreshToken = string
 
 export interface Scope {
 	[key: string]: DbbyValue
+	core: boolean
 }
 
 export interface AuthTokens {

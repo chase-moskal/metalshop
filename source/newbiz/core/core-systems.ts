@@ -37,9 +37,9 @@ export function makeCoreSystems<U extends User>({
 		userUmbrella: UserUmbrellaTopic<U>
 	} {
 
-	async function verifyMasterScope(accessToken: AccessToken): Promise<U> {
+	async function verifyCoreScope(accessToken: AccessToken): Promise<U> {
 		const {user, scope} = await verifyToken<AccessPayload>(accessToken)
-		if (!scope.master) throw new Error("scope forbidden")
+		if (!scope.core) throw new Error("scope forbidden")
 		return <U>user
 	}
 
@@ -137,7 +137,7 @@ export function makeCoreSystems<U extends User>({
 				const user = await assertUser({accountRow, avatar})
 				return concurrent({
 					accessToken: signToken<AccessPayload>(
-						{user, scope: {master: true}},
+						{user, scope: {core: true}},
 						expireAccessToken
 					),
 					refreshToken: signToken<RefreshPayload>(
@@ -158,7 +158,7 @@ export function makeCoreSystems<U extends User>({
 				return fetchUser(userId)
 			},
 			async setProfile({userId, profile, accessToken}) {
-				const askingUser = await verifyMasterScope(accessToken)
+				const askingUser = await verifyCoreScope(accessToken)
 				const allowed = (askingUser.claims.admin || askingUser.userId === userId)
 				if (!allowed) throw new Error("forbidden")
 				if (!validateProfile(profile)) throw new Error("invalid profile")
