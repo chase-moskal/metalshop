@@ -27,9 +27,17 @@ export interface Profile {
 export interface Settings {
 	[key: string]: DbbyValue
 	actAsAdmin: boolean
-	googleName: string
-	googleAvatar: string
 }
+
+//
+//
+//
+
+export interface PaywallClaims extends Claims {
+	premiumUntil: number
+}
+
+export type PaywallUser = User<PaywallClaims, Profile>
 
 //
 //

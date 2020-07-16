@@ -31,7 +31,7 @@ interface MockSetupIntent extends Partial<Stripe.SetupIntent> {
 	}
 }
 
-export function mockStripeDatalayer({webhooks}: {
+export function mockStripeLiaison({webhooks}: {
 		webhooks: StripeWebhooks
 	}): StripeDatalayer {
 

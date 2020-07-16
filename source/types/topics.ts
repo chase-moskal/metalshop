@@ -1,16 +1,19 @@
 
 import {Topic} from "renraku/dist/interfaces.js"
-import {RefreshToken, AccessToken, AuthTokens} from "../types.js"
-
-export {Topic}
 
 import {
 	User,
 	Scope,
 	Question,
+	CardClues,
+	AuthTokens,
+	AccessToken,
+	RefreshToken,
 	QuestionDraft,
 	ScheduleEvent,
 } from "../types.js"
+
+export {Topic}
 
 export interface AuthAardvarkTopic extends Topic<AuthAardvarkTopic> {
 	authorize<S extends Scope = Scope>(o: {
@@ -30,13 +33,16 @@ export interface UserUmbrellaTopic<U extends User> extends Topic<UserUmbrellaTop
 }
 
 export interface ClaimsCardinalTopic<U extends User> extends Topic<ClaimsCardinalTopic<U>> {
-	setClaims(o: {
+	writeClaims(o: {
 			userId: string
-			claims: U["claims"]
+			claims: Partial<U["claims"]>
 		}): Promise<void>
 }
 
-export interface PaywallPachydermTopic extends Topic<PaywallPachydermTopic> {
+export interface PremiumPachydermTopic extends Topic<PremiumPachydermTopic> {
+	getPremiumDetails(o: {
+			accessToken: AccessToken
+		}): Promise<{cardClues: CardClues}>
 	checkoutPremium(o: {
 			popupUrl: string
 			accessToken: AccessToken

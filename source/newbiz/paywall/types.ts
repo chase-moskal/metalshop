@@ -1,6 +1,8 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
 
+import {StripeBillingRow, StripePremiumRow, PremiumGiftRow} from "../../types.js"
+
 export type UpdateFlow = "UpdatePremiumSubscription"
 
 export interface SetupMetadata extends Stripe.Metadata {
@@ -31,6 +33,15 @@ export interface MinimalCard extends Partial<Stripe.PaymentMethod.Card> {
 	country: string,
 	exp_year: number,
 	exp_month: number,
+}
+
+export interface PremiumDatalayer {
+	deleteStripePremiumRow(userId: string): Promise<void>
+	getPremiumGiftRow(userId: string): Promise<PremiumGiftRow>
+	getStripePremiumRow(userId: string): Promise<StripePremiumRow>
+	assertStripeBillingRow(userId: string): Promise<StripeBillingRow>
+	upsertStripePremiumRow(userId: string, row: StripePremiumRow): Promise<void>
+	getStripeBillingRowByStripeCustomerId(stripeCustomerId: string): Promise<StripeBillingRow>
 }
 
 export interface StripeLiaison {

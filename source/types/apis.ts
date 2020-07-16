@@ -11,7 +11,7 @@ import {
 	QuestionQuarryTopic,
 	LiveshowLizardTopic,
 	ScheduleSentryTopic,
-	PaywallPachydermTopic,
+	PremiumPachydermTopic,
 
 	TokenStoreTopic,
 	AccountPopupTopic,
@@ -21,14 +21,17 @@ import {
 // RENRAKU
 //
 
-export interface CoreApi<U extends User> extends RenrakuApi<CoreApi<U>> {
+export interface CoreSystemsApi<U extends User> extends RenrakuApi<CoreSystemsApi<U>> {
 	authAardvark: AuthAardvarkTopic
 	userUmbrella: UserUmbrellaTopic<U>
+}
+
+export interface CoreSecuredApi<U extends User> extends RenrakuApi<CoreSecuredApi<U>> {
 	claimsCardinal: ClaimsCardinalTopic<U>
 }
 
 export interface PaywallApi extends RenrakuApi<PaywallApi> {
-	paywallPachyderm: PaywallPachydermTopic
+	premiumPachyderm: PremiumPachydermTopic
 }
 
 export interface QuestionsApi extends RenrakuApi<QuestionsApi> {

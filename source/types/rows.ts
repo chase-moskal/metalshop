@@ -1,11 +1,13 @@
 
 import {DbbyRow} from "../toolbox/dbby/types.js"
-import {Claims, Profile} from "../types.js"
+import {Claims, Profile, CardClues} from "../types.js"
 
 export interface AccountRow extends DbbyRow<AccountRow> {
 	userId: string
 	name: string
 	googleId: string
+	googleName: string
+	googleAvatar: string
 }
 
 export interface ClaimsRow extends Claims {
@@ -18,18 +20,12 @@ export interface ProfileRow extends Profile {
 
 export interface StripeBillingRow extends DbbyRow<StripeBillingRow> {
 	userId: string
-	customerId: string
+	stripeCustomerId: string
 }
 
-export interface StripePremiumRow extends DbbyRow<StripePremiumRow> {
+export interface StripePremiumRow extends CardClues {
 	userId: string
-	subscriptionId: string
-	until: number
-	brand: string
-	last4: string
-	country: string
-	expireYear: string
-	expireMonth: string
+	stripeSubscriptionId: string
 }
 
 export interface PremiumGiftRow extends DbbyRow<PremiumGiftRow> {

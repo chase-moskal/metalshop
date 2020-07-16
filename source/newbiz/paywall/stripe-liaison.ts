@@ -84,7 +84,7 @@ export function makeStripeLiaison({stripe}: {
 			return toSubscriptionDetails(subscription)
 		},
 
-		async fetchPaymentDetails(stripePaymentMethodId: string) {
+		async fetchPaymentDetails(stripePaymentMethodId) {
 			return toPaymentDetails(
 				await stripe.paymentMethods.retrieve(stripePaymentMethodId)
 			)

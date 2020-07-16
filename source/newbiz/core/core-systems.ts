@@ -3,7 +3,12 @@ import {DbbyTable} from "../../toolbox/dbby/types.js"
 import {concurrent} from "../../toolbox/concurrent.js"
 import {generateId} from "../../toolbox/generate-id.js"
 
-import {User, AccessToken, Claims, ClaimsRow, SignToken, AccountRow, ProfileRow, VerifyToken, AccessPayload, UserUmbrellaTopic, ClaimsCardinalTopic, RefreshPayload, AuthAardvarkTopic, VerifyGoogleToken} from "../../types.js"
+import {User, Profile, AccessToken, ClaimsRow, SignToken, AccountRow, ProfileRow, VerifyToken, AccessPayload, UserUmbrellaTopic, RefreshPayload, AuthAardvarkTopic, VerifyGoogleToken} from "../../types.js"
+
+function defaultValidateProfile(profile: Profile): boolean {
+	// TODO implement some reasonable validation
+	return !!profile
+}
 
 export function makeCoreSystems<U extends User>({
 		claimsTable,
@@ -15,20 +20,21 @@ export function makeCoreSystems<U extends User>({
 		verifyToken,
 		generateNickname,
 		verifyGoogleToken,
+		validateProfile = defaultValidateProfile,
 	}: {
-		accountTable: DbbyTable<AccountRow>
-		profileTable: DbbyTable<ProfileRow>
-		claimsTable: DbbyTable<ClaimsRow>
 		expireAccessToken: number
 		expireRefreshToken: number
+		claimsTable: DbbyTable<ClaimsRow>
+		accountTable: DbbyTable<AccountRow>
+		profileTable: DbbyTable<ProfileRow>
 		signToken: SignToken
 		verifyToken: VerifyToken
-		verifyGoogleToken: VerifyGoogleToken
 		generateNickname: () => string
+		verifyGoogleToken: VerifyGoogleToken
+		validateProfile?: (profile: Profile) => boolean
 	}): {
 		authAardvark: AuthAardvarkTopic
 		userUmbrella: UserUmbrellaTopic<U>
-		claimsCardinal: ClaimsCardinalTopic<U>
 	} {
 
 	async function verifyMasterScope(accessToken: AccessToken): Promise<U> {
@@ -98,7 +104,7 @@ export function makeCoreSystems<U extends User>({
 		})
 	}
 
-	async function writeClaims(userId: string, claims: Claims) {
+	async function updateClaims(userId: string, claims: Partial<U["claims"]>) {
 		await claimsTable.update({
 			conditions: {equal: {userId}},
 			write: claims,
@@ -108,7 +114,7 @@ export function makeCoreSystems<U extends User>({
 	async function userLogin(userId: string) {
 		const user = await fetchUser(userId)
 		const claims = {...user.claims, lastLogin: Date.now()}
-		await writeClaims(userId, claims)
+		await updateClaims(userId, claims)
 		user.claims = claims
 		return user
 	}
@@ -124,6 +130,8 @@ export function makeCoreSystems<U extends User>({
 						userId: generateId(),
 						name,
 						googleId,
+						googleName: name,
+						googleAvatar: avatar,
 					}),
 				})
 				const user = await assertUser({accountRow, avatar})
@@ -153,16 +161,11 @@ export function makeCoreSystems<U extends User>({
 				const askingUser = await verifyMasterScope(accessToken)
 				const allowed = (askingUser.claims.admin || askingUser.userId === userId)
 				if (!allowed) throw new Error("forbidden")
+				if (!validateProfile(profile)) throw new Error("invalid profile")
 				await profileTable.update({
 					conditions: {equal: {userId}},
 					write: profile,
 				})
-			},
-		},
-
-		claimsCardinal: {
-			async setClaims({userId, claims}) {
-				await writeClaims(userId, claims)
 			},
 		},
 	}

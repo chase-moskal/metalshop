@@ -4,17 +4,18 @@ import {ApiShape as CrosscallApiShape} from "crosscall/dist/interfaces.js"
 
 import {
 	User,
-	CoreApi,
 	VaultApi,
 	PaywallApi,
 	QuestionsApi,
+	CoreSecuredApi,
+	CoreSystemsApi,
 } from "./types.js"
 
 //
 // renraku api's
 //
 
-function makeCoreApiShape<U extends User>(): RenrakuApiShape<CoreApi<U>> {
+export function makeCoreSystemsApiShape<U extends User>(): RenrakuApiShape<CoreSystemsApi<U>> {
 	return {
 		authAardvark: {
 			authorize: "method",
@@ -24,8 +25,13 @@ function makeCoreApiShape<U extends User>(): RenrakuApiShape<CoreApi<U>> {
 			getUser: "method",
 			setProfile: "method",
 		},
+	}
+}
+
+export function makeCoreSecureApiShape<U extends User>(): RenrakuApiShape<CoreSecuredApi<U>> {
+	return {
 		claimsCardinal: {
-			setClaims: "method",
+			writeClaims: "method",
 		},
 	}
 }
@@ -41,7 +47,8 @@ export const questionsShape: RenrakuApiShape<QuestionsApi> = {
 }
 
 export const paywallShape: RenrakuApiShape<PaywallApi> = {
-	paywallPachyderm: {
+	premiumPachyderm: {
+		getPremiumDetails: "method",
 		updatePremium: "method",
 		cancelPremium: "method",
 		checkoutPremium: "method",
