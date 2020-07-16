@@ -61,3 +61,8 @@ export interface ScheduleEventRow extends DbbyRow<ScheduleEventRow> {
 	label: string
 	time: number
 }
+
+export interface SettingsRow extends DbbyRow<SettingsRow> {
+	userId: string
+	actAsAdmin: boolean
+}

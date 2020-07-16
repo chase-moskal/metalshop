@@ -4,6 +4,7 @@ import {Topic} from "renraku/dist/interfaces.js"
 import {
 	User,
 	Scope,
+	Settings,
 	Question,
 	CardClues,
 	AuthTokens,
@@ -99,6 +100,16 @@ export interface ScheduleSentryTopic extends Topic<ScheduleSentryTopic> {
 			event: ScheduleEvent
 			accessToken: AccessToken
 		}): Promise<void>
+}
+
+export interface SettingsSheriffTopic extends Topic<SettingsSheriffTopic> {
+	fetchSettings(options: {
+			accessToken: AccessToken
+		}): Promise<Settings>
+	setActAsAdmin(options: {
+			actAsAdmin: boolean
+			accessToken: AccessToken
+		}): Promise<Settings>
 }
 
 //
