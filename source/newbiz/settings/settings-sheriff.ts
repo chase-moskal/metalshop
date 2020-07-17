@@ -1,9 +1,9 @@
 
 import {DbbyTable} from "../../toolbox/dbby/types.js"
-import {SettingsSheriffTopic, SettingsRow, Settings, VerifyToken, AccessToken, AccessPayload} from "../../types.js"
+import {SettingsSheriffTopic, SettingsRow, Settings, Authorizer} from "../../types.js"
 
-export function makeSettingsSheriff({settingsTable, verifyToken}: {
-		verifyToken: VerifyToken
+export function makeSettingsSheriff({settingsTable, authorize}: {
+		authorize: Authorizer
 		settingsTable: DbbyTable<SettingsRow>
 	}): SettingsSheriffTopic {
 
@@ -20,14 +20,7 @@ export function makeSettingsSheriff({settingsTable, verifyToken}: {
 		}
 	}
 
-	async function authorize(accessToken: AccessToken) {
-		const {user, scope} = await verifyToken<AccessPayload>(accessToken)
-		if (!scope.core) throw new Error("forbidden scope")
-		return user
-	}
-
 	return {
-
 		async fetchSettings({accessToken}) {
 			const {userId} = await authorize(accessToken)
 			return assertSettings(userId)

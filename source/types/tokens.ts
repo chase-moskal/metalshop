@@ -39,5 +39,14 @@ export type VerifyToken = <Payload extends {}>(
 	token: string
 ) => Promise<Payload>
 
-export type VerifyRefreshToken = (refreshToken: RefreshToken) => Promise<RefreshPayload>
-export type VerifyAccessToken = <S extends Scope = Scope>(accessToken: AccessToken) => Promise<AccessPayload<S>>
+export type VerifyRefreshToken = (
+	refreshToken: RefreshToken
+) => Promise<RefreshPayload>
+
+export type VerifyAccessToken = <S extends Scope = Scope>(
+	accessToken: AccessToken
+) => Promise<AccessPayload<S>>
+
+export type Authorizer<U extends User = User> = (
+	accessToken: AccessToken
+) => Promise<U>

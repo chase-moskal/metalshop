@@ -1,29 +1,23 @@
 
-import {PremiumPachydermTopic, PremiumDatalayer, StripeLiaison, AccessToken, AccessPayload, VerifyToken} from "../../types.js"
+import {PremiumPachydermTopic, PremiumDatalayer, StripeLiaison, Authorizer} from "../../types.js"
 
 import {concurrent} from "../../toolbox/concurrent.js"
 
 export function makePremiumPachyderm({
-		verifyToken,
+		authorize,
 		stripeLiaison,
 		premiumDatalayer,
 		premiumStripePlanId,
 	}: {
-		verifyToken: VerifyToken
+		authorize: Authorizer
 		premiumStripePlanId: string
 		stripeLiaison: StripeLiaison
 		premiumDatalayer: PremiumDatalayer
 	}): PremiumPachydermTopic {
 
-	async function verify(accessToken: AccessToken) {
-		const {user, scope} = await verifyToken<AccessPayload>(accessToken)
-		if (!scope.core) throw new Error("scope forbidden")
-		return user
-	}
-
 	return {
 		async getPremiumDetails({accessToken}) {
-			const {userId} = await verify(accessToken)
+			const {userId} = await authorize(accessToken)
 			const row = await premiumDatalayer.getStripePremiumRow(userId)
 			return row
 				? {
@@ -39,7 +33,7 @@ export function makePremiumPachyderm({
 		},
 
 		async checkoutPremium({accessToken, popupUrl}) {
-			const {userId} = await verify(accessToken)
+			const {userId} = await authorize(accessToken)
 			const {
 				premiumGiftRow,
 				stripeBillingRow,
@@ -68,7 +62,7 @@ export function makePremiumPachyderm({
 		},
 
 		async updatePremium({accessToken, popupUrl}) {
-			const {userId} = await verify(accessToken)
+			const {userId} = await authorize(accessToken)
 			const {
 				stripeBillingRow,
 				stripePremiumRow,
@@ -93,7 +87,7 @@ export function makePremiumPachyderm({
 		},
 
 		async cancelPremium({accessToken}) {
-			const {userId} = await verify(accessToken)
+			const {userId} = await authorize(accessToken)
 			const stripePremiumRow = await premiumDatalayer.getStripePremiumRow(userId)
 			if (!stripePremiumRow) throw new Error("no subscription to cancel")
 

@@ -37,9 +37,9 @@ export function makeCoreSystems<U extends User>({
 		userUmbrella: UserUmbrellaTopic<U>
 	} {
 
-	async function verifyCoreScope(accessToken: AccessToken): Promise<U> {
+	async function verifyScope(accessToken: AccessToken): Promise<U> {
 		const {user, scope} = await verifyToken<AccessPayload>(accessToken)
-		if (!scope.core) throw new Error("scope forbidden")
+		if (!scope.core) throw new Error("forbidden scope")
 		return <U>user
 	}
 
@@ -104,7 +104,10 @@ export function makeCoreSystems<U extends User>({
 		})
 	}
 
-	async function updateClaims(userId: string, claims: Partial<U["claims"]>) {
+	async function updateClaims(
+			userId: string,
+			claims: Partial<U["claims"]>
+		) {
 		await claimsTable.update({
 			conditions: {equal: {userId}},
 			write: claims,
@@ -120,7 +123,6 @@ export function makeCoreSystems<U extends User>({
 	}
 
 	return {
-
 		authAardvark: {
 			async authenticateViaGoogle({googleToken}) {
 				const {googleId, avatar, name} = await verifyGoogleToken(googleToken)
@@ -158,8 +160,10 @@ export function makeCoreSystems<U extends User>({
 				return fetchUser(userId)
 			},
 			async setProfile({userId, profile, accessToken}) {
-				const askingUser = await verifyCoreScope(accessToken)
-				const allowed = (askingUser.claims.admin || askingUser.userId === userId)
+				const askingUser = await verifyScope(accessToken)
+				const allowed = false
+					|| askingUser.claims.admin
+					|| askingUser.userId === userId
 				if (!allowed) throw new Error("forbidden")
 				if (!validateProfile(profile)) throw new Error("invalid profile")
 				await profileTable.update({
