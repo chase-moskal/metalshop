@@ -1,5 +1,6 @@
 
 import {
+	User,
 	Authorizer,
 	LiveshowRow,
 	LiveshowLizardTopic,
@@ -7,19 +8,24 @@ import {
 
 import {DbbyTable} from "../../toolbox/dbby/types.js"
 
-export function makeLiveshowLizard({
+export function makeLiveshowLizard<U extends User = User>({
 		liveshowTable,
-		authorizeRead,
-		authorizeWrite,
+		authorize,
+		userCanRead,
+		userCanWrite,
 	}: {
-		authorizeRead: Authorizer
-		authorizeWrite: Authorizer
 		liveshowTable: DbbyTable<LiveshowRow>
+		authorize: Authorizer<U>
+		userCanRead: (user: U) => boolean
+		userCanWrite: (user: U) => boolean
 	}): LiveshowLizardTopic {
 	return {
 
 		async getShow({accessToken, label}) {
-			await authorizeRead(accessToken)
+			const user = await authorize(accessToken)
+			const allowed = userCanRead(user)
+			if (!allowed) throw new Error("not allowed")
+
 			const record = await liveshowTable.one({
 				conditions: {equal: {label}}
 			})
@@ -27,7 +33,10 @@ export function makeLiveshowLizard({
 		},
 
 		async setShow({accessToken, label, vimeoId}) {
-			await authorizeWrite(accessToken)
+			const user = await authorize(accessToken)
+			const allowed = userCanWrite(user)
+			if (!allowed) throw new Error("not allowed")
+
 			await liveshowTable.update({
 				conditions: {equal: {label}},
 				upsert: {label, vimeoId},

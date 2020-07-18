@@ -1,75 +1,73 @@
 
-import {
-	AuthTokens,
-	AccessToken,
-	TokenStoreTopic,
-	AuthExchangerTopic,
-} from "../../interfaces.js"
-
 import {tokenDecode} from "redcrypto/dist/token-decode.js"
+import {TokenStoreTopic, AuthAardvarkTopic} from "../../types.js"
 
 const tokenIsValid = (token: string) => {
+	let valid = false
 	if (token) {
 		const decoded: any = tokenDecode(token)
 		const expired = decoded.exp < (Date.now() / 1000)
-		return !expired
+		valid = !expired
 	}
-	else {
-		return false
-	}
+	return valid
 }
 
-export class TokenStore implements TokenStoreTopic {
-	private _storage: Storage
-	private _authExchanger: AuthExchangerTopic
-
-	constructor(options: {
+export function makeTokenStore({
+		storage,
+		authAardvark,
+	}: {
 		storage: Storage
-		authExchanger: AuthExchangerTopic
-	}) {
-		this._storage = options.storage
-		this._authExchanger = options.authExchanger
+		authAardvark: AuthAardvarkTopic
+	}): TokenStoreTopic {
+
+	function saveTokens({accessToken, refreshToken}) {
+		storage.setItem("accessToken", accessToken || "")
+		storage.setItem("refreshToken", refreshToken || "")
 	}
 
-	async writeAccessToken(accessToken: AccessToken): Promise<void> {
-		this._storage.setItem("accessToken", accessToken || "")
-	}
+	return {
 
-	async writeTokens({accessToken, refreshToken}: AuthTokens): Promise<void> {
-		this._storage.setItem("accessToken", accessToken || "")
-		this._storage.setItem("refreshToken", refreshToken || "")
-	}
+		async writeTokens({accessToken, refreshToken}) {
+			saveTokens({accessToken, refreshToken})
+		},
 
-	async clearTokens(): Promise<void> {
-		this._storage.removeItem("accessToken")
-		this._storage.removeItem("refreshToken")
-	}
+		async writeAccessToken(accessToken) {
+			storage.setItem("accessToken", accessToken || "")
+		},
 
-	async passiveCheck(): Promise<AccessToken> {
-		let accessToken = this._storage.getItem("accessToken")
-		let refreshToken = this._storage.getItem("refreshToken")
+		async clearTokens() {
+			storage.removeItem("accessToken")
+			storage.removeItem("refreshToken")
+		},
 
-		const accessValid = tokenIsValid(accessToken)
-		const refreshValid = tokenIsValid(refreshToken)
+		async passiveCheck() {
+			let accessToken = storage.getItem("accessToken")
+			let refreshToken = storage.getItem("refreshToken")
 
-		if (refreshValid) {
-			if (!accessValid) {
+			const accessValid = tokenIsValid(accessToken)
+			const refreshValid = tokenIsValid(refreshToken)
 
-				// access token missing or expired -- perform a refresh, return access token
-				accessToken = await this._authExchanger.authorize({
-					refreshToken: refreshToken
-				})
-				this.writeTokens({refreshToken, accessToken})
+			if (refreshValid) {
+				if (!accessValid) {
+
+					// access token missing or expired -- perform a refresh
+					accessToken = await authAardvark.authorize({
+						refreshToken,
+						scope: {core: true},
+					})
+
+					saveTokens({accessToken, refreshToken})
+				}
 			}
-		}
-		else {
+			else {
 
-			// refresh token missing or expired -- no login
-			accessToken = null
-			refreshToken = null
-			this.writeTokens({refreshToken, accessToken})
-		}
+				// refresh token missing or expired -- no login
+				accessToken = null
+				refreshToken = null
+				saveTokens({refreshToken, accessToken})
+			}
 
-		return accessToken
+			return accessToken
+		},
 	}
 }

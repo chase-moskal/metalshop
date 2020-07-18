@@ -3,7 +3,7 @@ import {DbbyTable} from "../../toolbox/dbby/types.js"
 import {concurrent} from "../../toolbox/concurrent.js"
 import {QuestionQuarryTopic, QuestionRow, QuestionLikeRow, QuestionReportRow, User, UserUmbrellaTopic, Question, Authorizer} from "../../types.js"
 
-export function makeQuestionQuarry({
+export function makeQuestionQuarry<U extends User = User>({
 		authorize,
 		generateId,
 		userCanPost,
@@ -16,8 +16,8 @@ export function makeQuestionQuarry({
 	}: {
 		authorize: Authorizer
 		generateId: () => string
-		userCanPost: (user: User) => boolean
-		userCanArchiveBoard: (user: User) => boolean
+		userCanPost: (user: U) => boolean
+		userCanArchiveBoard: (user: U) => boolean
 		userCanArchiveQuestion: (user: User, questionAuthorUserId: string) => boolean
 		userUmbrella: UserUmbrellaTopic<User>
 		questionTable: DbbyTable<QuestionRow>

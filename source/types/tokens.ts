@@ -15,9 +15,9 @@ export interface AuthTokens {
 	refreshToken: RefreshToken
 }
 
-export interface AccessPayload<S extends Scope = Scope> {
-	user: User
+export interface AccessPayload<S extends Scope = Scope, U extends User = User> {
 	scope: S
+	user: U
 }
 
 export interface RefreshPayload {
