@@ -29,7 +29,12 @@ import {
 
 import {nap} from "../toolbox/nap.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
-import {DecodeAccessToken, MetalOptions} from "../interfaces.js"
+import {
+	MetalOptions,
+	DecodeAccessToken,
+	TriggerAccountPopup,
+	TriggerCheckoutPopup,
+} from "../interfaces.js"
 
 import {makeTokenStore} from "../../newbiz/core/token-store.js"
 import {makeCoreSystems} from "../../newbiz/core/core-systems.js"
@@ -40,7 +45,8 @@ import {mockStorage} from "../../business/auth/mocks/mock-storage.js"
 import {makeQuestionQuarry} from "../../newbiz/questions/question-quarry.js"
 import {makeLiveshowLizard} from "../../newbiz/liveshow/liveshow-lizard.js"
 import {mockStripeCircuit} from "../../newbiz/paywall/mocks/mock-stripe-circuit.js"
-import { makeScheduleSentry } from "../../newbiz/schedule/schedule-sentry.js"
+import {makeScheduleSentry} from "../../newbiz/schedule/schedule-sentry.js"
+import {makePremiumPachyderm} from "../../newbiz/paywall/premium-pachyderm.js"
 
 export interface DemoScope extends Scope {}
 export interface DemoUser extends PaywallUser {}
@@ -172,12 +178,19 @@ export async function makeMocks({
 		userCanWrite: userPremiumIsValid,
 	})
 
-	const {premiumDatalayer, stripeLiaison, webhooks} = mockStripeCircuit({
+	const {premiumDatalayer, stripeLiaison} = mockStripeCircuit({
 		logger,
 		claimsCardinal,
 		premiumGiftTable,
 		stripeBillingTable,
 		stripePremiumTable,
+	})
+
+	const premiumPachyderm = makePremiumPachyderm({
+		authorize,
+		stripeLiaison,
+		premiumDatalayer,
+		premiumStripePlanId,
 	})
 
 	const scheduleSentry = makeScheduleSentry({
@@ -186,102 +199,106 @@ export async function makeMocks({
 		userCanChangeSchedule: userIsABoss,
 	})
 
-	// const checkoutPopupUrl = "http://metaldev.chasemoskal.com:8003/html/checkout"
+	const checkoutPopupUrl = "http://metaldev.chasemoskal.com:8003/html/checkout"
 
-	// const triggerAccountPopup: TriggerAccountPopup =
-	// 	async() => authExchanger.authenticateViaGoogle({googleToken})
+	const triggerAccountPopup: TriggerAccountPopup
+		= async() => authAardvark.authenticateViaGoogle({googleToken})
 
-	// const triggerCheckoutPopup: TriggerCheckoutPopup =
-	// 	async({stripeSessionId}) => null
+	const triggerCheckoutPopup: TriggerCheckoutPopup
+		= async({stripeSessionId}) => null
 
 	// const adminSearch = mockAdminSearch()
 
-	// //
-	// // starting conditions
-	// //
+	//
+	// starting conditions
+	//
 
-	// await liveshowGovernor.setShow({
-	// 	vimeoId: "109943349",
-	// 	videoName: "livestream",
-	// 	accessToken: mockAdminAccessToken,
-	// })
+	await liveshowLizard.setShow({
+		label: "livestream",
+		vimeoId: "109943349",
+		accessToken: mockAdminAccessToken,
+	})
 
-	// await scheduleSentry.setEvent({
-	// 	accessToken: mockAdminAccessToken,
-	// 	event: {
-	// 		name: "countdown1",
-	// 		time: Date.now() + (day * 3.14159)
-	// 	},
-	// })
+	await scheduleSentry.setEvent({
+		accessToken: mockAdminAccessToken,
+		event: {
+			label: "countdown1",
+			time: Date.now() + (day * 3.14159),
+		},
+	})
 
-	// await tokenStore.clearTokens()
+	await tokenStore.clearTokens()
 
-	// if (startLoggedIn || startAdmin || startPremium) {
-	// 	const authTokens = await authExchanger.authenticateViaGoogle({googleToken})
+	if (startLoggedIn || startAdmin || startPremium) {
+		const authTokens = await authAardvark.authenticateViaGoogle({googleToken})
 
-	// 	if (startAdmin) {
-	// 		const {user} = await verifyToken<AccessPayload>(authTokens.accessToken)
-	// 		const {userId, claims} = user
-	// 		claims.admin = true
-	// 		await authVanguard.setClaims({userId, claims})
-	// 	}
+		if (startAdmin) {
+			const {user} = await verifyToken<AccessPayload>(authTokens.accessToken)
+			const {userId, claims} = user
+			claims.admin = true
+			await claimsCardinal.writeClaims({userId, claims})
+		}
 
-	// 	if (startPremium) {
-	// 		await paywallLiaison.checkoutPremium({
-	// 			popupUrl: checkoutPopupUrl,
-	// 			accessToken: authTokens.accessToken,
-	// 		})
-	// 	}
+		if (startPremium) {
+			await premiumPachyderm.checkoutPremium({
+				popupUrl: checkoutPopupUrl,
+				accessToken: authTokens.accessToken,
+			})
+		}
 
-	// 	if (startLoggedIn) {
-	// 		const {refreshToken} = authTokens
-	// 		authTokens.accessToken = await authExchanger.authorize({refreshToken})
-	// 		await tokenStore.writeTokens(authTokens)
-	// 	}
-	// }
-
-	// // TODO latency
-	// // adding mock latency
-	// {
-	// 	const lag = <T extends (...args: any[]) => Promise<any>>(func: T) => {
-	// 		return async function(...args: any[]) {
-	// 			const ms = (Math.random() * 300) + 100
-	// 			console.log(`mock lag added: ${func.name} by ${ms.toFixed(0)} milliseconds`)
-	// 			await nap(ms)
-	// 			return func.apply(this, args)
-	// 		}
-	// 	}
-
-	// 	for (const object of Object.values(<{[key: string]: Topic}>{
-	// 		authDealer,
-	// 		adminSearch,
-	// 		paywallLiaison,
-	// 		scheduleSentry,
-	// 		settingsSheriff,
-	// 		questionsBureau,
-	// 		liveshowGovernor,
-	// 		profileMagistrate,
-	// 	})) {
-	// 		for (const [key, value] of Object.entries<Method>(object)) {
-	// 			object[key] = lag(value)
-	// 		}
-	// 	}
-	// }
-
-	return {
-		logger,
-		authDealer,
-		tokenStore,
-		adminSearch,
-		paywallLiaison,
-		scheduleSentry,
-		settingsSheriff,
-		questionsBureau,
-		liveshowGovernor,
-		checkoutPopupUrl,
-		decodeAccessToken,
-		profileMagistrate,
-		triggerAccountPopup,
-		triggerCheckoutPopup,
+		if (startLoggedIn) {
+			const {refreshToken} = authTokens
+			authTokens.accessToken = await authAardvark.authorize({
+				refreshToken,
+				scope: {core: true},
+			})
+			await tokenStore.writeTokens(authTokens)
+		}
 	}
+
+	// TODO latency
+	// adding mock latency
+	{
+		const lag = <T extends (...args: any[]) => Promise<any>>(func: T) => {
+			return async function(...args: any[]) {
+				const ms = (Math.random() * 300) + 100
+				console.log(`mock lag added: ${func.name} by ${ms.toFixed(0)} milliseconds`)
+				await nap(ms)
+				return func.apply(this, args)
+			}
+		}
+
+		for (const object of Object.values(<{[key: string]: Topic}>{
+			authAardvark,
+			premiumPachyderm,
+			scheduleSentry,
+			settingsSheriff,
+			questionsQuarry,
+			liveshowLizard,
+		})) {
+			for (const [key, value] of Object.entries<Method>(object)) {
+				object[key] = lag(value)
+			}
+		}
+	}
+
+	// TODO rework metal options!
+	return undefined
+
+	// return {
+	// 	logger,
+	// 	authDealer,
+	// 	tokenStore,
+	// 	adminSearch,
+	// 	paywallLiaison,
+	// 	scheduleSentry,
+	// 	settingsSheriff,
+	// 	questionsBureau,
+	// 	liveshowGovernor,
+	// 	checkoutPopupUrl,
+	// 	decodeAccessToken,
+	// 	profileMagistrate,
+	// 	triggerAccountPopup,
+	// 	triggerCheckoutPopup,
+	// }
 }

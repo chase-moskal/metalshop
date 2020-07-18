@@ -14,12 +14,12 @@ export function makeQuestionQuarry<U extends User = User>({
 		questionLikeTable,
 		questionReportTable,
 	}: {
-		authorize: Authorizer
+		authorize: Authorizer<U>
 		generateId: () => string
 		userCanPost: (user: U) => boolean
 		userCanArchiveBoard: (user: U) => boolean
-		userCanArchiveQuestion: (user: User, questionAuthorUserId: string) => boolean
-		userUmbrella: UserUmbrellaTopic<User>
+		userCanArchiveQuestion: (user: U, questionAuthorUserId: string) => boolean
+		userUmbrella: UserUmbrellaTopic<U>
 		questionTable: DbbyTable<QuestionRow>
 		questionLikeTable: DbbyTable<QuestionLikeRow>
 		questionReportTable: DbbyTable<QuestionReportRow>
