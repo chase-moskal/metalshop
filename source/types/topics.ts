@@ -95,7 +95,7 @@ export interface LiveshowLizardTopic extends Topic<LiveshowLizardTopic> {
 
 export interface ScheduleSentryTopic extends Topic<ScheduleSentryTopic> {
 	getEvent(options: {
-			name: string
+			label: string
 		}): Promise<ScheduleEvent>
 	setEvent(options: {
 			event: ScheduleEvent
