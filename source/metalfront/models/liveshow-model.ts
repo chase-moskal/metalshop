@@ -1,19 +1,18 @@
 
+import {observable, action, runInAction} from "mobx"
+
 import {pubsub} from "../../toolbox/pubsub.js"
 import * as loading from "../toolbox/loading.js"
-import {observable, action, runInAction} from "mobx"
-import {LiveshowGovernorTopic, User, AccessToken} from "../../interfaces.js"
-import {AuthPayload, PrivilegeLevel, GetAuthContext, VideoPayload} from "../interfaces.js"
 
-export type HandleAuthUpdate = (auth: loading.Load<AuthPayload>) => Promise<void>
+import {LiveshowLizardTopic, User, AccessToken} from "../../types.js"
+import {AuthPayload, PrivilegeLevel, GetAuthContext, VideoPayload} from "../types.js"
 
-/**
- * System-level liveshow state
- */
-export class LiveshowModel {
-	private liveshowGovernor: LiveshowGovernorTopic
+export type HandleAuthUpdate<U extends User> = (auth: loading.Load<AuthPayload<U>>) => Promise<void>
+
+export class LiveshowModel<U extends User> {
+	private liveshowGovernor: LiveshowLizardTopic
 	constructor(options: {
-			liveshowGovernor: LiveshowGovernorTopic
+			liveshowGovernor: LiveshowLizardTopic
 		}) {
 		Object.assign(this, options)
 	}
@@ -22,9 +21,9 @@ export class LiveshowModel {
 	// pubsub to mirror auth load to view models
 	//
 
-	authLoadPubsub = pubsub<HandleAuthUpdate>()
+	authLoadPubsub = pubsub<HandleAuthUpdate<U>>()
 
-	handleAuthLoad(authLoad: loading.Load<AuthPayload>) {
+	handleAuthLoad(authLoad: loading.Load<AuthPayload<U>>) {
 		this.authLoadPubsub.publish(authLoad)
 	}
 
@@ -36,13 +35,13 @@ export class LiveshowModel {
 	// function to create new view models
 	//
 
-	makeViewModel = ({videoName}: {videoName: string}): {
+	makeViewModel = ({videoLabel}: {videoLabel: string}): {
 			dispose: () => void,
-			viewModel: LiveshowViewModel,
+			viewModel: LiveshowViewModel<U>,
 		} => {
 		const {liveshowGovernor} = this
-		const viewModel = new LiveshowViewModel({
-			videoName,
+		const viewModel = new LiveshowViewModel<U>({
+			videoLabel,
 			liveshowGovernor,
 		})
 		const dispose = this.authLoadPubsub.subscribe(viewModel.handleAuthLoad)
@@ -56,7 +55,7 @@ export class LiveshowModel {
 /**
  * Component-level liveshow state
  */
-export class LiveshowViewModel {
+export class LiveshowViewModel<U extends User> {
 
 	//
 	// public observables
@@ -70,13 +69,13 @@ export class LiveshowViewModel {
 	// private variables and constructor
 	//
 
-	private videoName: string
-	private getAuthContext: GetAuthContext
-	private liveshowGovernor: LiveshowGovernorTopic
+	private videoLabel: string
+	private getAuthContext: GetAuthContext<U>
+	private liveshowGovernor: LiveshowLizardTopic
 
 	constructor(options: {
-			videoName: string
-			liveshowGovernor: LiveshowGovernorTopic
+			videoLabel: string
+			liveshowGovernor: LiveshowLizardTopic
 		}) {
 		Object.assign(this, options)
 	}
@@ -95,7 +94,7 @@ export class LiveshowViewModel {
 	}
 
 	 @action.bound
-	async handleAuthLoad(authLoad: loading.Load<AuthPayload>) {
+	async handleAuthLoad(authLoad: loading.Load<AuthPayload<U>>) {
 
 		// initialize observables
 		this.videoLoad = loading.none()
@@ -148,12 +147,12 @@ export class LiveshowViewModel {
 		}
 
 		if (vimeoId || vimeostring === "") {
-			const {videoName, getAuthContext} = this
+			const {videoLabel, getAuthContext} = this
 			const {accessToken} = await getAuthContext()
 			await this.liveshowGovernor.setShow({
 				vimeoId,
-				videoName,
 				accessToken,
+				label: videoLabel,
 			})
 		}
 		else {
@@ -169,7 +168,7 @@ export class LiveshowViewModel {
 	private async loadVideo(accessToken: AccessToken) {
 		return await this.liveshowGovernor.getShow({
 			accessToken,
-			videoName: this.videoName,
+			label: this.videoLabel,
 		})
 	}
 }

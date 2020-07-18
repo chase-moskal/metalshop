@@ -1,33 +1,34 @@
 
 import {observable, action} from "mobx"
 import * as loading from "../toolbox/loading.js"
-import {User, AccessToken, TokenStoreTopic} from "../../interfaces.js"
-import {AuthPayload, TriggerAccountPopup, DecodeAccessToken, AuthContext, GetAuthContext} from "../interfaces.js"
 
-export class AuthModel {
+import {User, AccessToken, TokenStoreTopic} from "../../types.js"
+import {AuthPayload, TriggerAccountPopup, DecodeAccessToken, AuthContext, GetAuthContext} from "../types.js"
+
+export class AuthModel<U extends User> {
 
 	//
 	// public observables
 	//
 
-	@observable user: User = null
-	@observable getAuthContext: GetAuthContext = null
-	@observable authLoad = loading.load<AuthPayload>()
+	@observable user: U = null
+	@observable getAuthContext: GetAuthContext<U> = null
+	@observable authLoad = loading.load<AuthPayload<U>>()
 
 	//
 	// private state
 	//
 
-	private authContext: AuthContext
+	private authContext: AuthContext<U>
 	private expiryGraceSeconds: number
 	private tokenStore: TokenStoreTopic
-	private decodeAccessToken: DecodeAccessToken
+	private decodeAccessToken: DecodeAccessToken<U>
 	private triggerAccountPopup: TriggerAccountPopup
 
 	constructor(options: {
 			expiryGraceSeconds: number
 			tokenStore: TokenStoreTopic
-			decodeAccessToken: DecodeAccessToken
+			decodeAccessToken: DecodeAccessToken<U>
 			triggerAccountPopup: TriggerAccountPopup
 		}) {
 		Object.assign(this, options)
@@ -110,7 +111,7 @@ export class AuthModel {
 	//
 
 	 @action.bound
-	private processAccessToken(accessToken: AccessToken): AuthPayload {
+	private processAccessToken(accessToken: AccessToken): AuthPayload<U> {
 		this.authContext = this.decodeAccessToken(accessToken)
 		this.user = this.authContext?.user
 		const getAuthContext = async() => {
@@ -142,7 +143,7 @@ export class AuthModel {
 	}
 
 	 @action.bound
-	private setLoggedIn({user, getAuthContext}: AuthPayload) {
+	private setLoggedIn({user, getAuthContext}: AuthPayload<U>) {
 		this.getAuthContext = getAuthContext
 		this.authLoad = loading.ready({user, getAuthContext})
 	}

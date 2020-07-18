@@ -1,14 +1,14 @@
 
 import {observable, action, computed} from "mobx"
-import {Personal} from "../../interfaces.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
-import {ProfileMagistrateTopic, SettingsSheriffTopic, Profile} from "../../interfaces.js"
+
+import {Personal, GetAuthContext, AuthPayload} from "../types.js"
+import {User, Settings, UserUmbrellaTopic, SettingsSheriffTopic, Profile} from "../../types.js"
 
 import * as loading from "../toolbox/loading.js"
 import {makeTicketbooth} from "../toolbox/ticketbooth.js"
-import {GetAuthContext, AuthPayload} from "../interfaces.js"
 
-export class PersonalModel {
+export class PersonalModel<U extends User, S extends Settings> {
 	@observable personalLoad = loading.load<Personal>()
 	@computed get personal() {
 		return loading.payload(this.personalLoad)

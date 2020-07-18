@@ -1,23 +1,24 @@
 
 import {action, computed} from "mobx"
-import {PaywallLiaisonTopic} from "../../interfaces.js"
+
+import {TriggerCheckoutPopup} from "../types.js"
+import {PaywallUser, PremiumPachydermTopic} from "../../types.js"
 
 import {AuthModel} from "./auth-model.js"
 import {PersonalModel} from "./personal-model.js"
-import {TriggerCheckoutPopup} from "../interfaces.js"
 
-export class PaywallModel {
-	private readonly auth: AuthModel
+export class PaywallModel<U extends PaywallUser> {
+	private readonly auth: AuthModel<U>
 	private readonly personal: PersonalModel
 	private readonly checkoutPopupUrl: string
-	private readonly paywallLiaison: PaywallLiaisonTopic
+	private readonly premiumPachyderm: PremiumPachydermTopic
 	private readonly triggerCheckoutPopup: TriggerCheckoutPopup
 
 	constructor(options: {
-			auth: AuthModel
+			auth: AuthModel<U>
 			personal: PersonalModel
 			checkoutPopupUrl: string
-			paywallLiaison: PaywallLiaisonTopic
+			premiumPachyderm: PremiumPachydermTopic
 			triggerCheckoutPopup: TriggerCheckoutPopup
 		}) {
 		Object.assign(this, options)
@@ -41,7 +42,7 @@ export class PaywallModel {
 	 @action.bound
 	async checkoutPremium() {
 		const {accessToken} = await this.auth.getAuthContext()
-		const {stripeSessionId} = await this.paywallLiaison.checkoutPremium({
+		const {stripeSessionId} = await this.premiumPachyderm.checkoutPremium({
 			accessToken,
 			popupUrl: this.checkoutPopupUrl,
 		})
@@ -52,7 +53,7 @@ export class PaywallModel {
 	 @action.bound
 	async updatePremium() {
 		const {accessToken} = await this.auth.getAuthContext()
-		const {stripeSessionId} = await this.paywallLiaison.updatePremium({
+		const {stripeSessionId} = await this.premiumPachyderm.updatePremium({
 			accessToken,
 			popupUrl: this.checkoutPopupUrl,
 		})
@@ -63,7 +64,7 @@ export class PaywallModel {
 	 @action.bound
 	async cancelPremium() {
 		const {accessToken} = await this.auth.getAuthContext()
-		await this.paywallLiaison.cancelPremium({accessToken})
+		await this.premiumPachyderm.cancelPremium({accessToken})
 		await this.auth.reauthorize()
 	}
 }
