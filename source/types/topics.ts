@@ -60,6 +60,7 @@ export interface PremiumPachydermTopic extends Topic<PremiumPachydermTopic> {
 export interface QuestionQuarryTopic extends Topic<QuestionQuarryTopic> {
 	fetchQuestions(o: {
 			board: string
+			accessToken?: AccessToken
 		}): Promise<Question[]>
 	postQuestion(o: {
 			draft: QuestionDraft

@@ -50,11 +50,12 @@ export interface QuestionDraft {
 
 export interface Question extends QuestionDraft {
 	questionId: string
-	authorUserId: string
-	posted: number
+	author: User
 	liked: boolean
 	likes: number
+	reports: number
 	reported: boolean
+	timePosted: number
 }
 
 export interface ScheduleEvent {

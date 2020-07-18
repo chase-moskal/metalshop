@@ -37,9 +37,9 @@ export interface QuestionRow extends DbbyRow<QuestionRow> {
 	questionId: string
 	authorUserId: string
 	board: string
-	posted: number
 	content: string
 	archive: boolean
+	timePosted: number
 }
 
 export interface QuestionLikeRow extends DbbyRow<QuestionLikeRow> {

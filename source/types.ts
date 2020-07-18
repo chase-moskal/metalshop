@@ -1,6 +1,5 @@
 
 export * from "./types/apis.js"
-export * from "./types/authorizers.js"
 export * from "./types/common.js"
 export * from "./types/config.js"
 export * from "./types/rows.js"
