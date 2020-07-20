@@ -1,19 +1,11 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {StripeBillingRow, StripePremiumRow, PremiumGiftRow} from "../../types.js"
+import {StripeBillingRow, StripePremiumRow, PremiumGiftRow, CardClues} from "../../types.js"
 
 export type UpdateFlow = "UpdatePremiumSubscription"
 
 export interface SetupMetadata extends Stripe.Metadata {
 	flow: UpdateFlow
-}
-
-export interface CardClues {
-	brand: string
-	last4: string
-	country: string
-	expireYear: number
-	expireMonth: number
 }
 
 export interface PaymentDetails {

@@ -5,9 +5,9 @@ import {
 	User,
 	Scope,
 	Question,
-	CardClues,
 	AuthTokens,
 	AccessToken,
+	PremiumInfo,
 	RefreshToken,
 	MetalSettings,
 	QuestionDraft,
@@ -47,7 +47,7 @@ export interface ClaimsCardinalTopic<U extends User> extends Topic<ClaimsCardina
 export interface PremiumPachydermTopic extends Topic<PremiumPachydermTopic> {
 	getPremiumDetails(o: {
 			accessToken: AccessToken
-		}): Promise<{cardClues: CardClues}>
+		}): Promise<PremiumInfo>
 	checkoutPremium(o: {
 			popupUrl: string
 			accessToken: AccessToken

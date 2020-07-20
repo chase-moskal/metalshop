@@ -3,7 +3,7 @@ import {autorun} from "mobx"
 import {MetalOptions, Supermodel} from "../interfaces.js"
 
 import {AuthModel} from "../models/auth-model.js"
-import {SeekerModel} from "../models/seeker-model.js"
+// import {SeekerModel} from "../models/seeker-model.js"
 import {PaywallModel} from "../models/paywall-model.js"
 import {LiveshowModel} from "../models/liveshow-model.js"
 import {ScheduleModel} from "../models/schedule-model.js"

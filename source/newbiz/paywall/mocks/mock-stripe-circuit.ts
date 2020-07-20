@@ -1,5 +1,5 @@
 
-import {PaywallUser, StripeWebhooks, PremiumGiftRow, StripeBillingRow, StripePremiumRow, ClaimsCardinalTopic} from "../../../types.js"
+import {MetalUser, StripeWebhooks, PremiumGiftRow, StripeBillingRow, StripePremiumRow, ClaimsCardinalTopic} from "../../../types.js"
 
 import {DbbyTable} from "../../../toolbox/dbby/types.js"
 import {pubsubs, pubsub} from "../../../toolbox/pubsub.js"
@@ -30,7 +30,7 @@ export function mockStripeCircuit({
 		premiumGiftTable: DbbyTable<PremiumGiftRow>
 		stripeBillingTable: DbbyTable<StripeBillingRow>
 		stripePremiumTable: DbbyTable<StripePremiumRow>
-		claimsCardinal: ClaimsCardinalTopic<PaywallUser>
+		claimsCardinal: ClaimsCardinalTopic<MetalUser>
 	}) {
 
 	// create pubsub contexts for each webhook

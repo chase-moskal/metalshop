@@ -1,6 +1,18 @@
 
 import {User} from "../types.js"
 
+export interface CardClues {
+	brand: string
+	last4: string
+	country: string
+	expireYear: number
+	expireMonth: number
+}
+
+export interface PremiumInfo {
+	cardClues: CardClues
+}
+
 export interface QuestionDraft {
 	board: string
 	content: string
