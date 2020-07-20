@@ -8,16 +8,16 @@ import {
 
 import {DbbyTable} from "../../toolbox/dbby/types.js"
 
-export function makeLiveshowLizard<U extends User = User>({
+export function makeLiveshowLizard({
 		liveshowTable,
 		authorize,
 		userCanRead,
 		userCanWrite,
 	}: {
 		liveshowTable: DbbyTable<LiveshowRow>
-		authorize: Authorizer<U>
-		userCanRead: (user: U) => boolean
-		userCanWrite: (user: U) => boolean
+		authorize: Authorizer
+		userCanRead: (user: User) => boolean
+		userCanWrite: (user: User) => boolean
 	}): LiveshowLizardTopic {
 	return {
 

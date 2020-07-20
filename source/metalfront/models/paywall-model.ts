@@ -2,20 +2,20 @@
 import {action, computed} from "mobx"
 
 import {TriggerCheckoutPopup} from "../types.js"
-import {PaywallUser, PremiumPachydermTopic} from "../../types.js"
+import {User, PremiumPachydermTopic} from "../../types.js"
 
 import {AuthModel} from "./auth-model.js"
 import {PersonalModel} from "./personal-model.js"
 
-export class PaywallModel<U extends PaywallUser> {
-	private readonly auth: AuthModel<U>
+export class PaywallModel {
+	private readonly auth: AuthModel<User>
 	private readonly personal: PersonalModel
 	private readonly checkoutPopupUrl: string
 	private readonly premiumPachyderm: PremiumPachydermTopic
 	private readonly triggerCheckoutPopup: TriggerCheckoutPopup
 
 	constructor(options: {
-			auth: AuthModel<U>
+			auth: AuthModel<User>
 			personal: PersonalModel
 			checkoutPopupUrl: string
 			premiumPachyderm: PremiumPachydermTopic

@@ -1,5 +1,5 @@
 
-import {User} from "./common.js"
+import {User} from "../types.js"
 import {DbbyValue} from "../toolbox/dbby/types.js"
 
 export type AccessToken = string
@@ -7,6 +7,9 @@ export type RefreshToken = string
 
 export interface Scope {
 	[key: string]: DbbyValue
+}
+
+export interface MetalScope extends Scope {
 	core: boolean
 }
 
@@ -47,6 +50,6 @@ export type VerifyAccessToken = <S extends Scope = Scope>(
 	accessToken: AccessToken
 ) => Promise<AccessPayload<S>>
 
-export type Authorizer<U extends User = User> = (
+export type Authorizer = (
 	accessToken: AccessToken
-) => Promise<U>
+) => Promise<User>

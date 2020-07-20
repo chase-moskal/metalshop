@@ -1,64 +1,58 @@
 
 import {DbbyValue} from "../toolbox/dbby/types.js"
 
-export interface User<C extends Claims = Claims, P extends Profile = Profile> {
+//
+// bare-bones unopinionated agnostic basics
+//
+
+export interface User {
 	userId: string
-	claims: C
-	profile: P
+	claims: Claims
+	profile: Profile
 }
 
 export interface Claims {
 	[key: string]: DbbyValue
+}
+
+export interface Profile {
+	[key: string]: DbbyValue
+}
+
+export interface Settings {
+	[key: string]: DbbyValue
+}
+
+//
+// standard metalshop configuration
+//
+
+export interface MetalGenerics {
+	user: MetalUser
+	settings: MetalSettings
+}
+
+export interface MetalClaims extends Claims {
 	admin: boolean
 	staff: boolean
 	banUntil: number
 	banReason: string
 	joined: number
 	lastLogin: number
+	premiumUntil: number
 }
 
-export interface Profile {
-	[key: string]: DbbyValue
+export interface MetalProfile extends Profile {
 	nickname: string
 	tagline: string
 	avatar: string
 }
 
-export interface Settings {
-	[key: string]: DbbyValue
+export interface MetalUser extends User {
+	claims: MetalClaims
+	profile: MetalProfile
+}
+
+export interface MetalSettings extends Settings {
 	actAsAdmin: boolean
-}
-
-//
-//
-//
-
-export interface PaywallClaims extends Claims {
-	premiumUntil: number
-}
-
-export type PaywallUser = User<PaywallClaims, Profile>
-
-//
-//
-//
-
-export interface QuestionDraft {
-	board: string
-	content: string
-}
-
-export interface Question extends QuestionDraft {
-	questionId: string
-	author: User
-	liked: boolean
-	likes: number
-	reports: number
-	reported: boolean
-	timePosted: number
-}
-
-export interface ScheduleEvent {
-	label: string
-	time: number
 }

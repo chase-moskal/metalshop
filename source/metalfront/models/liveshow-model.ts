@@ -7,9 +7,9 @@ import * as loading from "../toolbox/loading.js"
 import {LiveshowLizardTopic, User, AccessToken} from "../../types.js"
 import {AuthPayload, PrivilegeLevel, GetAuthContext, VideoPayload} from "../types.js"
 
-export type HandleAuthUpdate<U extends User> = (auth: loading.Load<AuthPayload<U>>) => Promise<void>
+export type HandleAuthUpdate = (auth: loading.Load<AuthPayload<User>>) => Promise<void>
 
-export class LiveshowModel<U extends User> {
+export class LiveshowModel {
 	private liveshowGovernor: LiveshowLizardTopic
 	constructor(options: {
 			liveshowGovernor: LiveshowLizardTopic
@@ -21,9 +21,9 @@ export class LiveshowModel<U extends User> {
 	// pubsub to mirror auth load to view models
 	//
 
-	authLoadPubsub = pubsub<HandleAuthUpdate<U>>()
+	authLoadPubsub = pubsub<HandleAuthUpdate>()
 
-	handleAuthLoad(authLoad: loading.Load<AuthPayload<U>>) {
+	handleAuthLoad(authLoad: loading.Load<AuthPayload<User>>) {
 		this.authLoadPubsub.publish(authLoad)
 	}
 
@@ -37,10 +37,10 @@ export class LiveshowModel<U extends User> {
 
 	makeViewModel = ({videoLabel}: {videoLabel: string}): {
 			dispose: () => void,
-			viewModel: LiveshowViewModel<U>,
+			viewModel: LiveshowViewModel,
 		} => {
 		const {liveshowGovernor} = this
-		const viewModel = new LiveshowViewModel<U>({
+		const viewModel = new LiveshowViewModel({
 			videoLabel,
 			liveshowGovernor,
 		})
@@ -55,7 +55,7 @@ export class LiveshowModel<U extends User> {
 /**
  * Component-level liveshow state
  */
-export class LiveshowViewModel<U extends User> {
+export class LiveshowViewModel {
 
 	//
 	// public observables
@@ -70,7 +70,7 @@ export class LiveshowViewModel<U extends User> {
 	//
 
 	private videoLabel: string
-	private getAuthContext: GetAuthContext<U>
+	private getAuthContext: GetAuthContext<User>
 	private liveshowGovernor: LiveshowLizardTopic
 
 	constructor(options: {
@@ -94,7 +94,7 @@ export class LiveshowViewModel<U extends User> {
 	}
 
 	 @action.bound
-	async handleAuthLoad(authLoad: loading.Load<AuthPayload<U>>) {
+	async handleAuthLoad(authLoad: loading.Load<AuthPayload<User>>) {
 
 		// initialize observables
 		this.videoLoad = loading.none()

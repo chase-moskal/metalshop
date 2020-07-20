@@ -1,6 +1,5 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-
 import {StripeBillingRow, StripePremiumRow, PremiumGiftRow} from "../../types.js"
 
 export type UpdateFlow = "UpdatePremiumSubscription"

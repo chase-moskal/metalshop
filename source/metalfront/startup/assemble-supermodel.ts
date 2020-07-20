@@ -48,7 +48,7 @@ export function assembleSupermodel({
 		paywall: new PaywallModel({
 			auth,
 			personal,
-			paywallLiaison,
+			premiumPachyderm: paywallLiaison,
 			checkoutPopupUrl,
 			triggerCheckoutPopup,
 		}),

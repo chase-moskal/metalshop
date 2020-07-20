@@ -3,14 +3,11 @@ import {DbbyTable} from "../../toolbox/dbby/types.js"
 import {concurrent} from "../../toolbox/concurrent.js"
 import {generateId} from "../../toolbox/generate-id.js"
 
-import {User, Profile, AccessToken, ClaimsRow, SignToken, AccountRow, ProfileRow, VerifyToken, AccessPayload, UserUmbrellaTopic, RefreshPayload, AuthAardvarkTopic, VerifyGoogleToken} from "../../types.js"
+import {MetalUser, AccessToken, ClaimsRow, SignToken, AccountRow, ProfileRow, VerifyToken, AccessPayload, UserUmbrellaTopic, RefreshPayload, AuthAardvarkTopic, VerifyGoogleToken} from "../../types.js"
 
-function defaultValidateProfile(profile: Profile): boolean {
-	// TODO implement some reasonable validation
-	return !!profile
-}
+import {validateProfile as defaultValidateProfile} from "./validate-profile.js"
 
-export function makeCoreSystems<U extends User>({
+export function makeCoreSystems<U extends MetalUser>({
 		claimsTable,
 		accountTable,
 		profileTable,
@@ -31,7 +28,7 @@ export function makeCoreSystems<U extends User>({
 		verifyToken: VerifyToken
 		generateNickname: () => string
 		verifyGoogleToken: VerifyGoogleToken
-		validateProfile?: (profile: Profile) => boolean
+		validateProfile?: (profile: U["profile"]) => boolean
 	}): {
 		authAardvark: AuthAardvarkTopic
 		userUmbrella: UserUmbrellaTopic<U>
@@ -89,6 +86,7 @@ export function makeCoreSystems<U extends User>({
 						lastLogin: Date.now(),
 						banUntil: undefined,
 						banReason: undefined,
+						premiumUntil: undefined,
 					}),
 				}),
 				profileRow: profileTable.assert({

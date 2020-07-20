@@ -4,7 +4,7 @@ import {Stripe} from "../../commonjs/stripe.js"
 import {concurrent} from "../../toolbox/concurrent.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 
-import {ClaimsCardinalTopic, StripeLiaison, StripeWebhooks, PremiumDatalayer, SetupMetadata, PaywallUser} from "../../types.js"
+import {ClaimsCardinalTopic, StripeLiaison, StripeWebhooks, PremiumDatalayer, SetupMetadata, MetalUser} from "../../types.js"
 
 export class StripeWebhookError extends Error {
 	name = this.constructor.name
@@ -21,7 +21,7 @@ export function makeStripeWebhooks({
 		logger: Logger
 		stripeLiaison: StripeLiaison
 		premiumDatalayer: PremiumDatalayer
-		claimsCardinal: ClaimsCardinalTopic<PaywallUser>
+		claimsCardinal: ClaimsCardinalTopic<MetalUser>
 	}): StripeWebhooks {
 
 	function evaluateSubscription(subscription: Stripe.Subscription) {

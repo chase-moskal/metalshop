@@ -1,6 +1,6 @@
 
 import {DbbyRow} from "../toolbox/dbby/types.js"
-import {Claims, Profile, CardClues} from "../types.js"
+import {MetalClaims, MetalProfile, MetalSettings, CardClues} from "../types.js"
 
 export interface AccountRow extends DbbyRow<AccountRow> {
 	userId: string
@@ -10,13 +10,19 @@ export interface AccountRow extends DbbyRow<AccountRow> {
 	googleAvatar: string
 }
 
-export interface ClaimsRow extends Claims {
+export interface ClaimsRow extends MetalClaims {
 	userId: string
 }
 
-export interface ProfileRow extends Profile {
+export interface ProfileRow extends MetalProfile {
 	userId: string
 }
+
+export interface SettingsRow extends MetalSettings {
+	userId: string
+	actAsAdmin: boolean
+}
+
 
 export interface StripeBillingRow extends DbbyRow<StripeBillingRow> {
 	userId: string
@@ -60,9 +66,4 @@ export interface LiveshowRow extends DbbyRow<LiveshowRow> {
 export interface ScheduleEventRow extends DbbyRow<ScheduleEventRow> {
 	label: string
 	time: number
-}
-
-export interface SettingsRow extends DbbyRow<SettingsRow> {
-	userId: string
-	actAsAdmin: boolean
 }

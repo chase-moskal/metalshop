@@ -4,12 +4,12 @@ import {Topic} from "renraku/dist/interfaces.js"
 import {
 	User,
 	Scope,
-	Settings,
 	Question,
 	CardClues,
 	AuthTokens,
 	AccessToken,
 	RefreshToken,
+	MetalSettings,
 	QuestionDraft,
 	ScheduleEvent,
 } from "../types.js"
@@ -21,11 +21,15 @@ export interface AuthAardvarkTopic extends Topic<AuthAardvarkTopic> {
 			scope: S
 			refreshToken: RefreshToken
 		}): Promise<AccessToken>
-	authenticateViaGoogle(o: {googleToken: string}): Promise<AuthTokens>
+	authenticateViaGoogle(o: {
+			googleToken: string
+		}): Promise<AuthTokens>
 }
 
 export interface UserUmbrellaTopic<U extends User> extends Topic<UserUmbrellaTopic<U>> {
-	getUser(o: {userId: string}): Promise<U>
+	getUser(o: {
+			userId: string
+		}): Promise<U>
 	setProfile(o: {
 			userId: string
 			profile: U["profile"]
@@ -103,14 +107,14 @@ export interface ScheduleSentryTopic extends Topic<ScheduleSentryTopic> {
 		}): Promise<void>
 }
 
-export interface SettingsSheriffTopic extends Topic<SettingsSheriffTopic> {
+export interface SettingsSheriffTopic<S extends MetalSettings> extends Topic<SettingsSheriffTopic<S>> {
 	fetchSettings(options: {
 			accessToken: AccessToken
-		}): Promise<Settings>
+		}): Promise<S>
 	setActAsAdmin(options: {
 			actAsAdmin: boolean
 			accessToken: AccessToken
-		}): Promise<Settings>
+		}): Promise<S>
 }
 
 //

@@ -1,6 +1,6 @@
 
 import {DbbyTable} from "../../toolbox/dbby/types.js"
-import {ScheduleSentryTopic,ScheduleEventRow, Authorizer, User} from "../../types.js"
+import {ScheduleSentryTopic, ScheduleEventRow, Authorizer, User} from "../../types.js"
 
 export function makeScheduleSentry({
 		scheduleEventTable,

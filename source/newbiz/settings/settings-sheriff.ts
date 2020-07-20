@@ -1,13 +1,13 @@
 
 import {DbbyTable} from "../../toolbox/dbby/types.js"
-import {SettingsSheriffTopic, SettingsRow, Settings, Authorizer} from "../../types.js"
+import {SettingsSheriffTopic, MetalSettings, SettingsRow, Authorizer} from "../../types.js"
 
-export function makeSettingsSheriff({settingsTable, authorize}: {
+export function makeSettingsSheriff<S extends MetalSettings>({settingsTable, authorize}: {
 		authorize: Authorizer
 		settingsTable: DbbyTable<SettingsRow>
-	}): SettingsSheriffTopic {
+	}): SettingsSheriffTopic<S> {
 
-	async function assertSettings(userId: string): Promise<Settings> {
+	async function assertSettings(userId: string): Promise<S> {
 		const row = await settingsTable.assert({
 			conditions: {equal: {userId}},
 			make: async() => ({
@@ -15,7 +15,7 @@ export function makeSettingsSheriff({settingsTable, authorize}: {
 				actAsAdmin: true,
 			}),
 		})
-		return {
+		return <S>{
 			actAsAdmin: row.actAsAdmin
 		}
 	}
