@@ -1,10 +1,10 @@
 
 import {share} from "../framework/share.js"
 import {
-	ButtonPremiumShare, PersonalShare, SeekerShare,
+	ButtonPremiumShare, PersonalShare,
 	MyAvatarShare, AdminModeShare, AdminOnlyShare, QuestionsShare,
 	Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare,
-} from "../interfaces.js"
+} from "../types.js"
 
 import {IronLoading} from "../components/iron-loading.js"
 import {IronTextInput} from "../components/iron-text-input.js"
@@ -51,12 +51,12 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 			personalLoad: supermodel.personal.personalLoad,
 			saveProfile: supermodel.personal.saveProfile,
 			setAdminMode: supermodel.personal.setAdminMode,
-			setAvatarPublicity: supermodel.personal.setAvatarPublicity,
+			// setAvatarPublicity: supermodel.personal.setAvatarPublicity,
 		})),
-		MetalSeeker: share(MetalSeeker, (): SeekerShare => ({
-			query: supermodel.seeker.query,
-			resultsLoad: supermodel.seeker.resultsLoad,
-		})),
+		// MetalSeeker: share(MetalSeeker, (): SeekerShare => ({
+		// 	query: supermodel.seeker.query,
+		// 	resultsLoad: supermodel.seeker.resultsLoad,
+		// })),
 		MetalCountdown: share(MetalCountdown, (): CountdownShare => ({
 			events: supermodel.schedule.events,
 			authLoad: supermodel.auth.authLoad,
@@ -65,17 +65,18 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 		})),
 		MetalPaywall: share(MetalPaywall, (): PaywallShare => ({
 			personalLoad: supermodel.personal.personalLoad,
-			premiumClaim: supermodel.paywall.premiumClaim,
-			premiumExpires: supermodel.paywall.premiumExpires,
-			premiumSubscription: supermodel.paywall.premiumSubscription,
+			premium: supermodel.paywall.premium,
+			premiumUntil: supermodel.paywall.premiumUntil,
+			premiumInfoLoad: supermodel.paywall.premiumInfoLoad,
 			updatePremium: supermodel.paywall.updatePremium,
 			cancelPremium: supermodel.paywall.cancelPremium,
 			checkoutPremium: supermodel.paywall.checkoutPremium,
 		})),
 		MetalButtonPremium: share(MetalButtonPremium, (): ButtonPremiumShare => ({
 			personalLoad: supermodel.personal.personalLoad,
-			premiumClaim: supermodel.paywall.premiumClaim,
-			premiumSubscription: supermodel.paywall.premiumSubscription,
+			premium: supermodel.paywall.premium,
+			premiumUntil: supermodel.paywall.premiumUntil,
+			premiumInfoLoad: supermodel.paywall.premiumInfoLoad,
 			login: supermodel.auth.login,
 			checkoutPremium: supermodel.paywall.checkoutPremium,
 		})),
@@ -95,8 +96,7 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 		})),
 		MetalQuestions: share(MetalQuestions, (): QuestionsShare => ({
 			user: supermodel.auth.user,
-			profile: supermodel.personal.profile,
-			uiBureau: supermodel.questions.uiBureau,
+			uiBureau: supermodel.questions.questionQuarryUi,
 			fetchCachedQuestions: supermodel.questions.fetchCachedQuestions,
 		})),
 	}

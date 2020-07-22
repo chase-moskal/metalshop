@@ -1,5 +1,5 @@
 
-import {User} from "../types.js"
+import {MetalUser} from "../types.js"
 
 export interface CardClues {
 	brand: string
@@ -20,7 +20,7 @@ export interface QuestionDraft {
 
 export interface Question extends QuestionDraft {
 	questionId: string
-	author: User
+	author: MetalUser
 	liked: boolean
 	likes: number
 	reports: number

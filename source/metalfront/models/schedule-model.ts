@@ -1,12 +1,12 @@
 
 import {observable, action} from "mobx"
 import * as loading from "../toolbox/loading.js"
-import {GetAuthContext, AuthPayload} from "../interfaces.js"
-import {ScheduleSentryTopic, ScheduleEvent} from "../../interfaces.js"
+import {GetAuthContext, AuthPayload} from "../types.js"
+import {User, ScheduleSentryTopic, ScheduleEvent} from "../../types.js"
 
 export class ScheduleModel {
 	@observable events: ScheduleEvent[] = []
-	private getAuthContext: GetAuthContext
+	private getAuthContext: GetAuthContext<User>
 	private scheduleSentry: ScheduleSentryTopic
 
 	constructor(options: {scheduleSentry: ScheduleSentryTopic}) {
@@ -14,15 +14,15 @@ export class ScheduleModel {
 	}
 
 	 @action.bound
-	async handleAuthLoad(authLoad: loading.Load<AuthPayload>) {
+	async handleAuthLoad(authLoad: loading.Load<AuthPayload<User>>) {
 		this.getAuthContext = loading.payload(authLoad)?.getAuthContext
 	}
 
 	 @action.bound
-	async loadEvent(name: string): Promise<ScheduleEvent> {
-		let event = this.events.find(e => e.name === event.name)
+	async loadEvent(label: string): Promise<ScheduleEvent> {
+		let event = this.events.find(e => e.label === event.name)
 		if (!event) {
-			event = await this.scheduleSentry.getEvent({name})
+			event = await this.scheduleSentry.getEvent({label})
 			this.saveToCache(event)
 		}
 		return event
@@ -37,7 +37,7 @@ export class ScheduleModel {
 
 	 @action.bound
 	private saveToCache(event: ScheduleEvent) {
-		const existing = this.events.find(e => e.name === event.name)
+		const existing = this.events.find(e => e.label === event.label)
 		if (existing) existing.time = event.time
 		else this.events.push(event)
 	}

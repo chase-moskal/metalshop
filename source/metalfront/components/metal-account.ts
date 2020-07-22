@@ -1,5 +1,5 @@
 
-import {AccountShare} from "../interfaces.js"
+import {AccountShare} from "../types.js"
 import {MetalshopComponent, property, html} from "../framework/metalshop-component.js"
 
 import * as loading from "../toolbox/loading.js"

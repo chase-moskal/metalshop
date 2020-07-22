@@ -1,6 +1,6 @@
 
 import {autorun} from "mobx"
-import {MetalOptions, Supermodel} from "../interfaces.js"
+import {MetalOptions, Supermodel, MetalGenerics} from "../types.js"
 
 import {AuthModel} from "../models/auth-model.js"
 // import {SeekerModel} from "../models/seeker-model.js"
@@ -9,6 +9,7 @@ import {LiveshowModel} from "../models/liveshow-model.js"
 import {ScheduleModel} from "../models/schedule-model.js"
 import {PersonalModel} from "../models/personal-model.js"
 import {QuestionsModel} from "../models/questions-model.js"
+import { MetalUser } from "../../types/common.js"
 // import {ProfileModel} from "../models/profile-model.js"
 // import {SettingsModel} from "../models/settings-model.js"
 
@@ -27,7 +28,7 @@ export function assembleSupermodel({
 	decodeAccessToken,
 	triggerAccountPopup,
 	triggerCheckoutPopup,
-}: MetalOptions): Supermodel {
+}: MetalOptions<MetalGenerics>): Supermodel {
 
 	const auth = new AuthModel({
 		tokenStore,

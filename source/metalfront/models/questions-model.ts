@@ -1,76 +1,79 @@
 
-import {observable, action} from "mobx"
+import {observable, action, runInAction} from "mobx"
+
+import {MetalUser, Question, QuestionQuarryTopic} from "../../types.js"
+import {GetAuthContext, AuthPayload, QuestionQuarryUi} from "../types.js"
+
 import * as loading from "../toolbox/loading.js"
-import {GetAuthContext, AuthPayload, QuestionsBureauUi} from "../interfaces.js"
-import {Profile, Question, QuestionsBureauTopic} from "../../interfaces.js"
 
 export class QuestionsModel {
+	#getAuthContext: GetAuthContext<MetalUser>
+	#questionQuarry: QuestionQuarryTopic
+
 	@observable questions: Question[] = []
-	#getAuthContext: GetAuthContext
-	#questionsBureau: QuestionsBureauTopic
 
 	constructor(options: {
-			questionsBureau: QuestionsBureauTopic
+			questionQuarryUi: QuestionQuarryTopic
 		}) {
-		this.#questionsBureau = options.questionsBureau
+		this.#questionQuarry = options.questionQuarryUi
 	}
 
-	//.
+	////////
 
-	 @action.bound
-	handleAuthLoad(authLoad: loading.Load<AuthPayload>) {
+	async handleAuthLoad(authLoad: loading.Load<AuthPayload<MetalUser>>) {
 		this.#getAuthContext = loading.payload(authLoad)?.getAuthContext
-	}
+		const {user} = await this.#getAuthContext()
 
-	 @action.bound
-	handleProfileUpdate(profile: Profile) {
-		for (const question of this.questions) {
-			if (question.author.profile.userId === profile?.userId) {
-				question.author.profile = profile
+		// update author for our questions
+		runInAction(() => {
+			for (const question of this.questions) {
+				if (question.author.userId === user.userId) {
+					question.author = user
+				}
 			}
-		}
+		})
 	}
 
 	fetchCachedQuestions = (board: string) => this.questions.filter(
 		question => question.board === board
 	)
 
-	uiBureau: QuestionsBureauUi = {
+	questionQuarryUi: QuestionQuarryUi = {
 		fetchQuestions: async({board}) => {
-			const questions = await this.#questionsBureau.fetchQuestions({board})
+			const questions = await this.#questionQuarry.fetchQuestions({board})
 			for (const question of questions) this.cacheQuestion(question)
 			return questions
 		},
 		postQuestion: async(options) => {
-			const question = await this.#questionsBureau.postQuestion(
+			const question = await this.#questionQuarry.postQuestion(
 				await this.addTokenToOptions(options)
 			)
 			this.cacheQuestion(question)
 			return question
 		},
-		deleteQuestion: async(options) => {
-			await this.#questionsBureau.archiveQuestion(
+		archiveQuestion: async(options) => {
+			await this.#questionQuarry.archiveQuestion(
 				await this.addTokenToOptions(options)
 			)
 			this.deleteLocalQuestion(options.questionId)
 		},
 		likeQuestion: async(options) => {
-			const result = await this.#questionsBureau.likeQuestion(
+			const question = await this.#questionQuarry.likeQuestion(
 				await this.addTokenToOptions(options)
 			)
-			const {liked, likes} = result.likeInfo
+			const {liked, likes} = question
 			const {questionId} = options
 			this.likeLocalQuestion(questionId, liked, likes)
-			return result
+			return question
 		},
-		purgeQuestions: async(options: {board: string}) => {
+		archiveBoard: async(options: {board: string}) => {
 			const optionsWithToken = await this.addTokenToOptions(options)
-			await this.#questionsBureau.archiveBoard(optionsWithToken)
+			await this.#questionQuarry.archiveBoard(optionsWithToken)
 			this.deleteAllCachedQuestions()
 		},
 	}
 
-	//.
+	////////
 
 	 @action.bound
 	private cacheQuestion(question: Question) {
@@ -93,8 +96,8 @@ export class QuestionsModel {
 			likes: number,
 		) {
 		const question = this.getLocalQuestion(questionId)
-		question.likeInfo.liked = liked
-		question.likeInfo.likes = likes
+		question.liked = liked
+		question.likes = likes
 	}
 
 	 @action.bound
@@ -102,9 +105,9 @@ export class QuestionsModel {
 		this.questions = []
 	}
 
-	private getLocalQuestion = (questionId: string) => questionId ? this.questions.find(
-		question => question.questionId === questionId
-	) : null
+	private getLocalQuestion = (questionId: string) => questionId
+		? this.questions.find(question => question.questionId === questionId)
+		: null
 
 	private addTokenToOptions = async<O extends {}>(options: O) => {
 		const {accessToken} = await this.#getAuthContext()

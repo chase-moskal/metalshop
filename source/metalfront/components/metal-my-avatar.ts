@@ -1,5 +1,5 @@
 
-import {MyAvatarShare} from "../interfaces.js"
+import {MyAvatarShare} from "../types.js"
 import * as loading from "../toolbox/loading.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {MetalshopComponent, html, css} from "../framework/metalshop-component.js"

@@ -10,11 +10,12 @@ import {AuthPayload, PrivilegeLevel, GetAuthContext, VideoPayload} from "../type
 export type HandleAuthUpdate = (auth: loading.Load<AuthPayload<User>>) => Promise<void>
 
 export class LiveshowModel {
-	private liveshowGovernor: LiveshowLizardTopic
-	constructor(options: {
-			liveshowGovernor: LiveshowLizardTopic
+	private liveshowLizard: LiveshowLizardTopic
+
+	constructor({liveshowLizard}: {
+			liveshowLizard: LiveshowLizardTopic
 		}) {
-		Object.assign(this, options)
+		this.liveshowLizard = liveshowLizard
 	}
 
 	//
@@ -35,14 +36,14 @@ export class LiveshowModel {
 	// function to create new view models
 	//
 
-	makeViewModel = ({videoLabel}: {videoLabel: string}): {
+	makeViewModel = ({label}: {label: string}): {
 			dispose: () => void,
 			viewModel: LiveshowViewModel,
 		} => {
-		const {liveshowGovernor} = this
+		const {liveshowLizard} = this
 		const viewModel = new LiveshowViewModel({
-			videoLabel,
-			liveshowGovernor,
+			label,
+			liveshowLizard,
 		})
 		const dispose = this.authLoadPubsub.subscribe(viewModel.handleAuthLoad)
 		return {
@@ -69,13 +70,13 @@ export class LiveshowViewModel {
 	// private variables and constructor
 	//
 
-	private videoLabel: string
+	private label: string
 	private getAuthContext: GetAuthContext<User>
-	private liveshowGovernor: LiveshowLizardTopic
+	private liveshowLizard: LiveshowLizardTopic
 
 	constructor(options: {
-			videoLabel: string
-			liveshowGovernor: LiveshowLizardTopic
+			label: string
+			liveshowLizard: LiveshowLizardTopic
 		}) {
 		Object.assign(this, options)
 	}
@@ -147,12 +148,12 @@ export class LiveshowViewModel {
 		}
 
 		if (vimeoId || vimeostring === "") {
-			const {videoLabel, getAuthContext} = this
+			const {label, getAuthContext} = this
 			const {accessToken} = await getAuthContext()
-			await this.liveshowGovernor.setShow({
+			await this.liveshowLizard.setShow({
 				vimeoId,
 				accessToken,
-				label: videoLabel,
+				label,
 			})
 		}
 		else {
@@ -166,9 +167,9 @@ export class LiveshowViewModel {
 
 	 @action.bound
 	private async loadVideo(accessToken: AccessToken) {
-		return await this.liveshowGovernor.getShow({
+		return await this.liveshowLizard.getShow({
 			accessToken,
-			label: this.videoLabel,
+			label: this.label,
 		})
 	}
 }

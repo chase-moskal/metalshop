@@ -1,7 +1,7 @@
 
 import {LitElement, html, css} from "lit-element"
-import {mixinStyles} from "../../framework/mixin-styles.js"
 import {User, Profile} from "../../../interfaces.js"
+import {mixinStyles} from "../../framework/mixin-styles.js"
 
 const day = 1000 * 60 * 60 * 24
 

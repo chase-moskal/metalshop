@@ -1,8 +1,8 @@
 
 import {html} from "lit-element"
+import {MetalUser} from "../../../types.js"
 import {renderAuthor} from "./render-author.js"
-import {QuestionValidation} from "../../interfaces.js"
-import {QuestionAuthor} from "../../../interfaces.js"
+import {QuestionValidation} from "../../types.js"
 
 export function renderQuestionEditor({
 	expand,
@@ -12,15 +12,21 @@ export function renderQuestionEditor({
 	maxCharacterLimit,
 	handleTextAreaChange,
 	author = {
+		userId: "FAKE_USER_UD",
+		claims: {
+			admin: false,
+			staff: undefined,
+			banUntil: undefined,
+			banReason: undefined,
+			lastLogin: Date.now() - (5 * 1000 * 60),
+			joined: Date.now() - (10 * (1000 * 60 * 60 * 24)),
+			premiumUntil: undefined,
+		},
 		profile: {
 			avatar: null,
-			joined: Date.now() - (10 * (1000 * 60 * 60 * 24)),
 			userId: "FAKE_USER_ID",
+			tagline: "fake_tagline",
 			nickname: "FAKE_NICKNAME",
-		},
-		user: {
-			userId: "FAKE_USER_UD",
-			claims: {}
 		},
 	},
 }: {
@@ -30,7 +36,7 @@ export function renderQuestionEditor({
 	validation: QuestionValidation
 	handlePostClick: (event: MouseEvent) => void
 	handleTextAreaChange: (event: Event) => void
-	author?: QuestionAuthor
+	author?: MetalUser
 }) {
 	const {message, postable, angry} = validation
 	const invalid = !!message
@@ -38,8 +44,9 @@ export function renderQuestionEditor({
 		<div class="question editor">
 			${renderAuthor({
 				author,
-				likeInfo: null,
-				time: Date.now(),
+				likes: 0,
+				liked: false,
+				timePosted: Date.now(),
 				handleLikeClick: () => {},
 				handleUnlikeClick: () => {},
 			})}

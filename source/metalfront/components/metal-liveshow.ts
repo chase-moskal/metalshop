@@ -4,23 +4,23 @@ import {select} from "../toolbox/selects.js"
 import * as loading from "../toolbox/loading.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {styles} from "./styles/metal-liveshow-styles.js"
+import {LiveshowShare, PrivilegeLevel} from "../types.js"
 import {LiveshowViewModel} from "../models/liveshow-model.js"
-import {LiveshowShare, PrivilegeLevel} from "../interfaces.js"
 import {MetalshopComponent, property, html} from "../framework/metalshop-component.js"
 
  @mixinStyles(styles)
 export class MetalLiveshow extends MetalshopComponent<LiveshowShare> {
 
 	@property({type: String, reflect: true})
-		["video-name"]: string
+		["video-label"]: string
 
 	private _viewModel: LiveshowViewModel
 	private _viewModelDispose: () => void
 
 	firstUpdated(props) {
 		super.firstUpdated(props)
-		const {["video-name"]: videoName} = this
-		const {viewModel, dispose} = this.share.makeViewModel({videoName})
+		const {["video-label"]: label} = this
+		const {viewModel, dispose} = this.share.makeViewModel({label})
 		this._viewModel = viewModel
 		this._viewModelDispose = () => {
 			this._viewModel = null

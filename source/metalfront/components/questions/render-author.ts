@@ -1,29 +1,32 @@
 
 import {html} from "lit-element"
 import {heart} from "../../system/icons.js"
-import {QuestionAuthor, LikeInfo} from "../../../interfaces.js"
+import {MetalUser} from "../../../types.js"
+import {isPremium} from "../../toolbox/is-premium.js"
 
 export function renderAuthor({
-	time,
+	likes,
+	liked,
 	author,
-	likeInfo,
+	timePosted,
 	handleLikeClick,
 	handleUnlikeClick,
 	placeholderNickname = "You"
 }: {
-	time: number
-	author?: QuestionAuthor
+	likes: number
+	liked: boolean
+	timePosted: number
 	handleLikeClick: (event: MouseEvent) => void
 	handleUnlikeClick: (event: MouseEvent) => void
-	likeInfo?: LikeInfo
 	placeholderNickname?: string
+	author?: MetalUser
 }) {
-	const date = new Date(time)
+	const date = new Date(timePosted)
 	const datestring = `${date.getFullYear()}`
 		+ `-${(date.getMonth() + 1).toString().padStart(2, "0")}`
 		+ `-${date.getDate().toString().padStart(2, "0")}`
 	const timestring = date.toLocaleTimeString()
-	const premium = !!author?.user?.claims.premium
+	const premium = isPremium(author)
 	const avatar = author?.profile?.avatar || null
 	const nickname = author?.profile?.nickname || placeholderNickname
 	return html`
@@ -35,20 +38,18 @@ export function renderAuthor({
 					<p class="time" title=${`${datestring} ${timestring}`}>
 						${datestring}
 					</p>
-					${likeInfo ? html`
-						<button
-							class="likebutton"
-							@click=${likeInfo.liked ? handleUnlikeClick : handleLikeClick}
-							?data-liked=${likeInfo.liked}
-							title="${likeInfo.liked ? "Unlike" : "Like"} question by ${nickname}">
-								<span class="like-heart">
-									${heart}
-								</span>
-								<span class="like-number">
-									${likeInfo.likes}
-								</span>
-						</button>
-					` : null}
+					<button
+						class="likebutton"
+						@click=${liked ? handleUnlikeClick : handleLikeClick}
+						?data-liked=${liked}
+						title="${liked ? "Unlike" : "Like"} question by ${nickname}">
+							<span class="like-heart">
+								${heart}
+							</span>
+							<span class="like-number">
+								${likes}
+							</span>
+					</button>
 				</div>
 			</div>
 		</div>

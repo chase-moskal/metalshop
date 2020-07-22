@@ -1,26 +1,22 @@
 
-import {User, Question, QuestionAuthor} from "../../../interfaces.js"
+import {MetalUser, Question} from "../../../types.js"
 
-export function ascertainOwnership(question: Question, me: QuestionAuthor) {
-	if (!me || !me.user) return {mine: false, authority: false}
-	const admin = (me && me.user.claims.admin)
-	const mine = me && (me.user.userId === question.author.user.userId)
+export function ascertainOwnership(question: Question, me: MetalUser) {
+	if (!me) return {mine: false, authority: false}
+	const admin = (me && me.claims.admin)
+	const mine = me && (me.userId === question.author.userId)
 	return {
 		mine,
-		authority: admin || mine
+		authority: admin || mine,
 	}
 }
 
-const sortLikes = (a: Question, b: Question) => {
-	const aLikes = a.likeInfo ? a.likeInfo.likes : 0
-	const bLikes = b.likeInfo ? b.likeInfo.likes : 0
-	return aLikes > bLikes ? -1: 1
-}
+const sortLikes = (a: Question, b: Question) => a.likes > b.likes ? -1: 1
 
-export const sortQuestions = (me: QuestionAuthor, questions: Question[]) => {
-	const myUserId = me?.user?.userId
-	const filterMine = (q: Question) => q.author.user.userId === myUserId
-	const filterTheirs = (q: Question) => q.author.user.userId !== myUserId
+export const sortQuestions = (me: MetalUser, questions: Question[]) => {
+	const myUserId = me?.userId
+	const filterMine = (q: Question) => q.author.userId === myUserId
+	const filterTheirs = (q: Question) => q.author.userId !== myUserId
 	return myUserId
 		? [
 			...questions.filter(filterMine).sort(sortLikes),

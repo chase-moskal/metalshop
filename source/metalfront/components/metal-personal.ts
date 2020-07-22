@@ -1,5 +1,5 @@
 
-import {PersonalShare} from "../interfaces.js"
+import {PersonalShare} from "../types.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {styles} from "./styles/metal-personal-styles.js"
 import {MetalshopComponent, html} from "../framework/metalshop-component.js"

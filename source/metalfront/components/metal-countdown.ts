@@ -1,6 +1,6 @@
 
 import {clock} from "../system/icons.js"
-import {CountdownShare} from "../interfaces.js"
+import {CountdownShare} from "../types.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {styles} from "./styles/metal-countdown-styles.js"
 import {formatDate, formatDuration} from "../toolbox/dates.js"
@@ -10,7 +10,7 @@ const timeOffset = (new Date()).getTimezoneOffset() * 60 * 1000
 
  @mixinStyles(styles)
 export class MetalCountdown extends MetalshopComponent<CountdownShare> {
-	@property({type: String}) ["event-name"]: string
+	@property({type: String}) ["event-label"]: string
 	@property({type: String}) adminDate: number = NaN
 	@property({type: String}) adminTime: number = NaN
 	@property({type: String}) adminValidationMessage: string = ""
@@ -18,9 +18,9 @@ export class MetalCountdown extends MetalshopComponent<CountdownShare> {
 
 	async firstUpdated(props) {
 		super.firstUpdated(props)
-		const {["event-name"]: eventName} = this
-		if (!eventName) throw new Error(`schedule-countdown requires [event-name] attribute`)
-		await this.share.loadEvent(eventName)
+		const {["event-label"]: label} = this
+		if (!label) throw new Error(`schedule-countdown requires [event-label] attribute`)
+		await this.share.loadEvent(label)
 		this._interval = setInterval(() => this.requestUpdate(), 1000)
 		this._updateValidation()
 	}
@@ -34,10 +34,10 @@ export class MetalCountdown extends MetalshopComponent<CountdownShare> {
 	}
 
 	render() {
-		const {["event-name"]: name} = this
+		const {["event-label"]: label} = this
 		if (!name) return null
 
-		const {time} = this.share.events.find(e => e.name === name) || {}
+		const {time} = this.share.events.find(e => e.label === label) || {}
 
 		const scheduled: boolean = time !== undefined
 			&& ((time - Date.now()) > 0)
@@ -166,12 +166,12 @@ export class MetalCountdown extends MetalshopComponent<CountdownShare> {
 	}
 
 	private _handleScheduleClick = async() => {
-		const {adminDateTime: time, ["event-name"]: name} = this
-		await this.share.saveEvent({name, time})
+		const {adminDateTime: time, ["event-label"]: label} = this
+		await this.share.saveEvent({label, time})
 	}
 
 	private _handleUnscheduleClick = async() => {
-		const {["event-name"]: name} = this
-		await this.share.saveEvent({name, time: undefined})
+		const {["event-label"]: label} = this
+		await this.share.saveEvent({label, time: undefined})
 	}
 }

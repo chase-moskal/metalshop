@@ -1,5 +1,5 @@
 
-import {PaywallShare} from "../interfaces.js"
+import {PaywallShare} from "../types.js"
 import * as loading from "../toolbox/loading.js"
 import {star as starIcon} from "../system/icons.js"
 import {styles} from "./styles/metal-paywall-styles.js"
@@ -9,18 +9,20 @@ import {MetalshopComponent, html, property} from "../framework/metalshop-compone
  @mixinStyles(styles)
 export class MetalPaywall extends MetalshopComponent<PaywallShare> {
 
-	@property({type: Object})
-		paywallLoad: loading.Load<void> = loading.ready<void>()
+	 @property({type: Object})
+	paywallLoad: loading.Load<void> = loading.ready<void>()
 
 	render() {
 		const {paywallLoad} = this
-		const {personalLoad, premiumClaim, premiumSubscription} = this.share
+		const {personalLoad, premiumUntil, premium, premiumInfoLoad} = this.share
+		const meta = loading.meta(personalLoad, premiumInfoLoad, paywallLoad)
+		const premiumInfo = loading.payload(premiumInfoLoad)
 		return html`
-			<iron-loading .load=${personalLoad} class="coolbuttonarea">
-				${premiumClaim
+			<iron-loading .load=${meta} class="coolbuttonarea">
+				${premium
 					? this.renderPanelPremium()
 					: this.renderPanelNoPremium()}
-				${premiumSubscription
+				${premiumInfo
 					? this.renderPanelSubscription()
 					: this.renderPanelNoSubscription()}
 			</iron-loading>
@@ -45,8 +47,8 @@ export class MetalPaywall extends MetalshopComponent<PaywallShare> {
 	}
 
 	private renderPanelSubscription() {
-		const {premiumSubscription} = this.share
-		const {brand, last4, expireYear, expireMonth} = premiumSubscription.card
+		const {cardClues} = loading.payload(this.share.premiumInfoLoad)
+		const {brand, last4, expireYear, expireMonth} = cardClues
 		return html`
 			<div class="panel subscription">
 				<h3>Billing subscription is active</h3>
@@ -64,18 +66,12 @@ export class MetalPaywall extends MetalshopComponent<PaywallShare> {
 	}
 
 	private renderPanelNoSubscription () {
-		const {premiumExpires} = this.share
+		const {premiumUntil} = this.share
 		const days = (() => {
-			if (!premiumExpires) return null
-			const duration = premiumExpires - Date.now()
+			if (!premiumUntil) return null
+			const duration = premiumUntil - Date.now()
 			return Math.ceil(duration / (1000 * 60 * 60 * 24))
 		})()
-		function calculateDays(premiumExpires: number) {
-			if (!premiumExpires) return null
-			const duration = premiumExpires - Date.now()
-			const days = Math.ceil(duration / (1000 * 60 * 60 * 24))
-			return html`<p>Remaining: ${days} day${days === 1 ? "" : "s"}</p>`
-		}
 		return html`
 			<div class="panel no-subscription">
 				<p>No active billing subscription</p>

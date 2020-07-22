@@ -1,9 +1,10 @@
 
 import * as loading from "../toolbox/loading.js"
-import {AdminModeShare} from "../interfaces.js"
 import {deepEqual, deepClone} from "../toolbox/deep.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {MetalshopComponent, property, html, css} from "../framework/metalshop-component.js"
+
+import {AdminModeShare} from "../types.js"
 
  @mixinStyles(css`
 	:host {
@@ -24,7 +25,7 @@ export class MetalAdminMode extends MetalshopComponent<AdminModeShare> {
 
 		if (personal) {
 			this.adminClaim = !!personal.user.claims.admin
-			this.adminMode = !!personal.settings.admin.actAsAdmin
+			this.adminMode = !!personal.settings.actAsAdmin
 		}
 		else {
 			this.adminMode = false
@@ -51,7 +52,7 @@ export class MetalAdminMode extends MetalshopComponent<AdminModeShare> {
 		const personal = loading.payload(personalLoad)
 		if (!personal) throw new Error("personal not loaded")
 		const newSettings = deepClone(personal.settings)
-		newSettings.admin.actAsAdmin = adminMode
+		newSettings.actAsAdmin = adminMode
 		const changes = !deepEqual(personal.settings, newSettings)
 		if (changes) return setAdminMode(adminMode)
 	}

@@ -25,10 +25,9 @@ import {
 } from "../types.js"
 
 import {AuthModel} from "./models/auth-model.js"
-import {SeekerModel} from "./models/seeker-model.js"
 import {PaywallModel} from "./models/paywall-model.js"
-import {ScheduleModel} from "./models/schedule-model.js"
 import {PersonalModel} from "./models/personal-model.js"
+import {ScheduleModel} from "./models/schedule-model.js"
 import {QuestionsModel} from "./models/questions-model.js"
 import {LiveshowViewModel, LiveshowModel} from "./models/liveshow-model.js"
 
@@ -94,27 +93,31 @@ export interface AuthPayload<U extends User> {
 	getAuthContext: GetAuthContext<U>
 }
 
+export interface PremiumInfo {
+	cardClues: CardClues
+}
+
 export interface QuestionValidation {
 	angry: boolean
 	message: string
 	postable: boolean
 }
 
-export interface QuestionsBureauUi {
+export interface QuestionQuarryUi {
 	fetchQuestions(o: {
 			board: string
 		}): Promise<Question[]>
 	postQuestion(o: {
 			draft: QuestionDraft
 		}): Promise<Question>
-	deleteQuestion(o: {
+	archiveQuestion(o: {
 			questionId: string
 		}): Promise<void>
 	likeQuestion(o: {
 			like: boolean
 			questionId: string
 		}): Promise<Question>
-	purgeQuestions(o: {
+	archiveBoard(o: {
 			board: string
 		}): Promise<void>
 }
@@ -132,11 +135,12 @@ export type PrepareHandleLikeClick = (o: {
 // supermodel
 //
 
-export interface Supermodel<G extends MetalGenerics> {
-	auth: AuthModel<G["user"]>
+export interface Supermodel {
+	auth: AuthModel<MetalUser>
 	paywall: PaywallModel
 	personal: PersonalModel
 	liveshow: LiveshowModel
+	schedule: ScheduleModel
 	questions: QuestionsModel
 	// seeker: SeekerModel
 }
@@ -172,10 +176,10 @@ export interface SettingsPremiumSubscription {
 	card: CardClues
 }
 
-export interface AccountShare<U extends MetalUser> {
+export interface AccountShare {
 	login: () => Promise<void>
 	logout: () => Promise<void>
-	authLoad: loading.Load<AuthPayload<U>>
+	authLoad: loading.Load<AuthPayload<MetalUser>>
 }
 
 export interface MyAvatarShare {
@@ -184,8 +188,9 @@ export interface MyAvatarShare {
 
 export interface ButtonPremiumShare {
 	personalLoad: loading.Load<Personal>
-	premiumClaim: boolean
-	premiumSubscription: SettingsPremiumSubscription
+	premium: boolean
+	premiumUntil: number
+	premiumInfoLoad: loading.Load<PremiumInfo>
 	login(): Promise<void>
 	checkoutPremium(): Promise<void>
 }
@@ -204,14 +209,14 @@ export interface PersonalShare {
 	personalLoad: loading.Load<Personal>
 	saveProfile(profile: Personal["user"]["profile"]): Promise<void>
 	setAdminMode(adminMode: boolean): Promise<void>
-	setAvatarPublicity(avatarPublicity: boolean): Promise<void>
+	// setAvatarPublicity(avatarPublicity: boolean): Promise<void>
 }
 
 export interface PaywallShare {
 	personalLoad: loading.Load<Personal>
-	premiumClaim: boolean
-	premiumExpires: number
-	premiumSubscription: SettingsPremiumSubscription
+	premium: boolean
+	premiumUntil: number
+	premiumInfoLoad: loading.Load<PremiumInfo>
 	checkoutPremium(): Promise<void>
 	updatePremium(): Promise<void>
 	cancelPremium(): Promise<void>
@@ -219,20 +224,20 @@ export interface PaywallShare {
 
 export interface QuestionsShare {
 	user: MetalUser
-	uiBureau: QuestionsBureauUi
+	uiBureau: QuestionQuarryUi
 	fetchCachedQuestions(board: string): Question[]
 }
 
 export interface CountdownShare {
 	events: ScheduleEvent[]
 	authLoad: loading.Load<AuthPayload<User>>
-	loadEvent: (name: string) => Promise<ScheduleEvent>
+	loadEvent: (label: string) => Promise<ScheduleEvent>
 	saveEvent: (event: ScheduleEvent) => Promise<void>
 }
 
 export interface LiveshowShare {
 	authLoad: loading.Load<AuthPayload<User>>
-	makeViewModel(options: {videoName: string}): {
+	makeViewModel(options: {label: string}): {
 		dispose: () => void
 		viewModel: LiveshowViewModel
 	}

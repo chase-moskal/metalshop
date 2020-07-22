@@ -1,10 +1,10 @@
 
 import {action, computed, observable} from "mobx"
-
-import * as loading from "../toolbox/loading.js"
 import {MetalUser, PremiumPachydermTopic, CardClues, PremiumInfo, TriggerCheckoutPopup, AuthPayload} from "../types.js"
 
 import {AuthModel} from "./auth-model.js"
+import * as loading from "../toolbox/loading.js"
+import {isPremium} from "../toolbox/is-premium.js"
 
 function makeOperationsCenter() {
 	let count = 0
@@ -26,18 +26,15 @@ export class PaywallModel {
 	private readonly checkoutPopupUrl: string
 	private readonly premiumPachyderm: PremiumPachydermTopic
 	private readonly triggerCheckoutPopup: TriggerCheckoutPopup
-
 	private readonly operations = makeOperationsCenter()
 
 	 @observable
-	premiumInfo: loading.Load<{cardClues: CardClues}> = loading.loading()
+	premiumInfoLoad: loading.Load<{cardClues: CardClues}> = loading.loading()
 
 	 @computed
 	get premium(): boolean {
-		const {premiumUntil} = this.auth.user?.claims
-		return (premiumUntil && (premiumUntil - Date.now()) > 0)
-			? true
-			: false
+		const user = this.auth.user
+		return isPremium(user)
 	}
 
 	 @computed
@@ -103,6 +100,6 @@ export class PaywallModel {
 
 	 @action.bound
 	private setPremiumInfoLoad(info: loading.Load<PremiumInfo>) {
-		this.premiumInfo = info
+		this.premiumInfoLoad = info
 	}
 }

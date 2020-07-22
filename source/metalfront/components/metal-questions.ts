@@ -1,13 +1,15 @@
 
 import * as loading from "../toolbox/loading.js"
+import {isPremium} from "../toolbox/is-premium.js"
 import {sortQuestions} from "./questions/helpers.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {styles} from "./styles/metal-questions-styles.js"
 import {renderQuestion} from "./questions/render-question.js"
-import {QuestionsShare, PrepareHandleLikeClick} from "../interfaces.js"
 import {renderQuestionEditor} from "./questions/render-question-editor.js"
-import {QuestionDraft, QuestionAuthor} from "../../interfaces.js"
 import {MetalshopComponent, property, html, PropertyValues} from "../framework/metalshop-component.js"
+
+import {QuestionDraft, MetalUser} from "../../types.js"
+import {QuestionsShare, PrepareHandleLikeClick} from "../types.js"
 
  @mixinStyles(styles)
 export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
@@ -56,9 +58,8 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 		} = this
 
 		const questions = this.share.fetchCachedQuestions(board)
-		const {user, profile} = this.share
-		const me: QuestionAuthor = (user && profile) ? {user, profile} : null
-		const validation = this.validatePost(me)
+		const {user} = this.share
+		const validation = this.validatePost(user)
 		const expand = draftText.length > 0
 
 		return html`
@@ -75,7 +76,7 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 					${renderQuestionEditor({
 						expand,
 						draftText,
-						author: me,
+						author: user,
 						validation,
 						handlePostClick,
 						maxCharacterLimit,
@@ -88,10 +89,10 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 						<h2>Rate questions</h2>
 					</slot>
 					<ol class="questions">
-						${sortQuestions(me, questions).map(question => html`
+						${sortQuestions(user, questions).map(question => html`
 							<li>
 								${renderQuestion({
-									me,
+									me: user,
 									question,
 									prepareHandleLikeClick,
 									prepareHandleDeleteClick,
@@ -128,7 +129,7 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 		const time = Date.now()
 		const valid = !!content
 		return valid
-			? {time, board, content}
+			? {board, content}
 			: null
 	}
 
@@ -166,7 +167,7 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 		if (this.warnUnauthenticatedUser())
 			return
 		if (confirm(`Really delete question ${questionId}?`))
-			await this.share.uiBureau.deleteQuestion({questionId})
+			await this.share.uiBureau.archiveQuestion({questionId})
 	}
 
 	private prepareHandleLikeClick: PrepareHandleLikeClick = ({like, questionId}: {
@@ -182,7 +183,7 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 		if (active) active.blur()
 	}
 
-	private validatePost(author: QuestionAuthor): {
+	private validatePost(author: MetalUser): {
 			angry: boolean
 			message: string
 			postable: boolean
@@ -195,7 +196,8 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 		const {length} = draftText
 		const tooLittle = length < min
 		const tooBig = length > max
-		const premiumClaim = author?.user?.claims.premium
+
+		const premium = isPremium(author)
 
 		if (!author) return {
 			postable: false,
@@ -203,7 +205,7 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 			angry: false,
 		}
 
-		if (!premiumClaim) return {
+		if (!premium) return {
 			postable: false,
 			message: "You must become a premium user to post",
 			angry: false,
@@ -237,6 +239,6 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 	private handlePurgeClick = async() => {
 		const {board} = this
 		if (confirm("Really purge ALL questions from the board?"))
-			await this.share.uiBureau.purgeQuestions({board})
+			await this.share.uiBureau.archiveBoard({board})
 	}
 }

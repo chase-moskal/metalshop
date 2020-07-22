@@ -1,5 +1,5 @@
 
-import {AdminOnlyShare} from "../interfaces.js"
+import {AdminOnlyShare} from "../types.js"
 import * as loading from "../toolbox/loading.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {MetalshopComponent, property, html, css} from "../framework/metalshop-component.js"
@@ -34,7 +34,7 @@ export class MetalIsAdmin extends MetalshopComponent<AdminOnlyShare> {
 		const admin = (
 			(personal
 				&& personal.user.claims.admin
-				&& personal.settings.admin.actAsAdmin)
+				&& personal.settings.actAsAdmin)
 					? true
 					: false
 		)

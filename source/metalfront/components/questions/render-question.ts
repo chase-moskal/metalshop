@@ -1,9 +1,8 @@
 
 import {html} from "lit-element"
-import {Question, QuestionAuthor} from "../../../interfaces.js"
 
-import {PrepareHandleLikeClick}
-	from "../../interfaces.js"
+import {PrepareHandleLikeClick} from "../../types.js"
+import {MetalUser, Question} from "../../../types.js"
 
 import {renderAuthor} from "./render-author.js"
 import {ascertainOwnership} from "./helpers.js"
@@ -14,16 +13,17 @@ export function renderQuestion({
 	prepareHandleLikeClick,
 	prepareHandleDeleteClick,
 }: {
-	me: QuestionAuthor
+	me: MetalUser
 	question: Question
 	prepareHandleLikeClick: PrepareHandleLikeClick
 	prepareHandleDeleteClick: (questionId: string) => (event: MouseEvent) => void
 }) {
 	const {
-		time,
+		likes,
+		liked,
 		author,
 		content,
-		likeInfo,
+		timePosted,
 		questionId,
 	} = question
 
@@ -47,9 +47,10 @@ export function renderQuestion({
 		 ?data-mine=${mine}
 		 data-question-id=${question.questionId}>
 			${renderAuthor({
-				time,
+				likes,
+				liked,
 				author,
-				likeInfo,
+				timePosted,
 				handleLikeClick,
 				handleUnlikeClick,
 				placeholderNickname: "Unknown",
