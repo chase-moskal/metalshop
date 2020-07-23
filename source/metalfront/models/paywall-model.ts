@@ -4,7 +4,7 @@ import {MetalUser, PremiumPachydermTopic, CardClues, PremiumInfo, TriggerCheckou
 
 import {AuthModel} from "./auth-model.js"
 import * as loading from "../toolbox/loading.js"
-import {isPremium} from "../../newbiz/core/user-evaluators.js"
+import {isPremium} from "../../business/core/user-evaluators.js"
 
 function makeOperationsCenter() {
 	let count = 0

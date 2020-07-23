@@ -2,7 +2,7 @@
 import {html} from "lit-element"
 import {heart} from "../../system/icons.js"
 import {MetalUser} from "../../../types.js"
-import {isPremium} from "../../../newbiz/core/user-evaluators.js"
+import {isPremium} from "../../../business/core/user-evaluators.js"
 
 export function renderAuthor({
 		likes,

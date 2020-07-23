@@ -1,5 +1,5 @@
 
-import {JsonRegex, CorsConfig} from "../interfaces.js"
+import {JsonRegex, CorsConfig} from "../types.js"
 
 export const unpackCorsConfig = ({allowed, forbidden}: CorsConfig) => ({
 	allowed: unpackRegex(allowed),

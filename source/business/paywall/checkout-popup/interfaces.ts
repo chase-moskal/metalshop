@@ -1,5 +1,5 @@
 
-import {Topic, User} from "../../../interfaces.js"
+import {Topic, User} from "../../../types.js"
 
 export enum CheckoutPopupState {
 	Initial,

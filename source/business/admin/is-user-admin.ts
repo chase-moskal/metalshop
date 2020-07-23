@@ -1,6 +1,6 @@
 
-import {User} from "../../interfaces.js"
+// import {User} from "../../interfaces.js"
 
-export function isUserAdmin(user: User): boolean {
-	return !!user.claims.admin
-}
+// export function isUserAdmin(user: User): boolean {
+// 	return !!user.claims.admin
+// }

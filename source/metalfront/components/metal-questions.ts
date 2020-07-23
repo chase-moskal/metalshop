@@ -4,7 +4,7 @@ import {sortQuestions} from "./questions/helpers.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {styles} from "./styles/metal-questions-styles.js"
 import {renderQuestion} from "./questions/render-question.js"
-import {isPremium} from "../../newbiz/core/user-evaluators.js"
+import {isPremium} from "../../business/core/user-evaluators.js"
 import {renderQuestionEditor} from "./questions/render-question-editor.js"
 import {MetalshopComponent, property, html, PropertyValues} from "../framework/metalshop-component.js"
 

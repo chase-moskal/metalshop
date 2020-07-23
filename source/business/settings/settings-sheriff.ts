@@ -1,83 +1,39 @@
 
-import {SettingsSheriffTopic, Settings, SettingsRecord, SettingsDatalayer, AccessToken, ProfileMagistrateTopic, VerifyToken, AccessPayload} from "../../interfaces.js"
+import {DbbyTable} from "../../toolbox/dbby/types.js"
+import {SettingsSheriffTopic, MetalSettings, SettingsRow, Authorizer} from "../../types.js"
 
-const convertToSettings = (record: SettingsRecord): Settings => (
-	record
-		? {...record}
-		: null
-)
+export function makeSettingsSheriff<S extends MetalSettings>({settingsTable, authorize}: {
+		authorize: Authorizer
+		settingsTable: DbbyTable<SettingsRow>
+	}): SettingsSheriffTopic<S> {
 
-export function makeSettingsSheriff({
-		verifyToken,
-		settingsDatalayer,
-		profileMagistrate,
-	}: {
-		verifyToken: VerifyToken
-		settingsDatalayer: SettingsDatalayer
-		profileMagistrate: ProfileMagistrateTopic
-	}): SettingsSheriffTopic {
-
-	async function reflectProfileEffects({userId, record, accessToken}: {
-			userId: string
-			record: SettingsRecord
-			accessToken: AccessToken
-		}) {
-		const profile = await profileMagistrate.getProfile({userId})
-		profile.avatar = record.publicity.avatarPublicity
-			? record.avatar
-			: null
-		await profileMagistrate.setProfile({accessToken, profile})
-		return profile
+	async function assertSettings(userId: string): Promise<S> {
+		const row = await settingsTable.assert({
+			conditions: {equal: {userId}},
+			make: async() => ({
+				userId,
+				actAsAdmin: true,
+			}),
+		})
+		return <S>{
+			actAsAdmin: row.actAsAdmin
+		}
 	}
 
 	return {
-
 		async fetchSettings({accessToken}) {
-			const {user} = await verifyToken<AccessPayload>(accessToken)
-			return convertToSettings(await settingsDatalayer.getRecord(user.userId))
+			const {userId} = await authorize(accessToken)
+			return assertSettings(userId)
 		},
 
-		async setAdminMode({accessToken, adminMode}) {
-			const {user} = await verifyToken<AccessPayload>(accessToken)
-
-			const record = await settingsDatalayer.getRecord(user.userId)
-			record.admin.actAsAdmin = adminMode
-
-			await settingsDatalayer.saveRecord(record)
-			return convertToSettings(record)
-		},
-
-		async setAvatar({accessToken, avatar}) {
-			const {user} = await verifyToken<AccessPayload>(accessToken)
-			const {userId} = user
-
-			const record = await settingsDatalayer.getOrCreateRecord(userId)
-			record.avatar = avatar
-
-			await settingsDatalayer.saveRecord(record)
-			const profile = await reflectProfileEffects({
-				userId,
-				record,
-				accessToken,
+		async setActAsAdmin({accessToken, actAsAdmin}) {
+			const {userId} = await authorize(accessToken)
+			const settings = await assertSettings(userId)
+			await settingsTable.update({
+				conditions: {equal: {userId}},
+				write: {actAsAdmin},
 			})
-
-			return {settings: convertToSettings(record), profile}
-		},
-
-		async setAvatarPublicity({accessToken, avatarPublicity}) {
-			const {user} = await verifyToken<AccessPayload>(accessToken)
-			const {userId} = user
-
-			const record = await settingsDatalayer.getOrCreateRecord(userId)
-			record.publicity.avatarPublicity = avatarPublicity
-
-			const profile = await reflectProfileEffects({
-				userId,
-				record,
-				accessToken,
-			})
-
-			return {settings: convertToSettings(record), profile}
+			return {...settings, actAsAdmin}
 		},
 	}
 }

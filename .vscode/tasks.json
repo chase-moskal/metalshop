@@ -3,7 +3,10 @@
 	"tasks": [
 		{
 			"type": "npm",
-			"script": "install",
+			"script": "build -s",
+			"problemMatcher": [
+				"$tsc"
+			],
 			"group": {
 				"kind": "build",
 				"isDefault": true

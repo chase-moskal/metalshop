@@ -2,7 +2,7 @@
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {property, html, css} from "../framework/metalshop-component.js"
 
-import {isStaff} from "../../newbiz/core/user-evaluators.js"
+import {isStaff} from "../../business/core/user-evaluators.js"
 import {makeUserIsComponent} from "../system/make-user-is-component.js"
 
 const styles = css`

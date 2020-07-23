@@ -2,7 +2,7 @@
 import {Stripe} from "../../../commonjs/stripe.js"
 import {toPaymentDetails, toSubscriptionDetails} from "../helpers.js"
 import {random8, randomSequence, numbers} from "../../../toolbox/random8.js"
-import {StripeDatalayer, StripeWebhooks, UpdateFlow} from "../../../interfaces.js"
+import {StripeLiaison, StripeWebhooks, UpdateFlow} from "../../../types.js"
 
 interface MockCustomer extends Partial<Stripe.Customer> {
 	id: string
@@ -33,7 +33,7 @@ interface MockSetupIntent extends Partial<Stripe.SetupIntent> {
 
 export function mockStripeLiaison({webhooks}: {
 		webhooks: StripeWebhooks
-	}): StripeDatalayer {
+	}): StripeLiaison {
 
 	const data = {
 		customers: <MockCustomer[]>[],

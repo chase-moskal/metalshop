@@ -1,5 +1,5 @@
 
-import * as evaluators from "../../newbiz/core/user-evaluators.js"
+import * as evaluators from "../../business/core/user-evaluators.js"
 
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {MetalshopComponent, html, property, css} from "../framework/metalshop-component.js"

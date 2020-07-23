@@ -1,11 +1,11 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {StripeDatalayer, SetupMetadata} from "../../interfaces.js"
+import {StripeLiaison, SetupMetadata} from "../../types.js"
 import {getStripeId, toPaymentDetails, toSubscriptionDetails} from "./helpers.js"
 
 export function makeStripeLiaison({stripe}: {
 		stripe: Stripe
-	}): StripeDatalayer {
+	}): StripeLiaison {
 
 	const commonSessionParams = ({userId, popupUrl, stripeCustomerId}: {
 			userId: string
