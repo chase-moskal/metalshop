@@ -1,12 +1,16 @@
 
+import * as evaluators from "../../newbiz/core/user-evaluators.js"
+
+import {mixinStyles} from "../framework/mixin-styles.js"
+import {MetalshopComponent, html, property, css} from "../framework/metalshop-component.js"
+
 import {select} from "../toolbox/selects.js"
 import {formatDate} from "../toolbox/dates.js"
 import * as loading from "../toolbox/loading.js"
 import {makeDebouncer} from "../toolbox/debouncer.js"
 import {deepClone, deepEqual} from "../toolbox/deep.js"
-import {mixinStyles} from "../framework/mixin-styles.js"
-import {Profile, Claims, Persona} from "../../interfaces.js"
-import {MetalshopComponent, html, property, css} from "../framework/metalshop-component.js"
+
+import {MetalUser, MetalProfile} from "../../types.js"
 
 const styles = css`
 
@@ -73,20 +77,20 @@ const styles = css`
  @mixinStyles(styles)
 export class CobaltCard extends MetalshopComponent<void> {
 
-	@property({type: Object})
-		persona?: Persona
+	 @property({type: Object})
+	user?: MetalUser
 
-	@property({type: Object})
-		saveProfile?: (profile: Profile) => Promise<void>
+	 @property({type: Object})
+	saveProfile?: (profile: MetalProfile) => Promise<void>
 
-	@property({type: Boolean})
-		private busy: boolean = false
+	 @property({type: Boolean})
+	private busy: boolean = false
 
-	@property({type: Object})
-		private changedProfile: Profile = null
+	 @property({type: Object})
+	private changedProfile: MetalProfile = null
 
-	private generateNewProfileFromInputs(): Profile {
-		const {profile} = this.persona
+	private generateNewProfileFromInputs(): MetalProfile {
+		const {profile} = this.user
 		const clonedProfile = deepClone(profile)
 		const getValue = (name: string) => select<HTMLInputElement>(
 			`iron-text-input.${name}`,
@@ -98,7 +102,7 @@ export class CobaltCard extends MetalshopComponent<void> {
 	}
 
 	private handleChange = () => {
-		const {profile} = this.persona
+		const {profile} = this.user
 		const newProfile = this.generateNewProfileFromInputs()
 		const changes = !deepEqual(profile, newProfile)
 		this.changedProfile = changes ? newProfile : null
@@ -109,16 +113,12 @@ export class CobaltCard extends MetalshopComponent<void> {
 		action: () => this.handleChange()
 	})
 
-	private renderClaimsList(claims: Claims = {}) {
+	private renderClaimsList(user: MetalUser) {
 		const renderTag = (tag: string) => html`<li data-tag=${tag}>${tag}</li>`
-		const renderLabel = (label: string) => html`<li data-label=${label}>${label}</li>`
 		let items = []
-		if (claims.banned) items.push(renderTag("banned"))
-		if (claims.labels) items = [...items, claims.labels.map(renderLabel)]
-		if (claims.admin) items.push(renderTag("admin"))
-		if (claims.staff) items.push(renderTag("staff"))
-		if (claims.premium) items.push(renderTag("premium"))
-		if (claims.moderator) items.push(renderTag("moderator"))
+		if (evaluators.isStaff(user)) items.push(renderTag("staff"))
+		if (evaluators.isBanned(user)) items.push(renderTag("banned"))
+		if (evaluators.isPremium(user)) items.push(renderTag("premium"))
 		return items.length
 			? html`<ol class="claims">${items}</ol>`
 			: null
@@ -151,19 +151,18 @@ export class CobaltCard extends MetalshopComponent<void> {
 	}
 
 	render() {
-		const {persona, busy} = this
-		if (!persona) return null
-		const {user, profile} = persona
-		const {datestring} = formatDate(profile.joined)
+		const {user, busy} = this
+		if (!user) return null
+		const {profile} = user
 		const load = busy ? loading.loading() : loading.ready()
 		return html`
 			<iron-loading .load=${load} class="cardplate formarea coolbuttonarea">
-				${this.renderClaimsList(user.claims)}
+				${this.renderClaimsList(user)}
 				${this.renderTextfield("nickname", profile.nickname)}
 				${this.renderTextfield("tagline", profile.tagline)}
 				<ul class="detail">
 					<li>user id: <span>${profile.userId}</span></li>
-					<li>joined: <span>${datestring}</span></li>
+					<li>joined: <span>${formatDate(user.claims.joined)}</span></li>
 				</ul>
 				${this.changedProfile ? html`
 					<div class="buttonbar">

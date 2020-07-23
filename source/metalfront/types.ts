@@ -44,10 +44,10 @@ export interface Personal {
 export interface MetalConfig {
 	["mock"]: string
 	["mock-avatar"]: string
-	["auth-server"]: string
-	["profile-server"]: string
+	["core-server"]: string
 	["paywall-server"]: string
 	["schedule-server"]: string
+	["settings-server"]: string
 	["liveshow-server"]: string
 	["questions-server"]: string
 }
@@ -55,16 +55,15 @@ export interface MetalConfig {
 export type CSS = CSSResult | CSSResultArray
 export type ConstructorFor<T extends {} = {}> = new(...args: any[]) => T
 
-export interface MetalOptions<G extends MetalGenerics> {
+export interface MetalOptions<G extends MetalGenerics = MetalGenerics> {
 	logger: Logger
-	authAardvark: AuthAardvarkTopic
 	tokenStore: TokenStoreTopic
-	userUmbrella: UserUmbrellaTopic<G["user"]>
 	liveshowLizard: LiveshowLizardTopic
 	scheduleSentry: ScheduleSentryTopic
 	questionQuarry: QuestionQuarryTopic
-	settingsSheriff: SettingsSheriffTopic<G["settings"]>
 	premiumPachyderm: PremiumPachydermTopic
+	userUmbrella: UserUmbrellaTopic<G["user"]>
+	settingsSheriff: SettingsSheriffTopic<G["settings"]>
 	//—
 	checkoutPopupUrl: string
 	decodeAccessToken: DecodeAccessToken<G["user"]>

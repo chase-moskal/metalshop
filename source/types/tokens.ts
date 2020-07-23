@@ -50,6 +50,6 @@ export type VerifyAccessToken = <S extends Scope = Scope>(
 	accessToken: AccessToken
 ) => Promise<AccessPayload<S>>
 
-export type Authorizer = (
+export type Authorizer<U extends User = User> = (
 	accessToken: AccessToken
-) => Promise<User>
+) => Promise<U>

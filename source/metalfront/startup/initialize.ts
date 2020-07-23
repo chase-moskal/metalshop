@@ -1,16 +1,20 @@
 
-import {makeLogger} from "../../toolbox/logger/make-logger.js"
+import {MetalConfig, MetalOptions} from "../types.js"
+import {MetalUser, CoreSystemsApi} from "../../types.js"
 
-import {makeAuthClients} from "../../business/auth/auth-clients.js"
-import {makeProfileClients} from "../../business/profile/profile-clients.js"
-import {makePaywallClients} from "../../business/paywall/paywall-clients.js"
-import {makeQuestionsClients} from "../../business/questions/questions-clients.js"
-import {openVaultIframe} from "../../business/auth/vault-popup/open-vault-iframe.js"
-import {openAccountPopup} from "../../business/auth/account-popup/open-account-popup.js"
-import {openCheckoutPopup} from "../../business/paywall/checkout-popup/open-checkout-popup.js"
+import {openVaultIframe} from "../../newbiz/core/vault-popup/open-vault-iframe.js"
+import {openAccountPopup} from "../../newbiz/core/account-popup/open-account-popup.js"
+import {openCheckoutPopup} from "../../newbiz/paywall/checkout-popup/open-checkout-popup.js"
 
-import {MetalConfig, MetalOptions} from "../interfaces.js"
+import {makeCoreSystemsClients} from "../../newbiz/core/core-clients.js"
+import {makePaywallClients} from "../../newbiz/paywall/paywall-clients.js"
+import {makeScheduleClients} from "../../newbiz/schedule/schedule-clients.js"
+import {makeSettingsClients} from "../../newbiz/settings/settings-clients.js"
+import {makeLiveshowClients} from "../../newbiz/liveshow/liveshow-clients.js"
+import {makeQuestionsClients} from "../../newbiz/questions/questions-clients.js"
+
 import {AuthoritarianStartupError} from "../system/errors.js"
+import {makeLogger} from "../../toolbox/logger/make-logger.js"
 import {decodeAccessToken} from "../system/decode-access-token.js"
 
 const err = (message: string) => new AuthoritarianStartupError(message)
@@ -25,7 +29,7 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 	//
 
 	if (config.mock !== null) {
-		const {makeMocks: makeMetalMocks} = await import("./make-mocks.js")
+		const {makeMocks: makeMetalMocks} = await import("./make-new-mocks.js")
 		options = await makeMetalMocks({
 			logger: options.logger,
 			startAdmin: config.mock?.includes("admin"),
@@ -41,47 +45,47 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 	const operations = []
 	const queue = (func: () => Promise<any>) => operations.push(func())
 	const {
-		["auth-server"]: authServerOrigin,
+		["core-server"]: coreServerOrigin,
 		["paywall-server"]: paywallServerOrigin,
-		["profile-server"]: profileServerOrigin,
+		["settings-server"]: settingsServerOrigin,
 		["liveshow-server"]: liveshowServerOrigin,
 		["schedule-server"]: scheduleServerOrigin,
 		["questions-server"]: questionsServerOrigin,
 	} = config
 
-	if (authServerOrigin) {
+	if (coreServerOrigin) {
 		queue(async() => {
-			const {authDealer} = await makeAuthClients({authServerOrigin})
-			options.authDealer = authDealer
+			const {userUmbrella} = <CoreSystemsApi<MetalUser>>await makeCoreSystemsClients({coreServerOrigin})
+			options.userUmbrella = userUmbrella
 			options.triggerAccountPopup = async() => {
 				const {promisedPayload} = openAccountPopup({
-					authServerOrigin
+					authServerOrigin: coreServerOrigin
 				})
 				return promisedPayload
 			}
-			const {tokenStore} = await openVaultIframe({authServerOrigin})
+			const {tokenStore} = await openVaultIframe({coreServerOrigin})
 			options.tokenStore = tokenStore
-		})
-	}
-
-	if (profileServerOrigin) {
-		queue(async() => {
-			const {profileMagistrate} = await makeProfileClients({profileServerOrigin})
-			options.profileMagistrate = profileMagistrate
 		})
 	}
 
 	if (questionsServerOrigin) {
 		queue(async() => {
-			const {questionsBureau} = await makeQuestionsClients({questionsServerOrigin})
-			options.questionsBureau = questionsBureau
+			const {questionQuarry} = await makeQuestionsClients({questionsServerOrigin})
+			options.questionQuarry = questionQuarry
 		})
 	}
 
 	if (scheduleServerOrigin) {
 		queue(async() => {
-			console.log("coming soon: schedule initialization")
-			options.scheduleSentry = null
+			const {scheduleSentry} = await makeScheduleClients({scheduleServerOrigin})
+			options.scheduleSentry = scheduleSentry
+		})
+	}
+
+	if (settingsServerOrigin) {
+		queue(async() => {
+			const {settingsSheriff} = await makeSettingsClients({settingsServerOrigin})
+			options.settingsSheriff = settingsSheriff
 		})
 	}
 
@@ -96,16 +100,17 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 					paywallServerOrigin,
 				})
 			}
-			const {paywallLiaison} = await makePaywallClients({paywallServerOrigin})
+			const {premiumPachyderm} = await makePaywallClients({paywallServerOrigin})
 			options.checkoutPopupUrl = `${paywallServerOrigin}/html/checkout`
-			options.paywallLiaison = paywallLiaison
+			options.premiumPachyderm = premiumPachyderm
 		})
 	}
 
 	if (liveshowServerOrigin) {
 		queue(async() => {
 			console.log("coming soon: liveshow initialization")
-			options.liveshowGovernor = null
+			const {liveshowLizard} = await makeLiveshowClients({liveshowServerOrigin})
+			options.liveshowLizard = liveshowLizard
 		})
 	}
 
@@ -118,16 +123,14 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 
 	return {
 		logger: options.logger,
-		authDealer: options.authDealer,
 		tokenStore: options.tokenStore,
-		adminSearch: options.adminSearch,
-		paywallLiaison: options.paywallLiaison,
+		userUmbrella: options.userUmbrella,
+		liveshowLizard: options.liveshowLizard,
+		questionQuarry: options.questionQuarry,
 		scheduleSentry: options.scheduleSentry,
 		settingsSheriff: options.settingsSheriff,
-		questionsBureau: options.questionsBureau,
-		liveshowGovernor: options.liveshowGovernor,
-		profileMagistrate: options.profileMagistrate,
-		//—
+		premiumPachyderm: options.premiumPachyderm,
+		////////
 		checkoutPopupUrl: options.checkoutPopupUrl,
 		decodeAccessToken: options.decodeAccessToken,
 		triggerAccountPopup: options.triggerAccountPopup,

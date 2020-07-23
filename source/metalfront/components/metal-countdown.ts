@@ -101,7 +101,7 @@ export class MetalCountdown extends MetalshopComponent<CountdownShare> {
 	private renderAdminPanel({scheduled}: {scheduled: boolean}) {
 		const {adminValidationMessage} = this
 		return html`
-			<metal-is-admin fancy class="controls coolbuttonarea">
+			<metal-is-staff fancy class="controls coolbuttonarea">
 				<input
 					type="date"
 					@keyUp=${this._handleUpdateDate}
@@ -129,7 +129,7 @@ export class MetalCountdown extends MetalshopComponent<CountdownShare> {
 				${adminValidationMessage ? html`
 					<p class="validation">${adminValidationMessage}</p>
 				` : null}
-			</metal-is-admin>
+			</metal-is-staff>
 		`
 	}
 

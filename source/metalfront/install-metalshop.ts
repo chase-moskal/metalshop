@@ -1,8 +1,9 @@
 
 const metalConfigTagName = "metal-config"
 
+import {MetalOptions} from "./types.js"
+
 import {theme} from "./system/theme.js"
-import {MetalOptions} from "./interfaces.js"
 import {optionsFromDom} from "./startup/options-from-dom.js"
 import {themeComponents} from "./framework/theme-components.js"
 import {assembleSupermodel} from "./startup/assemble-supermodel.js"

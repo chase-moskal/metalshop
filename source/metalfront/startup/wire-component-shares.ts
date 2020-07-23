@@ -1,10 +1,6 @@
 
 import {share} from "../framework/share.js"
-import {
-	ButtonPremiumShare, PersonalShare,
-	MyAvatarShare, AdminModeShare, AdminOnlyShare, QuestionsShare,
-	Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare,
-} from "../types.js"
+import {ButtonPremiumShare, PersonalShare, MyAvatarShare, AdminModeShare, AdminOnlyShare, QuestionsShare, Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare} from "../types.js"
 
 import {IronLoading} from "../components/iron-loading.js"
 import {IronTextInput} from "../components/iron-text-input.js"
@@ -12,11 +8,11 @@ import {IronTextInput} from "../components/iron-text-input.js"
 import {CobaltCard} from "../components/cobalt-card.js"
 import {CobaltAvatar} from "../components/cobalt-avatar.js"
 
+// import {MetalSeeker} from "../components/metal-seeker.js"
 import {MetalAvatar} from "../components/metal-avatar.js"
-import {MetalSeeker} from "../components/metal-seeker.js"
 import {MetalAccount} from "../components/metal-account.js"
 import {MetalPaywall} from "../components/metal-paywall.js"
-import {MetalIsAdmin} from "../components/metal-is-admin.js"
+import {MetalIsStaff} from "../components/metal-is-staff.js"
 import {MetalLiveshow} from "../components/metal-liveshow.js"
 import {MetalPersonal} from "../components/metal-personal.js"
 import {MetalMyAvatar} from "../components/metal-my-avatar.js"
@@ -91,7 +87,7 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 			personalLoad: supermodel.personal.personalLoad,
 			setAdminMode: supermodel.personal.setAdminMode,
 		})),
-		MetalIsAdmin: share(MetalIsAdmin, (): AdminOnlyShare => ({
+		MetalIsAdmin: share(MetalIsStaff, (): AdminOnlyShare => ({
 			personalLoad: supermodel.personal.personalLoad,
 		})),
 		MetalQuestions: share(MetalQuestions, (): QuestionsShare => ({

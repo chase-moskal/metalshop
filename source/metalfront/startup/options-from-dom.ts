@@ -2,7 +2,8 @@
 import {initialize} from "./initialize.js"
 import {select} from "../toolbox/selects.js"
 import {parseConfig} from "./parse-config.js"
-import {MetalOptions} from "../interfaces.js"
+
+import {MetalOptions} from "../types.js"
 
 export async function optionsFromDom(selector: string): Promise<MetalOptions> {
 	const element = select(selector)

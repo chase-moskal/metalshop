@@ -11,7 +11,9 @@ export function ascertainOwnership(question: Question, me: MetalUser) {
 	}
 }
 
-const sortLikes = (a: Question, b: Question) => a.likes > b.likes ? -1: 1
+const sortLikes = (a: Question, b: Question) => a.likes > b.likes
+	? -1
+	: 1
 
 export const sortQuestions = (me: MetalUser, questions: Question[]) => {
 	const myUserId = me?.userId

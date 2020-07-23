@@ -5,41 +5,42 @@ import {renderAuthor} from "./render-author.js"
 import {QuestionValidation} from "../../types.js"
 
 export function renderQuestionEditor({
-	expand,
-	draftText,
-	validation,
-	handlePostClick,
-	maxCharacterLimit,
-	handleTextAreaChange,
-	author = {
-		userId: "FAKE_USER_UD",
-		claims: {
-			admin: false,
-			staff: undefined,
-			banUntil: undefined,
-			banReason: undefined,
-			lastLogin: Date.now() - (5 * 1000 * 60),
-			joined: Date.now() - (10 * (1000 * 60 * 60 * 24)),
-			premiumUntil: undefined,
+		expand,
+		draftText,
+		validation,
+		handlePostClick,
+		maxCharacterLimit,
+		handleTextAreaChange,
+		author = {
+			userId: "FAKE_USER_UD",
+			claims: {
+				admin: false,
+				staff: undefined,
+				banUntil: undefined,
+				banReason: undefined,
+				premiumUntil: undefined,
+				joined: Date.now() - (10 * (1000 * 60 * 60 * 24)),
+			},
+			profile: {
+				avatar: null,
+				userId: "FAKE_USER_ID",
+				tagline: "fake_tagline",
+				nickname: "FAKE_NICKNAME",
+			},
 		},
-		profile: {
-			avatar: null,
-			userId: "FAKE_USER_ID",
-			tagline: "fake_tagline",
-			nickname: "FAKE_NICKNAME",
-		},
-	},
-}: {
-	expand: boolean
-	draftText: string
-	maxCharacterLimit: number
-	validation: QuestionValidation
-	handlePostClick: (event: MouseEvent) => void
-	handleTextAreaChange: (event: Event) => void
-	author?: MetalUser
-}) {
+	}: {
+		expand: boolean
+		draftText: string
+		maxCharacterLimit: number
+		validation: QuestionValidation
+		handlePostClick: (event: MouseEvent) => void
+		handleTextAreaChange: (event: Event) => void
+		author?: MetalUser
+	}) {
+
 	const {message, postable, angry} = validation
 	const invalid = !!message
+
 	return html`
 		<div class="question editor">
 			${renderAuthor({

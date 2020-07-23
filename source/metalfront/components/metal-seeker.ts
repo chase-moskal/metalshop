@@ -9,10 +9,10 @@
 // const wrap = (content: TemplateResult) => html`
 // 	<metal-is-loggedin>
 // 		<p slot="not">not logged in</p>
-// 		<metal-is-admin>
+// 		<metal-is-staff>
 // 			${content}
 // 			<p slot="not">not admin</p>
-// 		</metal-is-admin>
+// 		</metal-is-staff>
 // 	</metal-is-loggedin>
 // `
 

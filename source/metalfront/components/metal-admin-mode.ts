@@ -6,18 +6,20 @@ import {MetalshopComponent, property, html, css} from "../framework/metalshop-co
 
 import {AdminModeShare} from "../types.js"
 
- @mixinStyles(css`
-	:host {
-		color: var(--metal-admin-color, #fd34e2);
-	}
- `)
+const styles = css`
+:host {
+	color: var(--metal-admin-color, #fd34e2);
+}
+`
+
+ @mixinStyles(styles)
 export class MetalAdminMode extends MetalshopComponent<AdminModeShare> {
 
-	@property({type: Boolean})
-		private adminMode: boolean = false
+	 @property({type: Boolean})
+	private adminMode: boolean = false
 
-	@property({type: Boolean})
-		private adminClaim: boolean = false
+	 @property({type: Boolean})
+	private adminClaim: boolean = false
 
 	async autorun() {
 		const {personalLoad} = this.share

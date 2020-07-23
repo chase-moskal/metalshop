@@ -1,5 +1,5 @@
 
-import {Persona} from "../../interfaces.js"
+import {MetalUser} from "../../types.js"
 import {silhouette} from "../system/icons.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {MetalshopComponent, html, property, css, TemplateResult} from "../framework/metalshop-component.js"
@@ -17,19 +17,19 @@ img, svg {
  @mixinStyles(styles)
 export class CobaltAvatar extends MetalshopComponent<void> {
 
-	@property({type: Object})
-		fallbackAvatar: TemplateResult = silhouette
+	 @property({type: Object})
+	fallbackAvatar: TemplateResult = silhouette
 
-	@property({type: Object})
-		persona?: Persona
+	 @property({type: Object})
+	user?: MetalUser
 
 	render() {
-		const {persona} = this
-		const avatar = persona?.profile?.avatar
+		const {user, fallbackAvatar} = this
+		const avatar = user?.profile?.avatar
 		return html`
 			${avatar
 				? html`<img src=${avatar} alt="[avatar]"/>`
-				: this.fallbackAvatar}
+				: fallbackAvatar}
 		`
 	}
 }

@@ -13,9 +13,9 @@ export class QuestionsModel {
 	@observable questions: Question[] = []
 
 	constructor(options: {
-			questionQuarryUi: QuestionQuarryTopic
+			questionQuarry: QuestionQuarryTopic
 		}) {
-		this.#questionQuarry = options.questionQuarryUi
+		this.#questionQuarry = options.questionQuarry
 	}
 
 	////////

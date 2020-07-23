@@ -12,10 +12,10 @@ export type HandleAuthUpdate = (auth: loading.Load<AuthPayload<User>>) => Promis
 export class LiveshowModel {
 	private liveshowLizard: LiveshowLizardTopic
 
-	constructor({liveshowLizard}: {
+	constructor(options: {
 			liveshowLizard: LiveshowLizardTopic
 		}) {
-		this.liveshowLizard = liveshowLizard
+		this.liveshowLizard = options.liveshowLizard
 	}
 
 	//

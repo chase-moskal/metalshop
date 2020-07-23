@@ -63,7 +63,7 @@ export class MetalLiveshow extends MetalshopComponent<LiveshowShare> {
 			case PrivilegeLevel.Privileged: return html`
 				<slot></slot>
 				${this._renderViewer()}
-				<metal-is-admin fancy class="adminpanel coolbuttonarea formarea">
+				<metal-is-staff fancy class="adminpanel coolbuttonarea formarea">
 					<div class="inputarea">
 						<input
 							type="text"
@@ -77,7 +77,7 @@ export class MetalLiveshow extends MetalshopComponent<LiveshowShare> {
 					${validationMessage && html`
 						<p class="error">${validationMessage}</p>
 					`}
-				</metal-is-admin>
+				</metal-is-staff>
 			`
 		}
 	}

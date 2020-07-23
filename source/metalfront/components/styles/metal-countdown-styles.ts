@@ -1,47 +1,48 @@
 
 import {css} from "lit-element"
-
 export const styles = css`
-	:host {
-		display: flex;
-		flex-direction: row;
-	}
 
-	:host([hidden]) {
-		display: none;
-	}
+:host {
+	display: flex;
+	flex-direction: row;
+}
 
-	:host > div {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
+:host([hidden]) {
+	display: none;
+}
 
-	.icon-area svg {
-		opacity: var(--countdown-icon-opacity, 0.5);
-		width: var(--countdown-icon-size, 6em);
-		height: var(--countdown-icon-size, 6em);
-	}
+:host > div {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
 
-	.content-area {
-		padding-left: 0.5em;
-	}
+.icon-area svg {
+	opacity: var(--countdown-icon-opacity, 0.5);
+	width: var(--countdown-icon-size, 6em);
+	height: var(--countdown-icon-size, 6em);
+}
 
-	.countdown .start-time > span > span:nth-child(3) {
-		opacity: 0.5;
-	}
+.content-area {
+	padding-left: 0.5em;
+}
 
-	metal-is-admin {
-		margin-top: 0.5em;
-	}
+.countdown .start-time > span > span:nth-child(3) {
+	opacity: 0.5;
+}
 
-	@media (max-width: 700px) {
-		.icon-area {
-			font-size: 0.5em;
-		}
-		.countdown p > strong {
-			display: block;
-			margin-top: 0.2em;
-		}
+metal-is-staff {
+	margin-top: 0.5em;
+}
+
+@media (max-width: 700px) {
+	.icon-area {
+		font-size: 0.5em;
 	}
+	.countdown p > strong {
+		display: block;
+		margin-top: 0.2em;
+	}
+}
+
 `

@@ -4,6 +4,7 @@ import {Api as CrosscallApi} from "crosscall/dist/interfaces.js"
 
 import {
 	User,
+	MetalSettings,
 
 	AuthAardvarkTopic,
 	UserUmbrellaTopic,
@@ -11,6 +12,7 @@ import {
 	QuestionQuarryTopic,
 	LiveshowLizardTopic,
 	ScheduleSentryTopic,
+	SettingsSheriffTopic,
 	PremiumPachydermTopic,
 
 	TokenStoreTopic,
@@ -44,6 +46,10 @@ export interface LiveshowApi extends RenrakuApi<LiveshowApi> {
 
 export interface ScheduleApi extends RenrakuApi<ScheduleApi> {
 	scheduleSentry: ScheduleSentryTopic
+}
+
+export interface SettingsApi extends RenrakuApi<SettingsApi> {
+	settingsSheriff: SettingsSheriffTopic<MetalSettings>
 }
 
 //

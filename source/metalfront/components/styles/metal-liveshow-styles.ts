@@ -12,7 +12,7 @@ export const styles = css`
 
 * + .ghostplayer,
 * + .viewer,
-* + metal-is-admin > .adminpanel {
+* + metal-is-staff > .adminpanel {
 	margin-top: 1em;
 }
 
@@ -78,7 +78,7 @@ export const styles = css`
 	height: 100%;
 }
 
-metal-is-admin {
+metal-is-staff {
 	display: block;
 	max-width: 420px;
 	margin-top: 0.5em;
@@ -87,28 +87,28 @@ metal-is-admin {
 	text-align: center;
 }
 
-metal-is-admin p,
-metal-is-admin h3 {
+metal-is-staff p,
+metal-is-staff h3 {
 	margin: 0.1em 0.5em;
 }
 
-metal-is-admin h3 {
+metal-is-staff h3 {
 	text-transform: uppercase;
 }
 
-metal-is-admin .inputarea {
+metal-is-staff .inputarea {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
 }
 
-metal-is-admin .inputarea > * {
+metal-is-staff .inputarea > * {
 	flex: 1 1 auto;
 	margin: 0.5em;
 	max-width: 100%;
 }
 
-metal-is-admin .inputarea > button {
+metal-is-staff .inputarea > button {
 	flex: 0 1 auto;
 	margin-left: auto;
 }

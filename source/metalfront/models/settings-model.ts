@@ -1,30 +1,28 @@
 
-import * as loading from "../toolbox/loading.js"
 import {observable, action, computed} from "mobx"
+
+import {GetAuthContext, AuthPayload} from "../types.js"
+import {MetalUser, MetalSettings, SettingsSheriffTopic} from "../../types.js"
+
+import * as loading from "../toolbox/loading.js"
 import {makeTicketbooth} from "../toolbox/ticketbooth.js"
-import {GetAuthContext, AuthPayload} from "../interfaces.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
-import {SettingsSheriffTopic, Settings} from "../../interfaces.js"
 
 export class SettingsModel {
-	@observable settingsLoad = loading.load<Settings>()
-	@computed get settings() { return loading.payload(this.settingsLoad) }
 	private logger: Logger
-	private settingsSheriff: SettingsSheriffTopic
+	private settingsSheriff: SettingsSheriffTopic<MetalSettings>
 	private ticketbooth = makeTicketbooth()
-	private getAuthContext: GetAuthContext = null
+	private getAuthContext: GetAuthContext<MetalUser> = null
+
+	@observable settingsLoad = loading.load<MetalSettings>()
+	@computed get settings() { return loading.payload(this.settingsLoad) }
 
 	constructor({logger, settingsSheriff}: {
 			logger: Logger
-			settingsSheriff: SettingsSheriffTopic
+			settingsSheriff: SettingsSheriffTopic<MetalSettings>
 		}) {
 		this.logger = logger
 		this.settingsSheriff = settingsSheriff
-	}
-
-	 @action.bound
-	private setSettingsLoad(load: loading.Load<Settings>) {
-		this.settingsLoad = load
 	}
 
 	 @action.bound
@@ -32,8 +30,8 @@ export class SettingsModel {
 		try {
 			this.setSettingsLoad(loading.loading())
 			const {accessToken} = await this.getAuthContext()
-			const settings = await this.settingsSheriff.setAdminMode({
-				adminMode,
+			const settings = await this.settingsSheriff.setActAsAdmin({
+				actAsAdmin: adminMode,
 				accessToken,
 			})
 			this.setSettingsLoad(loading.ready(settings))
@@ -45,7 +43,7 @@ export class SettingsModel {
 	}
 
 	 @action.bound
-	async handleAuthLoad(authLoad: loading.Load<AuthPayload>) {
+	async handleAuthLoad(authLoad: loading.Load<AuthPayload<MetalUser>>) {
 		const authPayload = loading.payload(authLoad)
 		this.getAuthContext = authPayload?.getAuthContext || null
 		const loggedIn = !!authPayload?.user
@@ -68,5 +66,10 @@ export class SettingsModel {
 		else {
 			this.setSettingsLoad(loading.none())
 		}
+	}
+
+	 @action.bound
+	private setSettingsLoad(load: loading.Load<MetalSettings>) {
+		this.settingsLoad = load
 	}
 }

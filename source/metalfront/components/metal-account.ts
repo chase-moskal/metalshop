@@ -1,6 +1,6 @@
 
 import {AccountShare} from "../types.js"
-import {MetalshopComponent, property, html} from "../framework/metalshop-component.js"
+import {MetalshopComponent, html} from "../framework/metalshop-component.js"
 
 import * as loading from "../toolbox/loading.js"
 import {styles} from "./styles/metal-account-styles.js"

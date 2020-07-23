@@ -5,9 +5,10 @@ import {GetAuthContext, AuthPayload} from "../types.js"
 import {User, ScheduleSentryTopic, ScheduleEvent} from "../../types.js"
 
 export class ScheduleModel {
-	@observable events: ScheduleEvent[] = []
 	private getAuthContext: GetAuthContext<User>
 	private scheduleSentry: ScheduleSentryTopic
+
+	@observable events: ScheduleEvent[] = []
 
 	constructor(options: {scheduleSentry: ScheduleSentryTopic}) {
 		Object.assign(this, options)

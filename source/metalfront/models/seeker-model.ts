@@ -1,36 +1,36 @@
 
-import {observable, action} from "mobx"
-import {Persona, SeekerTopic} from "../../interfaces.js"
+// import {observable, action} from "mobx"
+// import {Persona, SeekerTopic} from "../../interfaces.js"
 
-import * as loading from "../toolbox/loading.js"
-import {AuthPayload, GetAuthContext} from "../interfaces.js"
+// import * as loading from "../toolbox/loading.js"
+// import {AuthPayload, GetAuthContext} from "../interfaces.js"
 
-export class SeekerModel {
-	@observable resultsLoad: loading.Load<Persona[]> = loading.ready([])
+// export class SeekerModel {
+// 	@observable resultsLoad: loading.Load<Persona[]> = loading.ready([])
 
-	private adminSearch: SeekerTopic
-	private getAuthContext: GetAuthContext
-	constructor({adminSearch}: {adminSearch: SeekerTopic}) {
-		this.adminSearch = adminSearch
-	}
+// 	private adminSearch: SeekerTopic
+// 	private getAuthContext: GetAuthContext
+// 	constructor({adminSearch}: {adminSearch: SeekerTopic}) {
+// 		this.adminSearch = adminSearch
+// 	}
 
-	@action handleAuthLoad = (load: loading.Load<AuthPayload>) => {
-		this.getAuthContext = loading.payload(load)?.getAuthContext
-	}
+// 	@action handleAuthLoad = (load: loading.Load<AuthPayload>) => {
+// 		this.getAuthContext = loading.payload(load)?.getAuthContext
+// 	}
 
-	@action query = async(needle: string) => {
-		if (!needle) {
-			this.resultsLoad = loading.ready([])
-			return
-		}
-		this.resultsLoad = loading.loading()
-		try {
-			const {accessToken} = await this.getAuthContext()
-			const results = await this.adminSearch.search({accessToken, needle})
-			this.resultsLoad = loading.ready(results)
-		}
-		catch (error) {
-			this.resultsLoad = loading.error(`query error`)
-		}
-	}
-}
+// 	@action query = async(needle: string) => {
+// 		if (!needle) {
+// 			this.resultsLoad = loading.ready([])
+// 			return
+// 		}
+// 		this.resultsLoad = loading.loading()
+// 		try {
+// 			const {accessToken} = await this.getAuthContext()
+// 			const results = await this.adminSearch.search({accessToken, needle})
+// 			this.resultsLoad = loading.ready(results)
+// 		}
+// 		catch (error) {
+// 			this.resultsLoad = loading.error(`query error`)
+// 		}
+// 	}
+// }

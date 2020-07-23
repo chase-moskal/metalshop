@@ -1,7 +1,7 @@
 
 import {DbbyTable} from "../../toolbox/dbby/types.js"
 import {concurrent} from "../../toolbox/concurrent.js"
-import {QuestionQuarryTopic, QuestionRow, QuestionLikeRow, QuestionReportRow, User, UserUmbrellaTopic, Question, Authorizer} from "../../types.js"
+import {QuestionQuarryTopic, QuestionRow, QuestionLikeRow, QuestionReportRow, MetalUser, UserUmbrellaTopic, Question, Authorizer} from "../../types.js"
 
 export function makeQuestionQuarry({
 		authorize,
@@ -14,19 +14,19 @@ export function makeQuestionQuarry({
 		questionLikeTable,
 		questionReportTable,
 	}: {
-		authorize: Authorizer
+		authorize: Authorizer<MetalUser>
 		generateId: () => string
-		userCanPost: (user: User) => boolean
-		userCanArchiveBoard: (user: User) => boolean
-		userCanArchiveQuestion: (user: User, questionAuthorUserId: string) => boolean
-		userUmbrella: UserUmbrellaTopic<User>
+		userCanPost: (user: MetalUser) => boolean
+		userCanArchiveBoard: (user: MetalUser) => boolean
+		userCanArchiveQuestion: (user: MetalUser, questionAuthorUserId: string) => boolean
+		userUmbrella: UserUmbrellaTopic<MetalUser>
 		questionTable: DbbyTable<QuestionRow>
 		questionLikeTable: DbbyTable<QuestionLikeRow>
 		questionReportTable: DbbyTable<QuestionReportRow>
 	}): QuestionQuarryTopic {
 
 	function makeShortLivedCache() {
-		const users: User[] = []
+		const users: MetalUser[] = []
 		return {
 			async fetchUser(userId: string) {
 				let user = users.find(u => u.userId === userId)
@@ -42,7 +42,7 @@ export function makeQuestionQuarry({
 	async function resolveQuestion({row, userId, fetchUser}: {
 			row: QuestionRow
 			userId: string | undefined
-			fetchUser: (userId: string) => Promise<User>
+			fetchUser: (userId: string) => Promise<MetalUser>
 		}): Promise<Question> {
 		const {questionId} = row
 		const loggedIn = !!userId

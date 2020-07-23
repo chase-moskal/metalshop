@@ -8,24 +8,37 @@ import {DbbyTable} from "../../toolbox/dbby/types.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
 import {generateId as defaultGenerateId} from "../../toolbox/generate-id.js"
+
 import {
 	Scope,
-	Authorizer,
-	PaywallUser,
-	AccessPayload,
-	AccountRow,
 	ClaimsRow,
+	MetalUser,
+	Authorizer,
+	AccountRow,
 	ProfileRow,
+	QuestionRow,
+	LiveshowRow,
+	SettingsRow,
+	AccessPayload,
+	PremiumGiftRow,
+	QuestionLikeRow,
+	ScheduleEventRow,
 	StripeBillingRow,
 	StripePremiumRow,
-	PremiumGiftRow,
-	QuestionRow,
-	QuestionLikeRow,
 	QuestionReportRow,
-	LiveshowRow,
-	ScheduleEventRow,
-	SettingsRow,
 } from "../../types.js"
+
+import {makeTokenStore} from "../../newbiz/core/token-store.js"
+import {makeCoreSystems} from "../../newbiz/core/core-systems.js"
+import {mockStorage} from "../../newbiz/core/mocks/mock-storage.js"
+import {makeClaimsCardinal} from "../../newbiz/core/claims-cardinal.js"
+import {makeLiveshowLizard} from "../../newbiz/liveshow/liveshow-lizard.js"
+import {makeScheduleSentry} from "../../newbiz/schedule/schedule-sentry.js"
+import {makeQuestionQuarry} from "../../newbiz/questions/question-quarry.js"
+import {makeSettingsSheriff} from "../../newbiz/settings/settings-sheriff.js"
+import {makePremiumPachyderm} from "../../newbiz/paywall/premium-pachyderm.js"
+import {mockStripeCircuit} from "../../newbiz/paywall/mocks/mock-stripe-circuit.js"
+import {mockVerifyGoogleToken} from "../../newbiz/core/mocks/mock-verify-google-token.js"
 
 import {nap} from "../toolbox/nap.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
@@ -34,22 +47,10 @@ import {
 	DecodeAccessToken,
 	TriggerAccountPopup,
 	TriggerCheckoutPopup,
-} from "../interfaces.js"
-
-import {makeTokenStore} from "../../newbiz/core/token-store.js"
-import {makeCoreSystems} from "../../newbiz/core/core-systems.js"
-import {makeClaimsCardinal} from "../../newbiz/core/claims-cardinal.js"
-import {makeSettingsSheriff} from "../../newbiz/settings/settings-sheriff.js"
-import {mockVerifyGoogleToken} from "../../newbiz/core/mocks/mock-verify-google-token.js"
-import {mockStorage} from "../../business/auth/mocks/mock-storage.js"
-import {makeQuestionQuarry} from "../../newbiz/questions/question-quarry.js"
-import {makeLiveshowLizard} from "../../newbiz/liveshow/liveshow-lizard.js"
-import {mockStripeCircuit} from "../../newbiz/paywall/mocks/mock-stripe-circuit.js"
-import {makeScheduleSentry} from "../../newbiz/schedule/schedule-sentry.js"
-import {makePremiumPachyderm} from "../../newbiz/paywall/premium-pachyderm.js"
+} from "../types.js"
 
 export interface DemoScope extends Scope {}
-export interface DemoUser extends PaywallUser {}
+export interface DemoUser extends MetalUser {}
 export type DemoAccessPayload = AccessPayload<DemoScope, DemoUser>
 
 export async function makeMocks({
@@ -71,7 +72,7 @@ export async function makeMocks({
 		googleUserAvatar?: string
 		generateId?: () => string
 		generateNickname?: () => string
-		decodeAccessToken?: DecodeAccessToken
+		decodeAccessToken?: DecodeAccessToken<DemoUser>
 	}): Promise<MetalOptions> {
 
 	const minute = 1000 * 60
@@ -113,7 +114,6 @@ export async function makeMocks({
 				banUntil: undefined,
 				banReason: undefined,
 				joined: Date.now() - (day * 10),
-				lastLogin: Date.now() - minute,
 				premiumUntil: Date.now() + (day * 30)
 			},
 			profile: {
@@ -159,7 +159,7 @@ export async function makeMocks({
 		storage: mockStorage(),
 	})
 
-	const questionsQuarry = makeQuestionQuarry({
+	const questionQuarry = makeQuestionQuarry({
 		userUmbrella,
 		questionTable,
 		questionLikeTable,
@@ -171,7 +171,7 @@ export async function makeMocks({
 		userCanArchiveQuestion: userIsABoss,
 	})
 
-	const liveshowLizard = makeLiveshowLizard<DemoUser>({
+	const liveshowLizard = makeLiveshowLizard({
 		liveshowTable,
 		authorize,
 		userCanRead: userPremiumIsValid,
@@ -206,8 +206,6 @@ export async function makeMocks({
 
 	const triggerCheckoutPopup: TriggerCheckoutPopup
 		= async({stripeSessionId}) => null
-
-	// const adminSearch = mockAdminSearch()
 
 	//
 	// starting conditions
@@ -273,7 +271,7 @@ export async function makeMocks({
 			premiumPachyderm,
 			scheduleSentry,
 			settingsSheriff,
-			questionsQuarry,
+			questionQuarry,
 			liveshowLizard,
 		})) {
 			for (const [key, value] of Object.entries<Method>(object)) {
@@ -282,23 +280,18 @@ export async function makeMocks({
 		}
 	}
 
-	// TODO rework metal options!
-	return undefined
-
-	// return {
-	// 	logger,
-	// 	authDealer,
-	// 	tokenStore,
-	// 	adminSearch,
-	// 	paywallLiaison,
-	// 	scheduleSentry,
-	// 	settingsSheriff,
-	// 	questionsBureau,
-	// 	liveshowGovernor,
-	// 	checkoutPopupUrl,
-	// 	decodeAccessToken,
-	// 	profileMagistrate,
-	// 	triggerAccountPopup,
-	// 	triggerCheckoutPopup,
-	// }
+	return {
+		logger,
+		tokenStore,
+		userUmbrella,
+		liveshowLizard,
+		questionQuarry,
+		scheduleSentry,
+		settingsSheriff,
+		checkoutPopupUrl,
+		premiumPachyderm,
+		decodeAccessToken,
+		triggerAccountPopup,
+		triggerCheckoutPopup,
+	}
 }

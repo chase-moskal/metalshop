@@ -1,10 +1,10 @@
 
 import * as loading from "../toolbox/loading.js"
-import {isPremium} from "../toolbox/is-premium.js"
 import {sortQuestions} from "./questions/helpers.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {styles} from "./styles/metal-questions-styles.js"
 import {renderQuestion} from "./questions/render-question.js"
+import {isPremium} from "../../newbiz/core/user-evaluators.js"
 import {renderQuestionEditor} from "./questions/render-question-editor.js"
 import {MetalshopComponent, property, html, PropertyValues} from "../framework/metalshop-component.js"
 
@@ -65,9 +65,9 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 		return html`
 			<iron-loading .load=${load}>
 
-				<metal-is-admin fancy class="coolbuttonarea">
+				<metal-is-staff fancy class="coolbuttonarea">
 					<button @click=${handlePurgeClick}>Purge all questions</button>
-				</metal-is-admin>
+				</metal-is-staff>
 
 				<div class="posting-area">
 					<slot name="post">

@@ -61,9 +61,9 @@ export function renderQuestion({
 				<div class="controls">
 
 					${mine ? renderDeleteButton() : authority ? html`
-						<metal-is-admin>
+						<metal-is-staff>
 							${renderDeleteButton()}
-						</metal-is-admin>
+						</metal-is-staff>
 					` : null}
 				</div>
 			</div>

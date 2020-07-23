@@ -78,17 +78,17 @@ export class TextChangeEvent extends CustomEvent<{text: string}> {
  @mixinStyles(styles)
 export class IronTextInput extends MetalshopComponent<void> {
 
-	@property({type: String})
-		value: string = ""
+	 @property({type: String})
+	value: string = ""
 
-	@property({type: Boolean, reflect: true})
-		readonly: boolean = false
+	 @property({type: Boolean, reflect: true})
+	readonly: boolean = false
 
-	@property({type: Boolean, reflect: true})
-		nolabel: boolean = false
+	 @property({type: Boolean, reflect: true})
+	nolabel: boolean = false
 
-	@property({type: Number, reflect: true})
-		maxlength: number = 32
+	 @property({type: Number, reflect: true})
+	maxlength: number = 32
 
 	private lastValue = ""
 

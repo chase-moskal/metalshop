@@ -83,7 +83,6 @@ export function makeCoreSystems<U extends MetalUser>({
 						admin: false,
 						staff: false,
 						joined: Date.now(),
-						lastLogin: Date.now(),
 						banUntil: undefined,
 						banReason: undefined,
 						premiumUntil: undefined,
@@ -114,7 +113,7 @@ export function makeCoreSystems<U extends MetalUser>({
 
 	async function userLogin(userId: string) {
 		const user = await fetchUser(userId)
-		const claims = {...user.claims, lastLogin: Date.now()}
+		const claims = {...user.claims}
 		await updateClaims(userId, claims)
 		user.claims = claims
 		return user

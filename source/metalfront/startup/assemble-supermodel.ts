@@ -8,22 +8,20 @@ import {PaywallModel} from "../models/paywall-model.js"
 import {LiveshowModel} from "../models/liveshow-model.js"
 import {ScheduleModel} from "../models/schedule-model.js"
 import {PersonalModel} from "../models/personal-model.js"
+import {SettingsModel} from "../models/settings-model.js"
 import {QuestionsModel} from "../models/questions-model.js"
-import { MetalUser } from "../../types/common.js"
 // import {ProfileModel} from "../models/profile-model.js"
-// import {SettingsModel} from "../models/settings-model.js"
 
 export function assembleSupermodel({
 	logger,
 	tokenStore,
-	adminSearch,
-	paywallLiaison,
+	userUmbrella,
+	liveshowLizard,
 	scheduleSentry,
+	questionQuarry,
 	settingsSheriff,
-	questionsBureau,
-	liveshowGovernor,
-	profileMagistrate,
-	//—
+	premiumPachyderm,
+	////////
 	checkoutPopupUrl,
 	decodeAccessToken,
 	triggerAccountPopup,
@@ -36,20 +34,25 @@ export function assembleSupermodel({
 		triggerAccountPopup,
 		expiryGraceSeconds: 60
 	})
-	const personal = new PersonalModel({logger, profileMagistrate, settingsSheriff})
+
+	const personal = new PersonalModel({
+		logger,
+		userUmbrella,
+		settingsSheriff,
+	})
+
 	const supermodel = {
 		auth,
 		personal,
-		seeker: new SeekerModel({adminSearch}),
+		// seeker: new SeekerModel({adminSearch}),
 		schedule: new ScheduleModel({scheduleSentry}),
-		liveshow: new LiveshowModel({liveshowGovernor}),
-		questions: new QuestionsModel({questionsBureau}),
+		liveshow: new LiveshowModel({liveshowLizard}),
+		questions: new QuestionsModel({questionQuarry}),
 	
-		// TODO consider uncoupling inter-model dependencies
+		// TODO consider uncoupling inter-model dependencies?
 		paywall: new PaywallModel({
 			auth,
-			personal,
-			premiumPachyderm: paywallLiaison,
+			premiumPachyderm,
 			checkoutPopupUrl,
 			triggerCheckoutPopup,
 		}),
@@ -61,13 +64,13 @@ export function assembleSupermodel({
 		supermodel.liveshow.handleAuthLoad(authLoad)
 		supermodel.schedule.handleAuthLoad(authLoad)
 		supermodel.questions.handleAuthLoad(authLoad)
-		supermodel.seeker.handleAuthLoad(authLoad)
+		// supermodel.seeker.handleAuthLoad(authLoad)
 	})
 
-	autorun(() => {
-		const {profile} = supermodel.personal
-		supermodel.questions.handleProfileUpdate(profile)
-	})
+	// autorun(() => {
+	// 	const {profile} = supermodel.personal
+	// 	supermodel.questions.handleProfileUpdate(profile)
+	// })
 
 	return supermodel
 }

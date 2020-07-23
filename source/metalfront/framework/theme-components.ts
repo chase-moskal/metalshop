@@ -1,6 +1,6 @@
 
 import {LitElement} from "lit-element"
-import {ConstructorFor} from "../interfaces.js"
+import {ConstructorFor} from "../types.js"
 import {mixinStyles, CSS} from "./mixin-styles.js"
 import {objectMap} from "../toolbox/object-map.js"
 

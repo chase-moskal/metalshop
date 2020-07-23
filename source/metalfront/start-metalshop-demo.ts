@@ -4,7 +4,7 @@ import "menutown/dist/register-all.js"
 import {parseQuery} from "./toolbox/parse-query.js"
 import {installMetalshop} from "./install-metalshop.js"
 import {registerComponents} from "./toolbox/register-components.js"
-import {demoComponents} from "./components/demos/all-demo-components.js"
+// import {demoComponents} from "./components/demos/all-demo-components.js"
 
 function modifyMetalConfigBasedOnQueryParams() {
 	const query = parseQuery<{mock: string; dev: string; menu: string}>()
@@ -50,7 +50,7 @@ function modifyMetalConfigBasedOnQueryParams() {
 
 	registerComponents({
 		...metalshop.components,
-		...demoComponents,
+		// ...demoComponents,
 	})
 
 	await metalshop.start()

@@ -38,7 +38,6 @@ export interface MetalClaims extends Claims {
 	banUntil: number
 	banReason: string
 	joined: number
-	lastLogin: number
 	premiumUntil: number
 }
 
