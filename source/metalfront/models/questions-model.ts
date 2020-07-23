@@ -22,16 +22,18 @@ export class QuestionsModel {
 
 	async handleAuthLoad(authLoad: loading.Load<AuthPayload<MetalUser>>) {
 		this.#getAuthContext = loading.payload(authLoad)?.getAuthContext
-		const {user} = await this.#getAuthContext()
-
-		// update author for our questions
-		runInAction(() => {
-			for (const question of this.questions) {
-				if (question.author.userId === user.userId) {
-					question.author = user
+		if (this.#getAuthContext) {
+			const {user} = await this.#getAuthContext()
+	
+			// update author for our questions
+			runInAction(() => {
+				for (const question of this.questions) {
+					if (question.author.userId === user.userId) {
+						question.author = user
+					}
 				}
-			}
-		})
+			})
+		}
 	}
 
 	fetchCachedQuestions = (board: string) => this.questions.filter(

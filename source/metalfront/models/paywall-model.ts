@@ -33,8 +33,7 @@ export class PaywallModel {
 
 	 @computed
 	get premium(): boolean {
-		const user = this.auth.user
-		return isPremium(user)
+		return isPremium(this.auth.user)
 	}
 
 	 @computed

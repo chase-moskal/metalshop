@@ -124,8 +124,10 @@ export async function makeMocks({
 		}
 	}, day * 365)
 
-	const authorize: Authorizer<DemoUser> = async(accessToken) =>
-		verifyToken(accessToken)
+	const authorize: Authorizer<DemoUser> = async(accessToken) => {
+		const {user} = await verifyToken<DemoAccessPayload>(accessToken)
+		return user
+	}
 
 	const userPremiumIsValid = (user: DemoUser) => !!user.claims.premiumUntil
 		? Date.now() < user.claims.premiumUntil

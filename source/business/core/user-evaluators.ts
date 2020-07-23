@@ -2,15 +2,15 @@
 import {MetalUser} from "../../types.js"
 
 export function isStaff(user: MetalUser): boolean {
-	return !!user.claims.admin || !!user.claims.staff
+	return user && (!!user.claims.admin || !!user.claims.staff)
 }
 
 export function isPremium(user: MetalUser): boolean {
-	return (isStaff(user) || active(user.claims.premiumUntil))
+	return user && (isStaff(user) || active(user.claims.premiumUntil))
 }
 
 export function isBanned(user: MetalUser): boolean {
-	return active(user.claims.banUntil)
+	return user && active(user.claims.banUntil)
 }
 
 /////////
