@@ -16,7 +16,9 @@ export function randomSequence(length: number, palette: string[]): string {
 export const numbers = [..."0123456789"]
 export const alphahex = [..."abcdef"]
 export const alphabet = [...alphahex, ..."ghijklmnopqrstuvwxyz"]
+export const alphabetupper = alphabet.map(c => c.toUpperCase())
 export const hex = [...numbers, ...alphahex]
 export const alphanumeric = [...numbers, ...alphabet]
+export const casedalphanumeric = [...numbers, ...alphabet, ...alphabetupper]
 
 export const random8 = () => randomSequence(8, hex)
