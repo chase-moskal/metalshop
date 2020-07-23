@@ -9,13 +9,14 @@ export class MetalPersonal extends MetalshopComponent<PersonalShare> {
 
 	render() {
 		const {personal, personalLoad, saveProfile} = this.share
+		const user = personal?.user
 		return html`
 			<iron-loading
 				.load=${personalLoad}
 				class="container formarea coolbuttonarea">
-					<cobalt-avatar .persona=${personal}></cobalt-avatar>
+					<cobalt-avatar .user=${user}></cobalt-avatar>
 					<cobalt-card
-						.persona=${personal}
+						.user=${user}
 						.saveProfile=${saveProfile}
 					></cobalt-card>
 			</iron-loading>

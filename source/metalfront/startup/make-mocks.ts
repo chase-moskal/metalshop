@@ -3,10 +3,10 @@ import {Topic, Method} from "renraku/dist/interfaces.js"
 import {mockSignToken} from "redcrypto/dist/curries/mock-sign-token.js"
 import {mockVerifyToken} from "redcrypto/dist/curries/mock-verify-token.js"
 
-import {random8} from "../../toolbox/random8.js"
 import {DbbyTable} from "../../toolbox/dbby/types.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
+import * as evaluators from "../../business/core/user-evaluators.js"
 import {generateId as defaultGenerateId} from "../../toolbox/generate-id.js"
 
 import {
@@ -60,9 +60,9 @@ export async function makeMocks({
 		logger = console,
 		generateId = defaultGenerateId,
 		googleUserName = "Steve Stephenson",
+		generateNickname = defaultGenerateId,
 		decodeAccessToken = defaultDecodeAccessToken,
 		googleUserAvatar = "https://i.imgur.com/CEqYyCy.jpg",
-		generateNickname = () => `${random8().toUpperCase()}`,
 	}: {
 		logger: Logger
 		startAdmin: boolean
@@ -77,22 +77,22 @@ export async function makeMocks({
 
 	const minute = 1000 * 60
 	const day = minute * 60 * 24
-	const googleId = `mock-google-user-${random8()}`
-	const googleToken = `mock-google-token-${random8()}`
-	const premiumStripePlanId = `mock-premium-stripe-plan-${random8()}`
+	const googleId = generateId()
+	const googleToken = generateId()
+	const premiumStripePlanId = generateId()
 
-	const accountTable: DbbyTable<AccountRow> = dbbyMemory()
 	const claimsTable: DbbyTable<ClaimsRow> = dbbyMemory()
+	const accountTable: DbbyTable<AccountRow> = dbbyMemory()
 	const profileTable: DbbyTable<ProfileRow> = dbbyMemory()
+	const questionTable: DbbyTable<QuestionRow> = dbbyMemory()
+	const liveshowTable: DbbyTable<LiveshowRow> = dbbyMemory()
+	const settingsTable: DbbyTable<SettingsRow> = dbbyMemory()
+	const premiumGiftTable: DbbyTable<PremiumGiftRow> = dbbyMemory()
+	const questionLikeTable: DbbyTable<QuestionLikeRow> = dbbyMemory()
 	const stripeBillingTable: DbbyTable<StripeBillingRow> = dbbyMemory()
 	const stripePremiumTable: DbbyTable<StripePremiumRow> = dbbyMemory()
-	const premiumGiftTable: DbbyTable<PremiumGiftRow> = dbbyMemory()
-	const questionTable: DbbyTable<QuestionRow> = dbbyMemory()
-	const questionLikeTable: DbbyTable<QuestionLikeRow> = dbbyMemory()
-	const questionReportTable: DbbyTable<QuestionReportRow> = dbbyMemory()
-	const liveshowTable: DbbyTable<LiveshowRow> = dbbyMemory()
 	const scheduleEventTable: DbbyTable<ScheduleEventRow> = dbbyMemory()
-	const settingsTable: DbbyTable<SettingsRow> = dbbyMemory()
+	const questionReportTable: DbbyTable<QuestionReportRow> = dbbyMemory()
 
 	const signToken = mockSignToken()
 	const verifyToken = mockVerifyToken()
@@ -107,14 +107,14 @@ export async function makeMocks({
 	const mockAdminAccessToken = await signToken<DemoAccessPayload>({
 		scope: {core: true},
 		user: {
-			userId: "u123",
+			userId: generateId(),
 			claims: {
 				admin: true,
 				staff: true,
 				banUntil: undefined,
 				banReason: undefined,
+				premiumUntil: undefined,
 				joined: Date.now() - (day * 10),
-				premiumUntil: Date.now() + (day * 30)
 			},
 			profile: {
 				avatar: undefined,
@@ -128,14 +128,6 @@ export async function makeMocks({
 		const {user} = await verifyToken<DemoAccessPayload>(accessToken)
 		return user
 	}
-
-	const userPremiumIsValid = (user: DemoUser) => !!user.claims.premiumUntil
-		? Date.now() < user.claims.premiumUntil
-		: false
-
-	const userIsABoss = (user: DemoUser) => false
-		|| !!user.claims.admin
-		|| !!user.claims.staff
 
 	const claimsCardinal = makeClaimsCardinal({claimsTable})
 	const {authAardvark, userUmbrella} = makeCoreSystems({
@@ -168,16 +160,16 @@ export async function makeMocks({
 		questionReportTable,
 		authorize,
 		generateId,
-		userCanPost: userPremiumIsValid,
-		userCanArchiveBoard: userIsABoss,
-		userCanArchiveQuestion: userIsABoss,
+		userCanPost: evaluators.isPremium,
+		userCanArchiveBoard: evaluators.isStaff,
+		userCanArchiveQuestion: evaluators.isStaff,
 	})
 
 	const liveshowLizard = makeLiveshowLizard({
 		liveshowTable,
 		authorize,
-		userCanRead: userPremiumIsValid,
-		userCanWrite: userPremiumIsValid,
+		userCanRead: evaluators.isPremium,
+		userCanWrite: evaluators.isPremium,
 	})
 
 	const {premiumDatalayer, stripeLiaison} = mockStripeCircuit({
@@ -198,7 +190,7 @@ export async function makeMocks({
 	const scheduleSentry = makeScheduleSentry({
 		authorize,
 		scheduleEventTable,
-		userCanChangeSchedule: userIsABoss,
+		userCanChangeSchedule: evaluators.isStaff,
 	})
 
 	const checkoutPopupUrl = "http://metaldev.chasemoskal.com:8003/html/checkout"

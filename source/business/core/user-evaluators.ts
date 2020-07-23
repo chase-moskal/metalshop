@@ -16,5 +16,5 @@ export function isBanned(user: MetalUser): boolean {
 /////////
 
 function active(until: number): boolean {
-	return !!(until && (until - Date.now()) < 0)
+	return !!(until && until > Date.now())
 }

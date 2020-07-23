@@ -35,7 +35,7 @@ export class MetalCountdown extends MetalshopComponent<CountdownShare> {
 
 	render() {
 		const {["event-label"]: label} = this
-		if (!name) return null
+		if (!label) return null
 
 		const {time} = this.share.events.find(e => e.label === label) || {}
 

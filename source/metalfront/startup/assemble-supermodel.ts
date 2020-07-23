@@ -67,10 +67,5 @@ export function assembleSupermodel({
 		// supermodel.seeker.handleAuthLoad(authLoad)
 	})
 
-	// autorun(() => {
-	// 	const {profile} = supermodel.personal
-	// 	supermodel.questions.handleProfileUpdate(profile)
-	// })
-
 	return supermodel
 }

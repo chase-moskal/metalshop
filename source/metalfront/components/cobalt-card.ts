@@ -28,14 +28,13 @@ const styles = css`
 	border-radius: 1em;
 }
 
+[data-tag=staff] {
+	color: var(--cobalt-tagcolor-staff, lime);
+}
+
 [data-tag=banned] {
-	color: red;
+	color: var(--cobalt-tagcolor-banned, red);
 }
-
-[data-label=method-man] {
-	color: lime;
-}
-
 
 .textfield {
 	display: block;
@@ -116,8 +115,8 @@ export class CobaltCard extends MetalshopComponent<void> {
 	private renderClaimsList(user: MetalUser) {
 		const renderTag = (tag: string) => html`<li data-tag=${tag}>${tag}</li>`
 		let items = []
-		if (evaluators.isStaff(user)) items.push(renderTag("staff"))
 		if (evaluators.isBanned(user)) items.push(renderTag("banned"))
+		if (evaluators.isStaff(user)) items.push(renderTag("staff"))
 		if (evaluators.isPremium(user)) items.push(renderTag("premium"))
 		return items.length
 			? html`<ol class="claims">${items}</ol>`
@@ -153,16 +152,17 @@ export class CobaltCard extends MetalshopComponent<void> {
 	render() {
 		const {user, busy} = this
 		if (!user) return null
-		const {profile} = user
+		const {userId, profile, claims} = user
 		const load = busy ? loading.loading() : loading.ready()
+		const joinedDate = formatDate(claims.joined).datestring
 		return html`
 			<iron-loading .load=${load} class="cardplate formarea coolbuttonarea">
 				${this.renderClaimsList(user)}
 				${this.renderTextfield("nickname", profile.nickname)}
 				${this.renderTextfield("tagline", profile.tagline)}
 				<ul class="detail">
-					<li>user id: <span>${profile.userId}</span></li>
-					<li>joined: <span>${formatDate(user.claims.joined)}</span></li>
+					<li>user id: <span>${userId}</span></li>
+					<li>joined: <span>${joinedDate}</span></li>
 				</ul>
 				${this.changedProfile ? html`
 					<div class="buttonbar">
