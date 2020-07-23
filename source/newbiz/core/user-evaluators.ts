@@ -6,17 +6,15 @@ export function isStaff(user: MetalUser): boolean {
 }
 
 export function isPremium(user: MetalUser): boolean {
-	const {premiumUntil} = user.claims
-	return (isStaff(user) || !!(premiumUntil && active(premiumUntil)))
+	return (isStaff(user) || active(user.claims.premiumUntil))
 }
 
 export function isBanned(user: MetalUser): boolean {
-	const {banUntil} = user.claims
-	return !!(banUntil && active(banUntil))
+	return active(user.claims.banUntil)
 }
 
 /////////
 
 function active(until: number): boolean {
-	return (until - Date.now()) < 0
+	return !!(until && (until - Date.now()) < 0)
 }
