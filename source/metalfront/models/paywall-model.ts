@@ -38,8 +38,8 @@ export class PaywallModel {
 
 	async handleAuthLoad(authLoad: loading.Load<AuthPayload<MetalUser>>) {
 		this.setPremiumInfoLoad(loading.loading())
-		if (loading.isReady(authLoad)) {
-			const {getAuthContext} = loading.payload(authLoad)
+		const {getAuthContext} = loading.payload(authLoad) || {}
+		if (getAuthContext) {
 			const {accessToken} = await getAuthContext()
 			try {
 				const info = await this.operations.run(
@@ -48,8 +48,8 @@ export class PaywallModel {
 				this.setPremiumInfoLoad(loading.ready(info))
 			}
 			catch (error) {
-				console.error(error)
 				this.setPremiumInfoLoad(loading.error("unable to load premium info"))
+				console.error(error)
 			}
 		}
 	}

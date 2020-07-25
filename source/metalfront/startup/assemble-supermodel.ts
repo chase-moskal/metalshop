@@ -62,6 +62,7 @@ export function assembleSupermodel({
 	autorun(() => {
 		const {authLoad} = supermodel.auth
 		supermodel.personal.handleAuthLoad(authLoad)
+		supermodel.paywall.handleAuthLoad(authLoad)
 		supermodel.liveshow.handleAuthLoad(authLoad)
 		supermodel.schedule.handleAuthLoad(authLoad)
 		supermodel.questions.handleAuthLoad(authLoad)
