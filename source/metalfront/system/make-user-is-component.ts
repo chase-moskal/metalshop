@@ -9,12 +9,10 @@ export function makeUserIsComponent(
 		userEvaluator: (user: MetalUser) => boolean
 	): ConstructorFor<MetalshopComponent<AccountShare>> {
 	return class MetalIs extends MetalshopComponent<AccountShare> {
-		loaded: boolean
 		active: boolean
 
 		get properties() {
 			return {
-				loaded: {type: Boolean, reflect: true},
 				active: {type: Boolean, reflect: true},
 			}
 		}
@@ -22,7 +20,6 @@ export function makeUserIsComponent(
 		autorun() {
 			const {authLoad} = this.share
 			const authPayload = loading.payload(authLoad)
-			this.loaded = !!authPayload
 			this.active = !!authPayload && userEvaluator(authPayload.user)
 		}
 

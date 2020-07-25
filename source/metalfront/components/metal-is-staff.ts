@@ -1,8 +1,8 @@
 
+import {isStaff} from "../../business/core/user-evaluators.js"
+
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {property, html, css} from "../framework/metalshop-component.js"
-
-import {isStaff} from "../../business/core/user-evaluators.js"
 import {makeUserIsComponent} from "../system/make-user-is-component.js"
 
 const styles = css`
@@ -28,6 +28,9 @@ const styles = css`
 
  @mixinStyles(styles)
 export class MetalIsStaff extends makeUserIsComponent(isStaff) {
+
+	 @property({type: Boolean, reflect: true})
+	active: boolean
 
 	 @property({type: Boolean, reflect: true})
 	fancy: boolean

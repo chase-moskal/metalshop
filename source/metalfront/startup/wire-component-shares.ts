@@ -39,9 +39,10 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 
 		MetalAvatar,
 		MetalAccount: share(MetalAccount, accountShare),
-		MetalIsPremium: share(MetalIsPremium, accountShare),
 		MetalButtonAuth: share(MetalButtonAuth, accountShare),
 		MetalIsLoggedin: share(MetalIsLoggedin, accountShare),
+		MetalIsPremium: share(MetalIsPremium, accountShare),
+		MetalIsStaff: share(MetalIsStaff, accountShare),
 		MetalPersonal: share(MetalPersonal, (): PersonalShare => ({
 			personal: supermodel.personal.personal,
 			personalLoad: supermodel.personal.personalLoad,
@@ -88,9 +89,6 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 			personalLoad: supermodel.personal.personalLoad,
 			setAdminMode: undefined,
 			// setAdminMode: supermodel.personal.setAdminMode,
-		})),
-		MetalIsAdmin: share(MetalIsStaff, (): AdminOnlyShare => ({
-			personalLoad: supermodel.personal.personalLoad,
 		})),
 		MetalQuestions: share(MetalQuestions, (): QuestionsShare => ({
 			user: supermodel.auth.user,

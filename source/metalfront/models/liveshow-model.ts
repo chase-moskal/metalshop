@@ -1,13 +1,15 @@
 
 import {observable, action, runInAction} from "mobx"
 
+import * as evaluators from "../../business/core/user-evaluators.js"
+
 import {pubsub} from "../../toolbox/pubsub.js"
 import * as loading from "../toolbox/loading.js"
 
-import {LiveshowLizardTopic, User, AccessToken} from "../../types.js"
+import {LiveshowLizardTopic, MetalUser, AccessToken} from "../../types.js"
 import {AuthPayload, PrivilegeLevel, GetAuthContext, VideoPayload} from "../types.js"
 
-export type HandleAuthUpdate = (auth: loading.Load<AuthPayload<User>>) => Promise<void>
+export type HandleAuthUpdate = (auth: loading.Load<AuthPayload<MetalUser>>) => Promise<void>
 
 export class LiveshowModel {
 	private liveshowLizard: LiveshowLizardTopic
@@ -24,7 +26,7 @@ export class LiveshowModel {
 
 	authLoadPubsub = pubsub<HandleAuthUpdate>()
 
-	handleAuthLoad(authLoad: loading.Load<AuthPayload<User>>) {
+	handleAuthLoad(authLoad: loading.Load<AuthPayload<MetalUser>>) {
 		this.authLoadPubsub.publish(authLoad)
 	}
 
@@ -71,7 +73,7 @@ export class LiveshowViewModel {
 	//
 
 	private label: string
-	private getAuthContext: GetAuthContext<User>
+	private getAuthContext: GetAuthContext<MetalUser>
 	private liveshowLizard: LiveshowLizardTopic
 
 	constructor(options: {
@@ -86,16 +88,14 @@ export class LiveshowViewModel {
 	//
 
 	 @action.bound
-	ascertainPrivilege(user: User): PrivilegeLevel {
-		return user.claims.admin
+	ascertainPrivilege(user: MetalUser): PrivilegeLevel {
+		return evaluators.isPremium(user)
 			? PrivilegeLevel.Privileged
-			: user.claims.premium
-				? PrivilegeLevel.Privileged
-				: PrivilegeLevel.Unprivileged
+			: PrivilegeLevel.Unprivileged
 	}
 
 	 @action.bound
-	async handleAuthLoad(authLoad: loading.Load<AuthPayload<User>>) {
+	async handleAuthLoad(authLoad: loading.Load<AuthPayload<MetalUser>>) {
 
 		// initialize observables
 		this.videoLoad = loading.none()
