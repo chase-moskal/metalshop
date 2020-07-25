@@ -1,29 +1,26 @@
 
-import {observable, action} from "mobx"
+import {observable, action, computed} from "mobx"
 import * as loading from "../toolbox/loading.js"
 
 import {User, AccessToken, TokenStoreTopic} from "../../types.js"
-import {AuthPayload, TriggerAccountPopup, DecodeAccessToken, AuthContext, GetAuthContext} from "../types.js"
+import {AuthPayload, TriggerAccountPopup, DecodeAccessToken, AuthContext} from "../types.js"
 
 export class AuthModel<U extends User> {
-
-	//
-	// public observables
-	//
-
-	@observable user: U = null
-	@observable getAuthContext: GetAuthContext<U> = null
-	@observable authLoad = loading.load<AuthPayload<U>>()
-
-	//
-	// private state
-	//
-
-	private authContext: AuthContext<U>
 	private expiryGraceSeconds: number
 	private tokenStore: TokenStoreTopic
+	private authContext: AuthContext<U>
 	private decodeAccessToken: DecodeAccessToken<U>
 	private triggerAccountPopup: TriggerAccountPopup
+
+	@observable authLoad = loading.load<AuthPayload<U>>()
+
+	@computed get user() {
+		return loading.payload(this.authLoad)?.user
+	}
+
+	@computed get getAuthContext() {
+		return loading.payload(this.authLoad)?.getAuthContext
+	}
 
 	constructor(options: {
 			expiryGraceSeconds: number
@@ -33,10 +30,6 @@ export class AuthModel<U extends User> {
 		}) {
 		Object.assign(this, options)
 	}
-
-	//
-	// public functions
-	//
 
 	 @action.bound
 	async useExistingLogin() {
@@ -113,45 +106,36 @@ export class AuthModel<U extends User> {
 	 @action.bound
 	private processAccessToken(accessToken: AccessToken): AuthPayload<U> {
 		this.authContext = this.decodeAccessToken(accessToken)
-		this.user = this.authContext?.user
 		const getAuthContext = async() => {
 			const gracedExp = (this.authContext.exp - this.expiryGraceSeconds)
 			const expired = gracedExp < (Date.now() / 1000)
 			if (expired) {
 				const accessToken = await this.tokenStore.passiveCheck()
 				this.authContext = this.decodeAccessToken(accessToken)
-				this.user = this.authContext?.user
 			}
 			return this.authContext
 		}
-		return {getAuthContext, user: this.user}
+		return {getAuthContext, user: this.authContext.user}
 	}
 
 	 @action.bound
 	private setError(error: Error) {
-		this.user = null
-		this.getAuthContext = null
 		this.authLoad = loading.error(undefined)
 		console.error(error)
 	}
 
 	 @action.bound
 	private setLoading() {
-		this.user = null
-		this.getAuthContext = null
 		this.authLoad = loading.loading()
 	}
 
 	 @action.bound
 	private setLoggedIn({user, getAuthContext}: AuthPayload<U>) {
-		this.getAuthContext = getAuthContext
 		this.authLoad = loading.ready({user, getAuthContext})
 	}
 
 	 @action.bound
 	private setLoggedOut() {
-		this.user = null
-		this.getAuthContext = null
 		this.authLoad = loading.ready({user: null, getAuthContext: null})
 	}
 }

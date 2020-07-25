@@ -34,6 +34,13 @@ export const styles = css`
 	opacity: var(--iron-loading-error-opacity, 1);
 }
 
+:host([state=error]) .icon span:nth-of-type(1) {
+	margin-right: 0.5em;
+	border: 1px solid;
+	border-radius: 0.25em;
+	padding: 0.1em 0.25em;
+}
+
 :host([state=loading]) .icon svg {
 	animation:
 		iron-spin 10s linear infinite,

@@ -46,7 +46,8 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 			personal: supermodel.personal.personal,
 			personalLoad: supermodel.personal.personalLoad,
 			saveProfile: supermodel.personal.saveProfile,
-			setAdminMode: supermodel.personal.setAdminMode,
+			setAdminMode: undefined,
+			// setAdminMode: supermodel.personal.setAdminMode,
 			// setAvatarPublicity: supermodel.personal.setAvatarPublicity,
 		})),
 		// MetalSeeker: share(MetalSeeker, (): SeekerShare => ({
@@ -85,7 +86,8 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 		})),
 		MetalAdminMode: share(MetalAdminMode, (): AdminModeShare => ({
 			personalLoad: supermodel.personal.personalLoad,
-			setAdminMode: supermodel.personal.setAdminMode,
+			setAdminMode: undefined,
+			// setAdminMode: supermodel.personal.setAdminMode,
 		})),
 		MetalIsAdmin: share(MetalIsStaff, (): AdminOnlyShare => ({
 			personalLoad: supermodel.personal.personalLoad,

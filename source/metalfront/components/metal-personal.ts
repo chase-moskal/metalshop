@@ -15,10 +15,7 @@ export class MetalPersonal extends MetalshopComponent<PersonalShare> {
 				.load=${personalLoad}
 				class="container formarea coolbuttonarea">
 					<cobalt-avatar .user=${user}></cobalt-avatar>
-					<cobalt-card
-						.user=${user}
-						.saveProfile=${saveProfile}
-					></cobalt-card>
+					<cobalt-card .user=${user} .saveProfile=${saveProfile}></cobalt-card>
 			</iron-loading>
 		`
 	}

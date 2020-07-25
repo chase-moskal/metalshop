@@ -39,6 +39,7 @@ export function assembleSupermodel({
 		logger,
 		userUmbrella,
 		settingsSheriff,
+		reauthorize: () => auth.reauthorize(),
 	})
 
 	const supermodel = {

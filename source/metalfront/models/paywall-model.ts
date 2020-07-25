@@ -5,28 +5,14 @@ import {MetalUser, PremiumPachydermTopic, CardClues, PremiumInfo, TriggerCheckou
 import {AuthModel} from "./auth-model.js"
 import * as loading from "../toolbox/loading.js"
 import {isPremium} from "../../business/core/user-evaluators.js"
-
-function makeOperationsCenter() {
-	let count = 0
-	const never: Promise<never> = new Promise(() => {})
-	return {
-		async run<R>(op: Promise<R>): Promise<R | never> {
-			count += 1
-			const remember = count
-			const result = await op
-			return count === remember
-				? result
-				: never
-		},
-	}
-}
+import {makeOperationsCenter} from "../toolbox/operations-center.js"
 
 export class PaywallModel {
 	private readonly auth: AuthModel<MetalUser>
 	private readonly checkoutPopupUrl: string
+	private readonly operations = makeOperationsCenter()
 	private readonly premiumPachyderm: PremiumPachydermTopic
 	private readonly triggerCheckoutPopup: TriggerCheckoutPopup
-	private readonly operations = makeOperationsCenter()
 
 	 @observable
 	premiumInfoLoad: loading.Load<{cardClues: CardClues}> = loading.loading()

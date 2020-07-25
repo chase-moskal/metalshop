@@ -3,13 +3,13 @@ import {observable, action, computed} from "mobx"
 
 import * as loading from "../toolbox/loading.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
-import {makeTicketbooth} from "../toolbox/ticketbooth.js"
+import {makeOperationsCenter} from "../toolbox/operations-center.js"
 
 import {Personal, GetAuthContext, AuthPayload} from "../types.js"
 import {MetalUser, MetalProfile, MetalSettings, SettingsSheriffTopic, UserUmbrellaTopic} from "../../types.js"
 
 export class PersonalModel {
-	@observable personalLoad = loading.load<Personal>()
+	@observable personalLoad: loading.Load<Personal> = loading.load()
 
 	@computed get personal() {
 		return loading.payload(this.personalLoad)
@@ -23,73 +23,85 @@ export class PersonalModel {
 		return this.personal?.settings
 	}
 
-	private logger: Logger
-	private ticketbooth = makeTicketbooth()
 	private getAuthContext: GetAuthContext<MetalUser>
+
+	private logger: Logger
+	private reauthorize: () => Promise<void>
 	private userUmbrella: UserUmbrellaTopic<MetalUser>
+	private settingsOperations = makeOperationsCenter()
 	private settingsSheriff: SettingsSheriffTopic<MetalSettings>
 
-	constructor({
-			logger,
-			userUmbrella,
-			settingsSheriff,
-		}: {
+	constructor(options: {
 			logger: Logger
+			reauthorize: () => Promise<void>
 			userUmbrella: UserUmbrellaTopic<MetalUser>
 			settingsSheriff: SettingsSheriffTopic<MetalSettings>
 		}) {
-		this.logger = logger
-		this.userUmbrella = userUmbrella
-		this.settingsSheriff = settingsSheriff
+		Object.assign(this, options)
 	}
 
 	 @action.bound
 	async handleAuthLoad(authLoad: loading.Load<AuthPayload<MetalUser>>) {
-		const authPayload = loading.payload(authLoad)
-		const loggedIn = !!authPayload?.user
-		this.getAuthContext = authPayload?.getAuthContext || undefined
+		this.setPersonalLoad(loading.select<AuthPayload<MetalUser>, loading.Load<Personal>>(authLoad, {
+			none: () => loading.none(),
+			loading: () => loading.loading(),
+			error: reason => loading.error(reason),
+			ready: () => loading.loading(),
+		}))
+
+		const {user, getAuthContext} = loading.payload(authLoad) || {}
+		this.getAuthContext = getAuthContext
+		const loggedIn = !!user
 
 		if (loggedIn) {
 			try {
-				this.setPersonalLoad(loading.loading())
-				const {user, accessToken} = await this.getAuthContext()
-				const {userId} = user
-				const sessionStillValid = this.ticketbooth.pullSession()
-				const settings = await this.settingsSheriff.fetchSettings({accessToken})
-				if (sessionStillValid()) {
-					this.setPersonalLoad(loading.ready({user, settings}))
-					this.logger.debug("personal details loaded")
-				}
-				else this.logger.debug("personal details discarded")
+				const {accessToken} = await getAuthContext()
+				const settings = await this.settingsOperations.run(
+					this.settingsSheriff.fetchSettings({accessToken})
+				)
+				this.setPersonalLoad(loading.ready({
+					user,
+					settings,
+				}))
 			}
 			catch (error) {
-				this.setPersonalLoad(loading.error("error loading personal data"))
+				this.setPersonalLoad(loading.error("failed to load settings"))
 				console.error(error)
 			}
 		}
 	}
 
 	 @action.bound
-	async saveProfile(profile: MetalProfile): Promise<void> {
-		if (!this.personal) throw new Error("personal not loaded")
-		const {accessToken} = await this.getAuthContext()
-		const {user, settings} = this.personal
-		const {userId} = user
-		await this.userUmbrella.setProfile({accessToken, profile, userId})
-		this.setPersonalLoad(loading.ready({user, settings}))
+	async saveProfile(draft: MetalProfile): Promise<void> {
+		this.setPersonalLoad(loading.loading())
+		try {
+			const {getAuthContext} = this
+			if (!getAuthContext) throw new Error("not logged in")
+			const {accessToken, user} = await getAuthContext()
+			await this.userUmbrella.setProfile({
+				accessToken,
+				profile: draft,
+				userId: user.userId,
+			})
+			await this.reauthorize()
+		}
+		catch (error) {
+			this.setPersonalLoad(loading.error("failed to save profile"))
+			throw error
+		}
 	}
 
-	 @action.bound
-	async setAdminMode(adminMode: boolean): Promise<void> {
-		if (!this.personal) throw new Error("personal not loaded")
-		const {accessToken} = await this.getAuthContext()
-		const settings = await this.settingsSheriff.setActAsAdmin({
-			accessToken,
-			actAsAdmin: adminMode,
-		})
-		const {user} = this.personal
-		this.setPersonalLoad(loading.ready({user, settings}))
-	}
+	//  @action.bound
+	// async setAdminMode(adminMode: boolean): Promise<void> {
+	// 	if (!this.personal) throw new Error("personal not loaded")
+	// 	const {accessToken} = await this.getAuthContext()
+	// 	const settings = await this.settingsSheriff.setActAsAdmin({
+	// 		accessToken,
+	// 		actAsAdmin: adminMode,
+	// 	})
+	// 	const {user} = this.personal
+	// 	this.setPersonalLoad(loading.ready({user, settings}))
+	// }
 
 	// TODO implement avatar publicity
 

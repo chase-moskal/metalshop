@@ -73,7 +73,7 @@ export function ready<Payload>(payload?: Payload): LoadReady<Payload> {
 export function payload<Payload>(load: Load<Payload>) {
 	return (load.state == LoadState.Ready)
 		? load.payload
-		: null
+		: undefined
 }
 
 export const isNone = (load: Load<any>) => load.state === LoadState.None
