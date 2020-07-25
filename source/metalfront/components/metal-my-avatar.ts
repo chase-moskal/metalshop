@@ -18,9 +18,9 @@ import {MetalshopComponent, html, css} from "../framework/metalshop-component.js
 export class MetalMyAvatar extends MetalshopComponent<MyAvatarShare> {
 	render() {
 		const {personalLoad} = this.share
-		const personal = loading.payload(personalLoad)
+		const {user} = loading.payload(personalLoad) || {}
 		return html`
-			<cobalt-avatar .persona=${personal}></cobalt-avatar>
+			<cobalt-avatar .user=${user}></cobalt-avatar>
 		`
 	}
 }
