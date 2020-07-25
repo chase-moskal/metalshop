@@ -21,14 +21,14 @@
 	},
 	"devDependencies": {
 		"@types/gapi.auth2": "0.0.52",
-		"@types/js-yaml": "^3.12.4",
+		"@types/js-yaml": "^3.12.5",
 		"@types/koa": "^2.11.3",
 		"@types/koa-bodyparser": "^4.3.0",
 		"@types/koa-mount": "^4.0.0",
 		"@types/koa-static": "^4.0.1",
 		"@types/koa__cors": "^3.0.1",
-		"@types/mongodb": "^3.5.23",
-		"@types/node": "^14.0.13",
+		"@types/mongodb": "^3.5.25",
+		"@types/node": "^14.0.26",
 		"@types/pug": "^2.0.4",
 		"cynic": "0.1.0-dev.9",
 		"feather-icons": "^4.28.0",
@@ -38,16 +38,16 @@
 		"octicons": "^8.5.0",
 		"rimraf": "^3.0.2",
 		"serve": "^11.3.2",
-		"typescript": "^4.0.0-beta"
+		"typescript": "^3.9.7"
 	},
 	"dependencies": {
 		"@adobe/lit-mobx": "0.0.4",
 		"@koa/cors": "^3.1.0",
-		"@stripe/stripe-js": "^1.7.0",
+		"@stripe/stripe-js": "^1.8.0",
 		"chalk": "^4.1.0",
 		"commotion": "^0.1.0-dev.0",
 		"crosscall": "0.0.6-dev.19",
-		"google-auth-library": "^6.0.2",
+		"google-auth-library": "^6.0.5",
 		"js-yaml": "^3.14.0",
 		"koa": "^2.13.0",
 		"koa-bodyparser": "^4.3.0",
@@ -63,8 +63,8 @@
 		"pug": "^3.0.0",
 		"redcrypto": "0.0.0-dev.5",
 		"renraku": "0.0.0-dev.30",
-		"stripe": "^8.64.0",
-		"unique-names-generator": "^4.2.0"
+		"stripe": "^8.79.0",
+		"unique-names-generator": "^4.3.0"
 	},
 	"keywords": [
 		"auth",
