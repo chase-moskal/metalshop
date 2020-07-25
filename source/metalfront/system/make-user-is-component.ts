@@ -1,6 +1,6 @@
 
 import * as loading from "../toolbox/loading.js"
-import {MetalshopComponent, html} from "../framework/metalshop-component.js"
+import {MetalshopComponent, html, property} from "../framework/metalshop-component.js"
 
 import {MetalUser} from "../../types.js"
 import {AccountShare, ConstructorFor} from "../types.js"
@@ -8,14 +8,9 @@ import {AccountShare, ConstructorFor} from "../types.js"
 export function makeUserIsComponent(
 		userEvaluator: (user: MetalUser) => boolean
 	): ConstructorFor<MetalshopComponent<AccountShare>> {
-	return class MetalIs extends MetalshopComponent<AccountShare> {
-		active: boolean
 
-		get properties() {
-			return {
-				active: {type: Boolean, reflect: true},
-			}
-		}
+	class MetalIs extends MetalshopComponent<AccountShare> {
+		@property({type: Boolean, reflect: true}) active: boolean
 
 		autorun() {
 			const {authLoad} = this.share
@@ -41,4 +36,6 @@ export function makeUserIsComponent(
 			`
 		}
 	}
+
+	return MetalIs
 }

@@ -2,7 +2,7 @@
 import {isStaff} from "../../business/core/user-evaluators.js"
 
 import {mixinStyles} from "../framework/mixin-styles.js"
-import {property, html, css} from "../framework/metalshop-component.js"
+import {property, html, css, LitElement} from "../framework/metalshop-component.js"
 import {makeUserIsComponent} from "../system/make-user-is-component.js"
 
 const styles = css`
@@ -26,14 +26,14 @@ const styles = css`
 
 `
 
- @mixinStyles(styles)
-export class MetalIsStaff extends makeUserIsComponent(isStaff) {
+const SuperComponent: typeof LitElement = <any>makeUserIsComponent(isStaff)
 
-	 @property({type: Boolean, reflect: true})
-	active: boolean
+ @mixinStyles(styles)
+export class MetalIsStaff extends SuperComponent {
 
 	 @property({type: Boolean, reflect: true})
 	fancy: boolean
+
 
 	renderHeader() {
 		return this.fancy
@@ -41,50 +41,3 @@ export class MetalIsStaff extends makeUserIsComponent(isStaff) {
 			: null
 	}
 }
-
-//  @mixinStyles(styles)
-// export class MetalIsStaff extends MetalshopComponent<AdminOnlyShare> {
-
-// 	 @property({type: Boolean, reflect: true})
-// 	["fancy"]: boolean
-
-// 	 @property({type: Boolean, reflect: true})
-// 	["admin"]: boolean = false
-
-// 	 @property({type: Boolean, reflect: true})
-// 	["not-admin"]: boolean = true
-
-// 	async autorun() {
-// 		const {personalLoad} = this.share
-// 		const personal = loading.payload(personalLoad)
-// 		const admin = (
-// 			(personal
-// 				&& personal.user.claims.admin
-// 				&& personal.settings.actAsAdmin)
-// 					? true
-// 					: false
-// 		)
-// 		this["admin"] = admin
-// 		this["not-admin"] = !admin
-// 		this.requestUpdate()
-// 	}
-
-// 	render() {
-// 		const {personalLoad} = this.share
-// 		const header = this["fancy"]
-// 			? html`<p class="header"><strong>Admin-only controls</strong></p>`
-// 			: null
-// 		return html`
-// 			<iron-loading .load=${personalLoad}>
-// 				${this["admin"]
-// 					? html`
-// 						${header}
-// 						<slot></slot>
-// 					`
-// 					: html`
-// 						<slot name="not"></slot>
-// 					`}
-// 			</iron-loading>
-// 		`
-// 	}
-// }
