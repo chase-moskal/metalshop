@@ -4,7 +4,7 @@ import {Stripe} from "../../commonjs/stripe.js"
 import {concurrent} from "../../toolbox/concurrent.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 
-import {ClaimsCardinalTopic, StripeLiaison, StripeWebhooks, PremiumDatalayer, SetupMetadata, MetalUser} from "../../types.js"
+import {ClaimsCardinalTopic, UserUmbrellaTopic, StripeLiaison, StripeWebhooks, PremiumDatalayer, SetupMetadata, MetalUser} from "../../types.js"
 
 export class StripeWebhookError extends Error {
 	name = this.constructor.name
@@ -12,8 +12,17 @@ export class StripeWebhookError extends Error {
 
 const err = (message: string) => new StripeWebhookError(message)
 
+function biggest(...args: number[]) {
+	let x = 0
+	for (const y of args) {
+		if (y > x) x = y
+	}
+	return x
+}
+
 export function makeStripeWebhooks({
 		logger,
+		userUmbrella,
 		stripeLiaison,
 		claimsCardinal,
 		premiumDatalayer,
@@ -21,20 +30,45 @@ export function makeStripeWebhooks({
 		logger: Logger
 		stripeLiaison: StripeLiaison
 		premiumDatalayer: PremiumDatalayer
+		userUmbrella: UserUmbrellaTopic<MetalUser>
 		claimsCardinal: ClaimsCardinalTopic<MetalUser>
 	}): StripeWebhooks {
 
-	function evaluateSubscription(subscription: Stripe.Subscription) {
+	async function evaluatePremium({
+			userId,
+			subscriptionEnd,
+			subscriptionStatus,
+		}: {
+			userId: string
+			subscriptionEnd: number
+			subscriptionStatus: Stripe.Subscription.Status
+		}) {
+
+		const [user, gift] = await Promise.all([
+			userUmbrella.getUser({userId}),
+			premiumDatalayer.getPremiumGiftRow(userId),
+		])
+
+		const giftUntil = gift?.until || 0
+		const previousPremiumUntil = user.claims.premiumUntil || 0
+
 		const active = false
-			|| subscription.status === "active"
-			|| subscription.status === "trialing"
-			|| subscription.status === "past_due"
-		return {
-			active,
-			stripeSubscriptionId: subscription.id,
-			premiumUntil: active ? subscription.current_period_end : undefined,
-			stripePaymentMethodId: getStripeId(subscription.default_payment_method),
-		}
+			|| subscriptionStatus === "active"
+			|| subscriptionStatus === "trialing"
+			|| subscriptionStatus === "past_due"
+
+		const subscriptionUntil = active
+			? subscriptionEnd || 0
+			: 0
+
+		// select the most generous premium timeframe
+		const premiumUntil = biggest(
+			giftUntil,
+			subscriptionUntil,
+			previousPremiumUntil,
+		)
+
+		return {active, premiumUntil}
 	}
 
 	/**
@@ -45,15 +79,18 @@ export function makeStripeWebhooks({
 			session: Stripe.Checkout.Session
 		}) {
 		const stripeSubscriptionId = getStripeId(session.subscription)
-		const details = await concurrent({
+		const {subscription, payment} = await concurrent({
 			subscription: stripeLiaison.fetchSubscriptionDetails(stripeSubscriptionId),
 			payment: stripeLiaison.fetchPaymentDetailsBySubscriptionId(stripeSubscriptionId),
 		})
-		const {card} = details.payment
-		const {expires} = details.subscription
-		const premiumUntil = details.subscription.status === "active"
-			? expires
-			: undefined
+		const {card} = payment
+
+		const {premiumUntil} = await evaluatePremium({
+			userId,
+			subscriptionStatus: subscription.status,
+			subscriptionEnd: subscription.current_period_end,
+		})
+
 		await Promise.all([
 			premiumDatalayer.upsertStripePremiumRow(userId, {
 				...card,
@@ -76,8 +113,7 @@ export function makeStripeWebhooks({
 		}) {
 		const {stripeSubscriptionId} = await premiumDatalayer.getStripePremiumRow(userId)
 		const stripeIntentId = getStripeId(session.setup_intent)
-		const {card, stripePaymentMethodId} = await stripeLiaison
-			.fetchPaymentDetailsByIntentId(stripeIntentId)
+		const {card, stripePaymentMethodId} = await stripeLiaison.fetchPaymentDetailsByIntentId(stripeIntentId)
 		await stripeLiaison.updateSubscriptionPaymentMethod({
 			stripePaymentMethodId,
 			stripeSubscriptionId,
@@ -96,10 +132,12 @@ export function makeStripeWebhooks({
 			stripeCustomerId: string
 			subscription: Stripe.Subscription
 		}) {
-
-		const {userId} = await premiumDatalayer
-			.getStripeBillingRowByStripeCustomerId(stripeCustomerId)
-		const {premiumUntil, active} = evaluateSubscription(subscription)
+		const {userId} = await premiumDatalayer.getStripeBillingRowByStripeCustomerId(stripeCustomerId)
+		const {active, premiumUntil} = await evaluatePremium({
+			userId,
+			subscriptionStatus: subscription.status,
+			subscriptionEnd: subscription.current_period_end,
+		})
 		await claimsCardinal.writeClaims({userId, claims: {premiumUntil}})
 		if (!active) await premiumDatalayer.deleteStripePremiumRow(userId)
 	}

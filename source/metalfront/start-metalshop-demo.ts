@@ -16,7 +16,7 @@ function modifyMetalConfigBasedOnQueryParams() {
 			setTimeout(() =>{
 				document.querySelector<any>(
 					"menu-system > menu-display:nth-child(1)"
-				)?.toggle()
+				).toggle()
 			}, 0)
 		}
 	}

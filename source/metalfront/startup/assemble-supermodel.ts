@@ -8,7 +8,7 @@ import {PaywallModel} from "../models/paywall-model.js"
 import {LiveshowModel} from "../models/liveshow-model.js"
 import {ScheduleModel} from "../models/schedule-model.js"
 import {PersonalModel} from "../models/personal-model.js"
-import {SettingsModel} from "../models/settings-model.js"
+// import {SettingsModel} from "../models/settings-model.js"
 import {QuestionsModel} from "../models/questions-model.js"
 // import {ProfileModel} from "../models/profile-model.js"
 

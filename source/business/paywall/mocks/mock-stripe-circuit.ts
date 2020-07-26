@@ -1,5 +1,5 @@
 
-import {MetalUser, StripeWebhooks, PremiumGiftRow, StripeBillingRow, StripePremiumRow, ClaimsCardinalTopic} from "../../../types.js"
+import {MetalUser, StripeWebhooks, PremiumGiftRow, StripeBillingRow, StripePremiumRow, ClaimsCardinalTopic, UserUmbrellaTopic} from "../../../types.js"
 
 import {DbbyTable} from "../../../toolbox/dbby/types.js"
 import {pubsubs, pubsub} from "../../../toolbox/pubsub.js"
@@ -21,12 +21,14 @@ import {mockStripeLiaison} from "./mock-stripe-liaison.js"
  */
 export function mockStripeCircuit({
 		logger,
+		userUmbrella,
 		claimsCardinal,
 		premiumGiftTable,
 		stripeBillingTable,
 		stripePremiumTable,
 	}: {
 		logger: Logger
+		userUmbrella: UserUmbrellaTopic<MetalUser>
 		premiumGiftTable: DbbyTable<PremiumGiftRow>
 		stripeBillingTable: DbbyTable<StripeBillingRow>
 		stripePremiumTable: DbbyTable<StripePremiumRow>
@@ -54,6 +56,7 @@ export function mockStripeCircuit({
 	// now create the a genuine webhooks instance which uses mocks
 	const webhooks = makeStripeWebhooks({
 		logger,
+		userUmbrella,
 		stripeLiaison,
 		claimsCardinal,
 		premiumDatalayer,

@@ -33,6 +33,8 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 		options = await makeMetalMocks({
 			logger: options.logger,
 			startAdmin: config.mock?.includes("admin"),
+			startStaff: config.mock?.includes("staff"),
+			startBanned: config.mock?.includes("banned"),
 			startPremium: config.mock?.includes("premium"),
 			startLoggedIn: config.mock?.includes("loggedin"),
 		})

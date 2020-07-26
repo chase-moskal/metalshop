@@ -15,7 +15,7 @@ export interface PaymentDetails {
 
 export interface SubscriptionDetails {
 	status: Stripe.Subscription.Status
-	expires: number
+	current_period_end: number
 }
 
 export interface MinimalCard extends Partial<Stripe.PaymentMethod.Card> {
@@ -57,10 +57,7 @@ export interface StripeLiaison {
 	scheduleSubscriptionCancellation(options: {
 			stripeSubscriptionId: string
 		}): Promise<void>
-	fetchSubscriptionDetails(stripeSubscriptionId: string): Promise<{
-			expires: number
-			status: Stripe.Subscription.Status
-		}>
+	fetchSubscriptionDetails(stripeSubscriptionId: string): Promise<SubscriptionDetails>
 	fetchPaymentDetails(stripePaymentMethodId: string):
 		Promise<PaymentDetails>
 	fetchPaymentDetailsByIntentId(stripeIntentId: string):

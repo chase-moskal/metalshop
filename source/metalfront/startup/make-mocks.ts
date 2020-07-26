@@ -55,6 +55,8 @@ export type DemoAccessPayload = AccessPayload<DemoScope, DemoUser>
 
 export async function makeMocks({
 		startAdmin,
+		startStaff,
+		startBanned,
 		startPremium,
 		startLoggedIn,
 		logger = console,
@@ -66,6 +68,8 @@ export async function makeMocks({
 	}: {
 		logger: Logger
 		startAdmin: boolean
+		startStaff: boolean
+		startBanned: boolean
 		startPremium: boolean
 		startLoggedIn: boolean
 		googleUserName?: string
@@ -174,6 +178,7 @@ export async function makeMocks({
 
 	const {premiumDatalayer, stripeLiaison} = mockStripeCircuit({
 		logger,
+		userUmbrella,
 		claimsCardinal,
 		premiumGiftTable,
 		stripeBillingTable,
@@ -221,22 +226,26 @@ export async function makeMocks({
 
 	await tokenStore.clearTokens()
 
-	if (startLoggedIn || startAdmin || startPremium) {
+	if (startLoggedIn || startAdmin || startStaff || startPremium || startBanned) {
 		const authTokens = await authAardvark.authenticateViaGoogle({googleToken})
+		const {accessToken, refreshToken} = authTokens
+		const {user} = await verifyToken<AccessPayload>(accessToken)
+		const {userId, claims} = user
 
-		if (startAdmin) {
-			const {user} = await verifyToken<AccessPayload>(authTokens.accessToken)
-			const {userId, claims} = user
-			claims.admin = true
-			await claimsCardinal.writeClaims({userId, claims})
+		if (startAdmin) claims.admin = true
+		if (startStaff) claims.staff = true
+		if (startBanned) {
+			claims.banUntil = Date.now() + (day * 7)
+			claims.banReason = "unruly behavior"
 		}
-
 		if (startPremium) {
 			await premiumPachyderm.checkoutPremium({
+				accessToken,
 				popupUrl: checkoutPopupUrl,
-				accessToken: authTokens.accessToken,
 			})
 		}
+
+		await claimsCardinal.writeClaims({userId, claims})
 
 		if (startLoggedIn) {
 			const {refreshToken} = authTokens

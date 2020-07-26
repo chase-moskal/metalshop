@@ -25,11 +25,10 @@ export const toPaymentDetails = ({id, card}: {
 	},
 })
 
-export const toSubscriptionDetails = (subscription: {
-		current_period_end: number
-		status: Stripe.Subscription.Status
-	}): SubscriptionDetails => ({
+export const toSubscriptionDetails = (
+		subscription: Partial<Stripe.Subscription>
+	): SubscriptionDetails => ({
 
 	status: subscription.status,
-	expires: subscription.current_period_end,
+	current_period_end: subscription.current_period_end,
 })
