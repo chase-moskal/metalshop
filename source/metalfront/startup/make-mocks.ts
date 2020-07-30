@@ -6,7 +6,6 @@ import {mockVerifyToken} from "redcrypto/dist/curries/mock-verify-token.js"
 import {DbbyTable} from "../../toolbox/dbby/types.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
-import * as evaluators from "../../business/core/user-evaluators.js"
 import {generateId as defaultGenerateId} from "../../toolbox/generate-id.js"
 
 import {
@@ -30,6 +29,7 @@ import {
 
 import {makeTokenStore} from "../../business/core/token-store.js"
 import {makeCoreSystems} from "../../business/core/core-systems.js"
+import * as evaluators from "../../business/core/user-evaluators.js"
 import {mockStorage} from "../../business/core/mocks/mock-storage.js"
 import {makeClaimsCardinal} from "../../business/core/claims-cardinal.js"
 import {makeLiveshowLizard} from "../../business/liveshow/liveshow-lizard.js"
