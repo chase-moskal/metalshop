@@ -16,7 +16,6 @@ export class MetalButtonPremium extends MetalshopComponent<ButtonPremiumShare> {
 	}
 
 	render() {
-		const {personalLoad, premium} = this.share
 		return html`
 			<metal-is-premium class=coolbuttonarea>
 				<div slot=not>
