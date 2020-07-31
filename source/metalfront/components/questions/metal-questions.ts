@@ -1,37 +1,38 @@
 
-import * as loading from "../toolbox/loading.js"
-import {sortQuestions} from "./questions/helpers.js"
-import {mixinStyles} from "../framework/mixin-styles.js"
-import {styles} from "./styles/metal-questions-styles.js"
-import {renderQuestion} from "./questions/render-question.js"
-import {isPremium} from "../../business/core/user-evaluators.js"
-import {renderQuestionEditor} from "./questions/render-question-editor.js"
-import {MetalshopComponent, property, html, PropertyValues} from "../framework/metalshop-component.js"
+import {QuestionDraft, MetalUser} from "../../../types.js"
+import {QuestionsShare, PrepareHandleLikeClick} from "../../types.js"
 
-import {QuestionDraft, MetalUser} from "../../types.js"
-import {QuestionsShare, PrepareHandleLikeClick} from "../types.js"
+import * as loading from "../../toolbox/loading.js"
+import {styles} from "../styles/metal-questions-styles.js"
+import {mixinStyles} from "../../framework/mixin-styles.js"
+import {isPremium} from "../../../business/core/user-evaluators.js"
+import {MetalshopComponent, property, html, PropertyValues} from "../../framework/metalshop-component.js"
+
+import {sortQuestions} from "./helpers.js"
+import {renderQuestion} from "./render-question.js"
+import {renderQuestionEditor} from "./render-question-editor.js"
 
  @mixinStyles(styles)
 export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 	private lastBoard: string = null
 
-	@property({type: String, reflect: true})
-		["board"]: string
+	 @property({type: String, reflect: true})
+	["board"]: string
 
-	@property({type: String})
-		draftText: string = ""
+	 @property({type: String})
+	draftText: string = ""
 
-	@property({type: Boolean})
-		adminMode: boolean = false
+	 @property({type: Boolean})
+	adminMode: boolean = false
 
-	@property({type: Number})
-		minCharacterLimit: number = 10
+	 @property({type: Number})
+	minCharacterLimit: number = 10
 
-	@property({type: Number})
-		maxCharacterLimit: number = 240
+	 @property({type: Number})
+	maxCharacterLimit: number = 240
 
-	@property({type: Object})
-		private load: loading.Load<null>
+	 @property({type: Object})
+	private load: loading.Load<null>
 
 	firstUpdated(props) {
 		super.firstUpdated(props)
