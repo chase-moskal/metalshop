@@ -47,10 +47,9 @@ export function renderQuestion({
 		 ?data-mine=${mine}
 		 data-question-id=${question.questionId}>
 			${renderAuthor({
-				likes,
-				liked,
 				author,
 				timePosted,
+				likeInfo: {likes, liked},
 				handleLikeClick,
 				handleUnlikeClick,
 				placeholderNickname: "Unknown",

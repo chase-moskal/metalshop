@@ -127,7 +127,6 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 
 	private getQuestionDraft(): QuestionDraft {
 		const {board, draftText: content} = this
-		const time = Date.now()
 		const valid = !!content
 		return valid
 			? {board, content}

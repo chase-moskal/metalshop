@@ -5,21 +5,22 @@ import {MetalUser} from "../../../types.js"
 import {isPremium} from "../../../business/core/user-evaluators.js"
 
 export function renderAuthor({
-		likes,
-		liked,
 		author,
+		likeInfo,
 		timePosted,
 		handleLikeClick,
 		handleUnlikeClick,
 		placeholderNickname = "You"
 	}: {
-		likes: number
-		liked: boolean
 		timePosted: number
+		likeInfo: undefined | {
+			likes: number
+			liked: boolean
+		}
 		handleLikeClick: (event: MouseEvent) => void
 		handleUnlikeClick: (event: MouseEvent) => void
-		placeholderNickname?: string
 		author?: MetalUser
+		placeholderNickname?: string
 	}) {
 
 	const date = new Date(timePosted)
@@ -30,29 +31,31 @@ export function renderAuthor({
 	const premium = isPremium(author)
 	const avatar = author?.profile?.avatar || null
 	const nickname = author?.profile?.nickname || placeholderNickname
+	const tagline = author?.profile?.tagline || ""
 
 	return html`
 		<div class="author">
-			<metal-avatar .src=${avatar} ?premium=${premium}></metal-avatar>
-			<div class="card">
-				<p class="nickname">${nickname}</p>
-				<div class="details">
-					<p class="time" title=${`${datestring} ${timestring}`}>
-						${datestring}
-					</p>
+			<cobalt-avatar .user=${author} rounded></cobalt-avatar>
+			<div class="details">
+				<p class="time" title=${`${datestring} ${timestring}`}>
+					${datestring}
+				</p>
+				<cobalt-card .user=${author}></cobalt-card>
+				${likeInfo ? html`
 					<button
 						class="likebutton"
-						@click=${liked ? handleUnlikeClick : handleLikeClick}
-						?data-liked=${liked}
-						title="${liked ? "Unlike" : "Like"} question by ${nickname}">
+						?data-liked=${likeInfo.liked}
+						@click=${likeInfo.liked ? handleUnlikeClick : handleLikeClick}
+						title="${likeInfo.liked ? "Unlike" : "Like"} question by ${nickname}"
+						>
 							<span class="like-heart">
 								${heart}
 							</span>
 							<span class="like-number">
-								${likes}
+								${likeInfo.likes}
 							</span>
 					</button>
-				</div>
+				` : null}
 			</div>
 		</div>
 	`

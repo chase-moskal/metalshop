@@ -14,10 +14,17 @@ import {MetalUser, MetalProfile} from "../../types.js"
 
 const styles = css`
 
+.cardplate > * {
+	display: block;
+}
+
+.cardplate > * + * {
+	margin-top: 0.4em;
+}
+
 .claims {
 	list-style: none;
 	font-size: 0.6em;
-	margin-bottom: 0.25rem;
 }
 
 .claims > li {
@@ -39,7 +46,10 @@ const styles = css`
 .textfield {
 	display: block;
 	width: 100%;
-	max-width: 18em;
+}
+
+iron-text-input {
+	display: block;
 }
 
 .tagline {
@@ -51,19 +61,10 @@ const styles = css`
 	content: '"';
 }
 
-.cardplate > * {
-	display: block;
-}
-
-.cardplate > iron-text-input + iron-text-input {
-	margin-top: 0.2rem;
-}
-
 .detail {
 	opacity: 0.75;
 	font-size: 0.7em;
 	list-style: none;
-	margin-top: 0.5rem;
 }
 
 .buttonbar {
@@ -125,6 +126,7 @@ export class CobaltCard extends MetalshopComponent<void> {
 
 	private renderTextfield(name: string, value: string) {
 		const readonly = !this.saveProfile
+		if (readonly && !value) return null
 		return html`
 			<iron-text-input
 				class=${name}
@@ -157,9 +159,11 @@ export class CobaltCard extends MetalshopComponent<void> {
 		const joinedDate = formatDate(claims.joined).datestring
 		return html`
 			<iron-loading .load=${load} class="cardplate formarea coolbuttonarea">
+				<div class=textfields>
+					${this.renderTextfield("nickname", profile.nickname)}
+					${this.renderTextfield("tagline", profile.tagline)}
+				</div>
 				${this.renderClaimsList(user)}
-				${this.renderTextfield("nickname", profile.nickname)}
-				${this.renderTextfield("tagline", profile.tagline)}
 				<ul class="detail">
 					<li>user id: <span>${userId}</span></li>
 					<li>joined: <span>${joinedDate}</span></li>

@@ -60,45 +60,22 @@ slot[name=rate] {
 }
 
 .author {
-	font-size: 0.8em;
+	font-size: 1em;
 	display: flex;
 	flex-direction: row;
-	width: 32%;
-	min-width: 16em;
-	text-align: center;
-	margin-top: 1.2em;
-	color: var(--question-author-color, inherit);
 }
 
-.author .card {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	flex: 1 1 auto;
-	padding-left: 0.5em;
-}
-
-.author metal-avatar {
-	flex: 0 0 auto;
-	--avatar-size: var(--question-avatar-size, 5em);
-	border-radius: var(--question-avatar-border-radius, unset);
+cobalt-avatar {
+	--cobalt-avatar-size: 4em;
 }
 
 .author .details {
-	margin-top: 0.25em;
-}
-
-.author .nickname {
-	text-align: left;
-	font-weight: bold;
+	padding-left: 0.5em;
 }
 
 .author .time {
 	opacity: 0.5;
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: center;
+	font-size: 0.75em;
 }
 
 .likebutton {
@@ -252,13 +229,12 @@ textarea.content[data-expand] {
 	background: var(--question-postbutton-background, #00bb3a);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
 	.question {
 		flex-direction: column;
 	}
 	.author {
 		width: unset;
-		min-width: unset;
 		margin-bottom: 0.5em;
 	}
 	.body::before {

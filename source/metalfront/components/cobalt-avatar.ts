@@ -15,9 +15,6 @@ const styles = css`
 
 .container {
 	position: relative;
-}
-
-.avatar {
 	width: var(--cobalt-avatar-size, 6em);
 	height: var(--cobalt-avatar-size, 6em);
 }
@@ -27,7 +24,13 @@ const styles = css`
 	border-radius: var(--cobalt-avatar-size, 6em);
 }
 
-img, svg {
+[data-is-premium] .avatar {
+	border: 3px solid yellow;
+}
+
+.avatar,
+.avatar img,
+.avatar svg {
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -55,6 +58,8 @@ img, svg {
 	position: absolute;
 	width: 100%;
 	height: 100%;
+	top: 0;
+	left: 0;
 }
 
 `
@@ -71,8 +76,10 @@ export class CobaltAvatar extends MetalshopComponent<void> {
 	render() {
 		const {user, fallbackAvatar} = this
 		const avatar = user?.profile.avatar
+		const premium = evaluators.isPremium(user)
+
 		return html`
-			<div class=container>
+			<div class=container ?data-is-premium=${premium}>
 				<div class=avatar>
 					${avatar
 						? html`<img src=${avatar} alt="[avatar]"/>`

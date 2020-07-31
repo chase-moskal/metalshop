@@ -13,7 +13,6 @@ const styles = css`
 label {
 	display: inline-flex;
 	flex-direction: column;
-	width: min-content;
 }
 
 slot {
@@ -26,10 +25,11 @@ slot {
 
 input {
 	font: inherit;
+	width: 100%;
+	border: none;
 	color: inherit;
 	border-radius: 3px;
 	background: transparent;
-	border: none;
 }
 
 input:not([readonly]) {

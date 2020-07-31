@@ -45,8 +45,7 @@ export function renderQuestionEditor({
 		<div class="question editor">
 			${renderAuthor({
 				author,
-				likes: 0,
-				liked: false,
+				likeInfo: undefined,
 				timePosted: Date.now(),
 				handleLikeClick: () => {},
 				handleUnlikeClick: () => {},
