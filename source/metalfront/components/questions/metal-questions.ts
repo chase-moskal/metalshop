@@ -66,9 +66,13 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 		return html`
 			<iron-loading .load=${load}>
 
-				<metal-is-staff fancy class="coolbuttonarea">
-					<button @click=${handlePurgeClick}>Purge all questions</button>
-				</metal-is-staff>
+				${questions.length > 0
+					? html`
+						<metal-is-staff fancy class="coolbuttonarea">
+							<button @click=${handlePurgeClick}>Purge all questions</button>
+						</metal-is-staff>
+					`
+					: null}
 
 				<div class="posting-area">
 					<slot name="post">
