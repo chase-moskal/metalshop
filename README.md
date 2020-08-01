@@ -54,7 +54,6 @@ my focus is launching my own apps and working on metalshop's fundamentals, so do
 &nbsp; &nbsp; liveshow-server — *privileged access to a video livestream*  
 
 **🛠️ metalshop-related libraries and tools**  
-&nbsp; &nbsp; [authoritarian](https://github.com/chase-moskal/authoritarian) — *metalshop common interfaces*  
 &nbsp; &nbsp; [renraku](https://github.com/chase-moskal/renraku) — *json-rpc api*  
 &nbsp; &nbsp; [cynic](https://github.com/chase-moskal/renraku) — *async esmodule testing framework*  
 &nbsp; &nbsp; [redcrypto](https://github.com/chase-moskal/redcrypto) — *token crypto*  

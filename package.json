@@ -1,6 +1,6 @@
 {
 	"name": "metalshop",
-	"version": "0.0.0-dev.54",
+	"version": "0.0.0-dev.55",
 	"description": "web app modules",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
@@ -73,10 +73,10 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/chase-moskal/authoritarian.git"
+		"url": "git+https://github.com/chase-moskal/metalshop.git"
 	},
 	"bugs": {
-		"url": "https://github.com/chase-moskal/authoritarian/issues"
+		"url": "https://github.com/chase-moskal/metalshop/issues"
 	},
-	"homepage": "https://github.com/chase-moskal/authoritarian#readme"
+	"homepage": "https://github.com/chase-moskal/metalshop#readme"
 }
