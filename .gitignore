@@ -3,4 +3,4 @@
 /*.pem
 /coverage
 /node_modules
-/authoritarian-*.tgz
+/*.tgz
