@@ -71,6 +71,7 @@ cobalt-avatar {
 
 .author .details {
 	padding: 0.5em;
+	padding-top: 0;
 }
 
 .author .time {
