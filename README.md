@@ -18,7 +18,7 @@ my focus is launching my own apps and working on metalshop's fundamentals, so do
 &nbsp; &nbsp; 🎉 community-building features: questions board and more  
 
 **📦 npm package: `metalshop`**  
-&nbsp; &nbsp; 🕹 live demo: https://metalshop.chasemoskal.com  
+&nbsp; &nbsp; 🕹 live demo: https://metalshop.dev  
 &nbsp; &nbsp; 🚧 under construction: current work in progress!  
 &nbsp; &nbsp; 🎓 documentation: yet to be seen  
 
