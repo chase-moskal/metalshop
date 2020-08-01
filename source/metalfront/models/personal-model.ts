@@ -9,7 +9,7 @@ import {Personal, GetAuthContext, AuthPayload} from "../types.js"
 import {MetalUser, MetalProfile, MetalSettings, SettingsSheriffTopic, UserUmbrellaTopic} from "../../types.js"
 
 export class PersonalModel {
-	@observable personalLoad: loading.Load<Personal> = loading.load()
+	@observable personalLoad: loading.Load<Personal> = loading.none()
 
 	@computed get personal() {
 		return loading.payload(this.personalLoad)
@@ -46,7 +46,9 @@ export class PersonalModel {
 			none: () => loading.none(),
 			loading: () => loading.loading(),
 			error: reason => loading.error(reason),
-			ready: () => loading.loading(),
+			ready: ({user}) => !!user
+				? loading.loading()
+				: loading.none(),
 		}))
 
 		const {user, getAuthContext} = loading.payload(authLoad) || {}

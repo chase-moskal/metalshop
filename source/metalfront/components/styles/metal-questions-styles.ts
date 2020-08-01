@@ -70,7 +70,7 @@ cobalt-avatar {
 }
 
 .author .details {
-	padding-left: 0.5em;
+	padding: 0.5em;
 }
 
 .author .time {

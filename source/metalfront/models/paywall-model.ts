@@ -37,7 +37,20 @@ export class PaywallModel {
 	}
 
 	async handleAuthLoad(authLoad: loading.Load<AuthPayload<MetalUser>>) {
-		this.setPremiumInfoLoad(loading.loading())
+		this.setPremiumInfoLoad(
+			loading.select<AuthPayload<MetalUser>, loading.Load<PremiumInfo>>(
+				authLoad,
+				{
+					none: () => loading.none(),
+					loading: () => loading.loading(),
+					error: reason => loading.error(reason),
+					ready: ({user}) => !!user
+						? loading.loading()
+						: loading.none(),
+				}
+			)
+		)
+		// this.setPremiumInfoLoad(loading.loading())
 		const {getAuthContext} = loading.payload(authLoad) || {}
 		if (getAuthContext) {
 			const {accessToken} = await getAuthContext()

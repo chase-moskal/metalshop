@@ -166,7 +166,9 @@ export async function makeMocks({
 		generateId,
 		userCanPost: evaluators.isPremium,
 		userCanArchiveBoard: evaluators.isStaff,
-		userCanArchiveQuestion: evaluators.isStaff,
+		userCanArchiveQuestion: (user, authorId) => {
+			return (evaluators.isStaff(user) || user.userId === authorId)
+		},
 	})
 
 	const liveshowLizard = makeLiveshowLizard({

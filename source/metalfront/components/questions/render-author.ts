@@ -2,7 +2,6 @@
 import {html} from "lit-element"
 import {heart} from "../../system/icons.js"
 import {MetalUser} from "../../../types.js"
-import {isPremium} from "../../../business/core/user-evaluators.js"
 
 export function renderAuthor({
 		author,
@@ -28,10 +27,7 @@ export function renderAuthor({
 		+ `-${(date.getMonth() + 1).toString().padStart(2, "0")}`
 		+ `-${date.getDate().toString().padStart(2, "0")}`
 	const timestring = date.toLocaleTimeString()
-	const premium = isPremium(author)
-	const avatar = author?.profile?.avatar || null
 	const nickname = author?.profile?.nickname || placeholderNickname
-	const tagline = author?.profile?.tagline || ""
 
 	return html`
 		<div class="author">
@@ -40,7 +36,9 @@ export function renderAuthor({
 				<p class="time" title=${`${datestring} ${timestring}`}>
 					${datestring}
 				</p>
-				<cobalt-card .user=${author}></cobalt-card>
+				${!!author
+					? html`<cobalt-card .user=${author}></cobalt-card>`
+					: html`<p>You</p>`}
 				${likeInfo ? html`
 					<button
 						class="likebutton"
