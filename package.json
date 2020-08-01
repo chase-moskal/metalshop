@@ -1,7 +1,7 @@
 {
-	"name": "authoritarian",
+	"name": "metalshop",
 	"version": "0.1.0-dev.0",
-	"description": "",
+	"description": "web app modules",
 	"license": "ISC",
 	"author": "Chase Moskal <chasemoskal@gmail.com>",
 	"type": "module",
