@@ -28,17 +28,17 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 	// use mocks instead of real microservices
 	//
 
-	if (config.mock !== null) {
-		const {makeMocks: makeMetalMocks} = await import("./make-mocks.js")
-		options = await makeMetalMocks({
-			logger: options.logger,
-			startAdmin: config.mock?.includes("admin"),
-			startStaff: config.mock?.includes("staff"),
-			startBanned: config.mock?.includes("banned"),
-			startPremium: config.mock?.includes("premium"),
-			startLoggedIn: config.mock?.includes("loggedin"),
-		})
-	}
+	// if (config.mock !== null) {
+	// 	const {makeMocks} = await import("./make-mocks.js")
+	// 	options = await makeMocks({
+	// 		logger: options.logger,
+	// 		startAdmin: config.mock?.includes("admin"),
+	// 		startStaff: config.mock?.includes("staff"),
+	// 		startBanned: config.mock?.includes("banned"),
+	// 		startPremium: config.mock?.includes("premium"),
+	// 		startLoggedIn: config.mock?.includes("loggedin"),
+	// 	})
+	// }
 
 	//
 	// use real microservices, overwriting mocks

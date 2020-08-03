@@ -1,5 +1,5 @@
 
-function randomSample<T>(palette: T[], random: number): T {
+export function randomSample<T>(palette: T[], random: number): T {
 	return palette[Math.floor(random * palette.length)]
 }
 

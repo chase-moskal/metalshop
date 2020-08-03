@@ -1,5 +1,4 @@
 
-import {Topic, Method} from "renraku/dist/interfaces.js"
 import {mockSignToken} from "redcrypto/dist/curries/mock-sign-token.js"
 import {mockVerifyToken} from "redcrypto/dist/curries/mock-verify-token.js"
 
@@ -9,9 +8,9 @@ import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
 import {generateId as defaultGenerateId} from "../../toolbox/generate-id.js"
 
 import {
-	Scope,
 	ClaimsRow,
 	MetalUser,
+	MetalScope,
 	Authorizer,
 	AccountRow,
 	ProfileRow,
@@ -24,7 +23,11 @@ import {
 	ScheduleEventRow,
 	StripeBillingRow,
 	StripePremiumRow,
+	AuthAardvarkTopic,
+	UserUmbrellaTopic,
 	QuestionReportRow,
+	QuestionQuarryTopic,
+	PremiumPachydermTopic,
 } from "../../types.js"
 
 import {makeTokenStore} from "../../business/core/token-store.js"
@@ -38,9 +41,8 @@ import {makeQuestionQuarry} from "../../business/questions/question-quarry.js"
 import {makeSettingsSheriff} from "../../business/settings/settings-sheriff.js"
 import {makePremiumPachyderm} from "../../business/paywall/premium-pachyderm.js"
 import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circuit.js"
-import {mockVerifyGoogleToken} from "../../business/core/mocks/mock-verify-google-token.js"
+import {verifyGoogleToken, signGoogleToken} from "../../business/core/mocks/mock-google-tokens.js"
 
-import {nap} from "../toolbox/nap.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
 import {
 	MetalOptions,
@@ -49,16 +51,14 @@ import {
 	TriggerCheckoutPopup,
 } from "../types.js"
 
-export interface DemoScope extends Scope {}
-export interface DemoUser extends MetalUser {}
-export type DemoAccessPayload = AccessPayload<DemoScope, DemoUser>
+export type PrepareMockData = (options: {
+		authAardvark: AuthAardvarkTopic,
+		questionQuarry: QuestionQuarryTopic,
+		premiumPachyderm: PremiumPachydermTopic,
+		userUmbrella: UserUmbrellaTopic<MetalUser>,
+	}) => Promise<void>
 
 export async function makeMocks({
-		startAdmin,
-		startStaff,
-		startBanned,
-		startPremium,
-		startLoggedIn,
 		logger = console,
 		generateId = defaultGenerateId,
 		googleUserName = "Steve Stephenson",
@@ -67,23 +67,24 @@ export async function makeMocks({
 		googleUserAvatar = "https://i.imgur.com/CEqYyCy.jpg",
 	}: {
 		logger: Logger
-		startAdmin: boolean
-		startStaff: boolean
-		startBanned: boolean
-		startPremium: boolean
-		startLoggedIn: boolean
 		googleUserName?: string
 		googleUserAvatar?: string
 		generateId?: () => string
 		generateNickname?: () => string
-		decodeAccessToken?: DecodeAccessToken<DemoUser>
-	}): Promise<MetalOptions> {
+		decodeAccessToken?: DecodeAccessToken<MetalUser>
+	}) {
+
+	// swagatar
+	// "https://picsum.photos/id/375/200/200",
 
 	const minute = 1000 * 60
 	const day = minute * 60 * 24
-	const googleId = generateId()
-	const googleToken = generateId()
 	const premiumStripePlanId = generateId()
+	const googleToken = await signGoogleToken({
+		googleId: generateId(),
+		name: googleUserName,
+		avatar: googleUserAvatar,
+	})
 
 	const claimsTable: DbbyTable<ClaimsRow> = dbbyMemory()
 	const accountTable: DbbyTable<AccountRow> = dbbyMemory()
@@ -100,36 +101,9 @@ export async function makeMocks({
 
 	const signToken = mockSignToken()
 	const verifyToken = mockVerifyToken()
-	const verifyGoogleToken = mockVerifyGoogleToken({
-		googleResult: {
-			googleId,
-			name: googleUserName,
-			avatar: googleUserAvatar,
-		}
-	})
 
-	const mockAdminAccessToken = await signToken<DemoAccessPayload>({
-		scope: {core: true},
-		user: {
-			userId: generateId(),
-			claims: {
-				admin: true,
-				staff: true,
-				banUntil: undefined,
-				banReason: undefined,
-				premiumUntil: undefined,
-				joined: Date.now() - (day * 10),
-			},
-			profile: {
-				avatar: undefined,
-				nickname: "Admin Adminisaurus",
-				tagline: "doesn't exist",
-			},
-		}
-	}, day * 365)
-
-	const authorize: Authorizer<DemoUser> = async(accessToken) => {
-		const {user} = await verifyToken<DemoAccessPayload>(accessToken)
+	const authorize: Authorizer<MetalUser> = async(accessToken) => {
+		const {user} = await verifyToken<AccessPayload<MetalScope, MetalUser>>(accessToken)
 		return user
 	}
 
@@ -200,7 +174,7 @@ export async function makeMocks({
 		userCanChangeSchedule: evaluators.isStaff,
 	})
 
-	const checkoutPopupUrl = "http://metaldev.chasemoskal.com:8003/html/checkout"
+	const checkoutPopupUrl = undefined
 
 	const triggerAccountPopup: TriggerAccountPopup
 		= async() => authAardvark.authenticateViaGoogle({googleToken})
@@ -208,95 +182,27 @@ export async function makeMocks({
 	const triggerCheckoutPopup: TriggerCheckoutPopup
 		= async({stripeSessionId}) => null
 
-	//
-	// starting conditions
-	//
-
-	await liveshowLizard.setShow({
-		label: "livestream",
-		vimeoId: "109943349",
-		accessToken: mockAdminAccessToken,
-	})
-
-	await scheduleSentry.setEvent({
-		accessToken: mockAdminAccessToken,
-		event: {
-			label: "countdown1",
-			time: Date.now() + (day * 3.14159),
-		},
-	})
-
-	await tokenStore.clearTokens()
-
-	if (startLoggedIn || startAdmin || startStaff || startPremium || startBanned) {
-		const authTokens = await authAardvark.authenticateViaGoogle({googleToken})
-		const {accessToken, refreshToken} = authTokens
-		const {user} = await verifyToken<AccessPayload>(accessToken)
-		const {userId, claims} = user
-
-		if (startAdmin) claims.admin = true
-		if (startStaff) claims.staff = true
-		if (startBanned) {
-			claims.banUntil = Date.now() + (day * 7)
-			claims.banReason = "unruly behavior"
-		}
-		if (startPremium) {
-			await premiumPachyderm.checkoutPremium({
-				accessToken,
-				popupUrl: checkoutPopupUrl,
-			})
-		}
-
-		await claimsCardinal.writeClaims({userId, claims})
-
-		if (startLoggedIn) {
-			const {refreshToken} = authTokens
-			authTokens.accessToken = await authAardvark.authorize({
-				refreshToken,
-				scope: {core: true},
-			})
-			await tokenStore.writeTokens(authTokens)
-		}
-	}
-
-	// TODO latency
-	// adding mock latency
-	{
-		const lag = <T extends (...args: any[]) => Promise<any>>(func: T) => {
-			return async function(...args: any[]) {
-				const ms = (Math.random() * 300) + 100
-				console.log(`mock lag added: ${func.name} by ${ms.toFixed(0)} milliseconds`)
-				await nap(ms)
-				return func.apply(this, args)
-			}
-		}
-
-		for (const object of Object.values(<{[key: string]: Topic}>{
-			authAardvark,
-			premiumPachyderm,
+	return {
+		options: <MetalOptions>{
+			logger,
+			tokenStore,
+			userUmbrella,
+			liveshowLizard,
+			questionQuarry,
 			scheduleSentry,
 			settingsSheriff,
-			questionQuarry,
-			liveshowLizard,
-		})) {
-			for (const [key, value] of Object.entries<Method>(object)) {
-				object[key] = lag(value)
-			}
-		}
-	}
-
-	return {
-		logger,
-		tokenStore,
-		userUmbrella,
-		liveshowLizard,
-		questionQuarry,
-		scheduleSentry,
-		settingsSheriff,
-		checkoutPopupUrl,
-		premiumPachyderm,
-		decodeAccessToken,
-		triggerAccountPopup,
-		triggerCheckoutPopup,
+			checkoutPopupUrl,
+			premiumPachyderm,
+			decodeAccessToken,
+			triggerAccountPopup,
+			triggerCheckoutPopup,
+		},
+		mockeries: {
+			signToken,
+			verifyToken,
+			googleToken,
+			authAardvark,
+			claimsCardinal,
+		},
 	}
 }
