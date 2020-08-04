@@ -55,7 +55,7 @@ export class SettingsModel {
 				const settings = await this.settingsSheriff.fetchSettings({accessToken})
 				if (sessionStillValid()) {
 					this.setSettingsLoad(loading.ready(settings))
-					this.logger.debug("settings loaded")
+					this.logger.info("settings loaded")
 				}
 			}
 			catch (error) {

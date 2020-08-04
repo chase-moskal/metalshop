@@ -1,7 +1,7 @@
 
 import {observable, action, computed} from "mobx"
-import * as loading from "../toolbox/loading.js"
 
+import * as loading from "../toolbox/loading.js"
 import {User, AccessToken, TokenStoreTopic} from "../../types.js"
 import {AuthPayload, TriggerAccountPopup, DecodeAccessToken, AuthContext} from "../types.js"
 
@@ -108,10 +108,9 @@ export class AuthModel<U extends User> {
 		this.authContext = this.decodeAccessToken(accessToken)
 		const getAuthContext = async() => {
 			const gracedExp = (this.authContext.exp - this.expiryGraceSeconds)
-			const expired = gracedExp < (Date.now() / 1000)
+			const expired = gracedExp < Date.now()
 			if (expired) {
-				const accessToken = await this.tokenStore.passiveCheck()
-				this.authContext = this.decodeAccessToken(accessToken)
+				await this.reauthorize()
 			}
 			return this.authContext
 		}
@@ -139,40 +138,3 @@ export class AuthModel<U extends User> {
 		this.authLoad = loading.ready({user: null, getAuthContext: null})
 	}
 }
-
-// // reimagined in functional style...
-// export function makeAuthModel({
-// 		tokenStore,
-// 		decodeAccessToken,
-// 		expiryGraceSeconds,
-// 		triggerAccountPopup,
-// 	}: {
-// 		expiryGraceSeconds: number
-// 		tokenStore: TokenStoreTopic
-// 		decodeAccessToken: DecodeAccessToken
-// 		triggerAccountPopup: TriggerAccountPopup
-// 	}) {
-
-// 	const observables = observelize({
-// 		user: <User>null,
-// 		getAuthContext: <GetAuthContext>null,
-// 		authLoad: loading.load<AuthPayload>(),
-// 	})
-
-// 	const privateActions = actionelize({
-// 		processAccessToken() {},
-// 		setError() {},
-// 		setLoading() {},
-// 		setLoggedIn() {},
-// 		setLoggedOut() {},
-// 	})
-
-// 	const actions = actionelize({
-// 		async login() {},
-// 		async logout() {},
-// 		async useExistingLogin() {},
-// 		async loginWithAccessToken() {},
-// 	})
-
-// 	return {observables, actions}
-// }

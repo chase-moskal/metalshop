@@ -204,15 +204,16 @@ function randomAvatar() {
 		}
 	}
 
-	mockLatency(authAardvark)
-	mockLatency(claimsCardinal)
-	mockLatency(tokenStore)
-	mockLatency(premiumPachyderm)
-	mockLatency(userUmbrella)
-	mockLatency(scheduleSentry)
-	mockLatency(settingsSheriff)
-	mockLatency(questionQuarry)
-	mockLatency(liveshowLizard)
+	const lag = 200
+	mockLatency(authAardvark, lag)
+	mockLatency(claimsCardinal, lag)
+	mockLatency(tokenStore, lag)
+	mockLatency(premiumPachyderm, lag)
+	mockLatency(userUmbrella, lag)
+	mockLatency(scheduleSentry, lag)
+	mockLatency(settingsSheriff, lag)
+	mockLatency(questionQuarry, lag)
+	mockLatency(liveshowLizard, lag)
 
 	//
 	// metalshop installation and startup

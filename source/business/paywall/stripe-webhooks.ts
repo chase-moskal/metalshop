@@ -154,16 +154,16 @@ export function makeStripeWebhooks({
 
 			// checkout session has purchased a subscription
 			if (session.mode === "subscription") {
-				logger.debug(" - checkout in 'subscription' mode")
+				logger.info(" - checkout in 'subscription' mode")
 				await fulfillSubscription({userId, session})
 			}
 
 			// checkout session is in setup mode, no purchase is made
 			else if (session.mode === "setup") {
-				logger.debug(" - checkout in 'setup' mode")
+				logger.info(" - checkout in 'setup' mode")
 				const metadata = <SetupMetadata>session.metadata
 				if (metadata.flow === "UpdatePremiumSubscription") {
-					logger.debug(` - flow "${metadata.flow}"`)
+					logger.info(` - flow "${metadata.flow}"`)
 					await updatePremiumSubscription({userId, session})
 				}
 				else throw err(`unknown flow "${metadata.flow}"`)
