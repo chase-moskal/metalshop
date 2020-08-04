@@ -8,7 +8,6 @@ import {IronTextInput} from "../components/iron-text-input.js"
 import {CobaltCard} from "../components/cobalt-card.js"
 import {CobaltAvatar} from "../components/cobalt-avatar.js"
 
-import {MetalAvatar} from "../components/metal-avatar.js"
 import {MetalAccount} from "../components/metal-account.js"
 import {MetalPaywall} from "../components/metal-paywall.js"
 import {MetalIsStaff} from "../components/metal-is-staff.js"
@@ -36,7 +35,6 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 		CobaltCard,
 		CobaltAvatar,
 
-		MetalAvatar,
 		MetalAccount: share(MetalAccount, accountShare),
 		MetalButtonAuth: share(MetalButtonAuth, accountShare),
 		MetalIsLoggedin: share(MetalIsLoggedin, accountShare),
