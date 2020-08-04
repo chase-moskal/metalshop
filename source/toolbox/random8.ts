@@ -1,5 +1,5 @@
 
-export function randomSample<T>(palette: T[], random: number): T {
+export function randomSample<T>(random: number, palette: T[]): T {
 	return palette[Math.floor(random * palette.length)]
 }
 
@@ -7,7 +7,7 @@ export function randomSequence(length: number, palette: string[]): string {
 	const results: string[] = []
 	while (results.length < length) {
 		const random = Math.random()
-		const sample = randomSample(palette, random)
+		const sample = randomSample(random, palette)
 		results.push(sample)
 	}
 	return results.join("")

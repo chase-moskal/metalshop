@@ -30,6 +30,14 @@ function generateNickname() {
 			"Winking",
 			"Dastardly",
 			"Saavy",
+			"Groovy",
+			"Happy",
+			"Snappy",
+			"Sneaky",
+			"Quick",
+			"Super",
+			"Fast",
+			"Fuzzy",
 		],
 		[
 			"Red",
@@ -39,12 +47,17 @@ function generateNickname() {
 			"Blue",
 			"Magenta",
 			"Dark",
+			"Grey",
+			"Silver",
 			"Bright",
+			"Light",
+			"Golden",
+			"Aqua",
+			"Minty",
 		],
 		[
 			"Aardvark",
-			"Bonobo",
-			"Chimp",
+			"Mongoose",
 			"Alligator",
 			"Robin",
 			"Monkey",
@@ -56,8 +69,6 @@ function generateNickname() {
 			"Raven",
 			"Owl",
 			"Hawk",
-			"Cow",
-			"Pig",
 			"Duck",
 			"Chicken",
 			"Wolf",
@@ -66,14 +77,23 @@ function generateNickname() {
 			"Ostrich",
 			"Llama",
 			"Alpaca",
-			"Elephant",
-			"Rhino",
 			"Zebra",
 			"Bear",
+			"Kiwi",
+			"Penguin",
+			"Weasel",
+			"Otter",
+			"Dolphin",
+			"Starfish",
+			"Sunfish",
+			"Salmon",
+			"Swordfish",
+			"Sparrow",
+			"Turtle",
 		],
 	]
 	return nameData
-		.map(names => randomSample(names, Math.random()))
+		.map(names => randomSample(Math.random(), names))
 		.join(" ")
 }
 
@@ -93,7 +113,7 @@ function randomAvatar() {
 		"https://images.unsplash.com/photo-1526080652727-5b77f74eacd2?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&h=200&fit=crop&ixid=eyJhcHBfaWQiOjF9",
 		"https://images.unsplash.com/photo-1496203695688-3b8985780d6a?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&h=200&fit=crop&ixid=eyJhcHBfaWQiOjF9",
 	]
-	return randomSample(urls, Math.random())
+	return randomSample(Math.random(), urls)
 }
 
 ~async function startMetalshopDemo() {
