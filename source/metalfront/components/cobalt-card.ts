@@ -19,7 +19,7 @@ const styles = css`
 }
 
 .cardplate > * + * {
-	margin-top: 0.4em;
+	margin-top: 0.4rem;
 }
 
 .claims {
@@ -54,9 +54,12 @@ iron-text-input {
 }
 
 .tagline {
+	font-style: italic;
+}
+
+.tagline[readonly] {
 	opacity: 0.8;
 	font-size: 0.8em;
-	font-style: italic;
 }
 
 .tagline.value-present::before,
@@ -183,7 +186,7 @@ export class CobaltCard extends MetalshopComponent<void> {
 			<iron-loading .load=${load} class="cardplate formarea coolbuttonarea">
 				<div class=textfields>
 					${this.renderTextfield("nickname", profile.nickname, 21)}
-					${this.renderTextfield("tagline", profile.tagline, 32)}
+					${this.renderTextfield("tagline", profile.tagline, 21)}
 				</div>
 				${this.renderClaimsList(user)}
 				<ul class="detail">
