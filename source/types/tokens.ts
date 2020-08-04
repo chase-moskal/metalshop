@@ -2,6 +2,8 @@
 import {User} from "../types.js"
 import {DbbyValue} from "../toolbox/dbby/types.js"
 
+export * from "redcrypto/dist/types.js"
+
 export type AccessToken = string
 export type RefreshToken = string
 
@@ -32,15 +34,6 @@ export interface TokenData<Payload = any> {
 	exp: any
 	payload: Payload
 }
-
-export type SignToken = <Payload extends {}>(
-	payload: Payload,
-	expiresMilliseconds: number
-) => Promise<string>
-
-export type VerifyToken = <Payload extends {}>(
-	token: string
-) => Promise<Payload>
 
 export type VerifyRefreshToken = (
 	refreshToken: RefreshToken

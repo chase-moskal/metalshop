@@ -135,20 +135,23 @@ export function makeCoreSystems<U extends MetalUser>({
 				})
 				const user = await assertUser({accountRow, avatar})
 				return concurrent({
-					accessToken: signToken<AccessPayload>(
-						{user, scope: {core: true}},
-						expireAccessToken
-					),
-					refreshToken: signToken<RefreshPayload>(
-						{userId: accountRow.userId},
-						expireRefreshToken
-					),
+					accessToken: signToken<AccessPayload>({
+						payload: {user, scope: {core: true}},
+						lifespan: expireAccessToken,
+					}),
+					refreshToken: signToken<RefreshPayload>({
+						payload: {userId: accountRow.userId},
+						lifespan: expireRefreshToken,
+					}),
 				})
 			},
 			async authorize({refreshToken, scope}) {
 				const {userId} = await verifyToken<RefreshPayload>(refreshToken)
 				const user = await userLogin(userId)
-				return signToken<AccessPayload>({user, scope}, expireAccessToken)
+				return signToken<AccessPayload>({
+					payload: {user, scope},
+					lifespan: expireAccessToken,
+				})
 			},
 		},
 
