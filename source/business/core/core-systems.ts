@@ -11,16 +11,16 @@ export function makeCoreSystems<U extends MetalUser>({
 		claimsTable,
 		accountTable,
 		profileTable,
-		expireAccessToken,
-		expireRefreshToken,
+		accessTokenLifespan,
+		refreshTokenLifespan,
 		signToken,
 		verifyToken,
 		generateNickname,
 		verifyGoogleToken,
 		validateProfile = defaultValidateProfile,
 	}: {
-		expireAccessToken: number
-		expireRefreshToken: number
+		accessTokenLifespan: number
+		refreshTokenLifespan: number
 		claimsTable: DbbyTable<ClaimsRow>
 		accountTable: DbbyTable<AccountRow>
 		profileTable: DbbyTable<ProfileRow>
@@ -137,11 +137,11 @@ export function makeCoreSystems<U extends MetalUser>({
 				return concurrent({
 					accessToken: signToken<AccessPayload>({
 						payload: {user, scope: {core: true}},
-						lifespan: expireAccessToken,
+						lifespan: accessTokenLifespan,
 					}),
 					refreshToken: signToken<RefreshPayload>({
 						payload: {userId: accountRow.userId},
-						lifespan: expireRefreshToken,
+						lifespan: refreshTokenLifespan,
 					}),
 				})
 			},
@@ -150,7 +150,7 @@ export function makeCoreSystems<U extends MetalUser>({
 				const user = await userLogin(userId)
 				return signToken<AccessPayload>({
 					payload: {user, scope},
-					lifespan: expireAccessToken,
+					lifespan: accessTokenLifespan,
 				})
 			},
 		},
