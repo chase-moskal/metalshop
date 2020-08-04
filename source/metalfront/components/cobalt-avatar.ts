@@ -19,6 +19,18 @@ const styles = css`
 	height: var(--cobalt-avatar-size, 6em);
 }
 
+.avatar,
+.avatar img,
+.avatar svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.avatar {
+	border: 2px solid white;
+}
+
 :host([rounded]) .avatar {
 	overflow: hidden;
 	border-radius: var(--cobalt-avatar-size, 6em);
@@ -26,14 +38,6 @@ const styles = css`
 
 [data-is-premium] .avatar {
 	border: 3px solid yellow;
-}
-
-.avatar,
-.avatar img,
-.avatar svg {
-	display: block;
-	width: 100%;
-	height: 100%;
 }
 
 .badges {
