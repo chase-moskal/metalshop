@@ -68,7 +68,7 @@ iron-text-input {
 }
 
 .detail {
-	opacity: 0.75;
+	opacity: 0.5;
 	font-size: 0.7em;
 	list-style: none;
 }
