@@ -10,12 +10,13 @@ export const styles = css`
 	display: none;
 }
 
-iron-loading {
+.container {
 	display: flex;
 	flex-direction: row;
 }
 
 cobalt-card {
+	flex: 0 1 auto;
 	padding-left: 1em;
 }
 

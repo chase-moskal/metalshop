@@ -47,6 +47,7 @@ slot[name=rate] {
 .question {
 	display: flex;
 	flex-direction: row;
+	padding: 0.5em;
 	background: var(--question-background, transparent);
 	border-radius: var(--question-border-radius, 0.25em);
 }
@@ -214,7 +215,6 @@ textarea.content[data-expand] {
 .question.editor {
 	order: 1;
 	border: 1px dashed var(--question-body-background, rgba(255,255,255, 0.2));
-	padding: 1em 0.5em;
 }
 
 .question.editor .body textarea {
