@@ -74,11 +74,9 @@ export async function makeMocks({
 		decodeAccessToken?: DecodeAccessToken<MetalUser>
 	}) {
 
-	// swagatar
-	// "https://picsum.photos/id/375/200/200",
-
 	const minute = 1000 * 60
 	const day = minute * 60 * 24
+
 	const premiumStripePlanId = generateId()
 	const googleToken = await signGoogleToken({
 		googleId: generateId(),

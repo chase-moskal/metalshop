@@ -135,24 +135,27 @@ function randomAvatar() {
 	const startLoggedIn = mock.includes("loggedin")
 
 	const mockAdminAccessToken = await signToken<AccessPayload<MetalScope, MetalUser>>({
-		scope: {core: true},
-		user: {
-			userId: generateId(),
-			claims: {
-				admin: true,
-				staff: true,
-				banUntil: undefined,
-				banReason: undefined,
-				premiumUntil: undefined,
-				joined: Date.now() - (day * 10),
-			},
-			profile: {
-				avatar: undefined,
-				nickname: "Admin Adminisaurus",
-				tagline: "doesn't exist",
-			},
-		}
-	}, day * 365)
+		payload: {
+			scope: {core: true},
+			user: {
+				userId: generateId(),
+				claims: {
+					admin: true,
+					staff: true,
+					banUntil: undefined,
+					banReason: undefined,
+					premiumUntil: undefined,
+					joined: Date.now() - (day * 10),
+				},
+				profile: {
+					avatar: undefined,
+					nickname: "Admin Adminisaurus",
+					tagline: "doesn't exist",
+				},
+			}
+		},
+		lifespan: day * 365,
+	})
 
 	await liveshowLizard.setShow({
 		label: "livestream",
