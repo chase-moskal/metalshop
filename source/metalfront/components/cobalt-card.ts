@@ -186,7 +186,7 @@ export class CobaltCard extends MetalshopComponent<void> {
 			<iron-loading .load=${load} class="cardplate formarea coolbuttonarea">
 				<div class=textfields>
 					${this.renderTextfield("nickname", profile.nickname, 21)}
-					${this.renderTextfield("tagline", profile.tagline, 21)}
+					${this.renderTextfield("tagline", profile.tagline, 32)}
 				</div>
 				${this.renderClaimsList(user)}
 				<ul class="detail">

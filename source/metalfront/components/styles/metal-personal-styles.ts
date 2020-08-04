@@ -20,4 +20,13 @@ cobalt-card {
 	padding-left: 1em;
 }
 
+@media (max-width: 420px) {
+	.container {
+		flex-direction: column;
+	}
+	cobalt-card {
+		padding-left: unset;
+	}
+}
+
 `

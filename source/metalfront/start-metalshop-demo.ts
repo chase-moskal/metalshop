@@ -63,7 +63,6 @@ function generateNickname() {
 			"Seahorse",
 			"Shark",
 			"Leopard",
-			"Lizard",
 			"Eagle",
 			"Raven",
 			"Owl",
