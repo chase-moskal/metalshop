@@ -11,6 +11,7 @@ const styles = css`
 }
 
 label {
+	width: 100%;
 	display: inline-flex;
 	flex-direction: column;
 }

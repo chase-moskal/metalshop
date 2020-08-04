@@ -25,6 +25,7 @@ const styles = css`
 .claims {
 	list-style: none;
 	font-size: 0.6em;
+	cursor: default;
 }
 
 .claims > li {
@@ -53,6 +54,8 @@ iron-text-input {
 }
 
 .tagline {
+	opacity: 0.8;
+	font-size: 0.8em;
 	font-style: italic;
 }
 
@@ -89,6 +92,10 @@ export class CobaltCard extends MetalshopComponent<void> {
 	 @property({type: Object})
 	private changedProfile: MetalProfile = null
 
+	private get readonly() {
+		return !this.saveProfile
+	}
+
 	private generateNewProfileFromInputs(): MetalProfile {
 		const {profile} = this.user
 		const clonedProfile = deepClone(profile)
@@ -102,6 +109,7 @@ export class CobaltCard extends MetalshopComponent<void> {
 	}
 
 	private handleChange = () => {
+		if (!this.user) return
 		const {profile} = this.user
 		const newProfile = this.generateNewProfileFromInputs()
 		const changes = !deepEqual(profile, newProfile)
@@ -114,22 +122,36 @@ export class CobaltCard extends MetalshopComponent<void> {
 	})
 
 	private renderClaimsList(user: MetalUser) {
-		const renderTag = (tag: string) => html`<li data-tag=${tag}>${tag}</li>`
+		const {readonly} = this
+
+		const renderTag = (tag: string, title?: string) =>
+			html`<li data-tag=${tag} title=${title || ""}>${tag}</li>`
+
 		let items = []
-		if (evaluators.isBanned(user)) items.push(renderTag("banned"))
+		if (evaluators.isBanned(user)) items.push(renderTag(
+			"banned",
+			`banned until ${formatDate(user.claims.banUntil).datestring}, reason: ${user.claims.banReason}`
+		))
 		if (evaluators.isStaff(user)) items.push(renderTag("staff"))
-		if (evaluators.isPremium(user)) items.push(renderTag("premium"))
+		if (evaluators.isPremium(user)) items.push(renderTag(
+			"premium",
+			readonly
+				? undefined
+				: `premium until ${formatDate(user.claims.premiumUntil).datestring}`
+		))
+
 		return items.length
 			? html`<ol class="claims">${items}</ol>`
 			: null
 	}
 
-	private renderTextfield(name: string, value: string) {
-		const readonly = !this.saveProfile
+	private renderTextfield(name: string, value: string, maxlength: number) {
+		const {readonly} = this
 		if (readonly && !value) return null
 		return html`
 			<iron-text-input
 				class=${name}
+				maxlength=${maxlength}
 				.value=${value}
 				?nolabel=${readonly}
 				?readonly=${readonly}
@@ -160,8 +182,8 @@ export class CobaltCard extends MetalshopComponent<void> {
 		return html`
 			<iron-loading .load=${load} class="cardplate formarea coolbuttonarea">
 				<div class=textfields>
-					${this.renderTextfield("nickname", profile.nickname)}
-					${this.renderTextfield("tagline", profile.tagline)}
+					${this.renderTextfield("nickname", profile.nickname, 21)}
+					${this.renderTextfield("tagline", profile.tagline, 32)}
 				</div>
 				${this.renderClaimsList(user)}
 				<ul class="detail">

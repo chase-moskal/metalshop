@@ -38,8 +38,7 @@ function generateNickname() {
 			"Super",
 			"Fast",
 			"Fuzzy",
-		],
-		[
+			//
 			"Red",
 			"Yellow",
 			"Green",
@@ -97,7 +96,7 @@ function generateNickname() {
 		.join(" ")
 }
 
-function randomAvatar() {
+function generateAvatar() {
 	const urls = [
 		// men
 		"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=face&cs=tinysrgb&w=200&h=200&fit=crop&ixid=eyJhcHBfaWQiOjF9",
@@ -128,10 +127,11 @@ function randomAvatar() {
 }
 
 ~async function startMetalshopDemo() {
+
 	const {options, mockeries} = await makeMocks({
 		logger: console,
 		generateNickname,
-		googleUserAvatar: randomAvatar(),
+		googleUserAvatar: generateAvatar(),
 	})
 
 	//
