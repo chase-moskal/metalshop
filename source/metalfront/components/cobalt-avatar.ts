@@ -22,6 +22,7 @@ const styles = css`
 .avatar,
 .avatar img,
 .avatar svg {
+	pointer-events: none;
 	display: block;
 	width: 100%;
 	height: 100%;
