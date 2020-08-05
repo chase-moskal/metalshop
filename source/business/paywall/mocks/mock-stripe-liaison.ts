@@ -97,15 +97,15 @@ export function mockStripeLiaison({
 		}
 	}
 
-	function mockCustomer(): MockCustomer {
+	async function mockCustomer(): Promise<MockCustomer> {
 		const customer = {
 			id: generateId()
 		}
-		insertCustomer(customer)
+		await insertCustomer(customer)
 		return customer
 	}
 
-	function mockPaymentMethod(): MockPaymentMethod {
+	async function mockPaymentMethod(): Promise<MockPaymentMethod> {
 		const paymentMethod = {
 			id: generateId(),
 			card: {
@@ -122,15 +122,15 @@ export function mockStripeLiaison({
 				three_d_secure_usage: null,
 			},
 		}
-		insertPaymentMethod(paymentMethod)
+		await insertPaymentMethod(paymentMethod)
 		return paymentMethod
 	}
 
-	function mockSetupIntent({customer, subscription, paymentMethod}: {
+	async function mockSetupIntent({customer, subscription, paymentMethod}: {
 			customer: MockCustomer
 			subscription: MockSubscription
 			paymentMethod: MockPaymentMethod
-		}): MockSetupIntent {
+		}): Promise<MockSetupIntent> {
 		const setupIntent: MockSetupIntent = {
 			id: generateId(),
 			customer: customer.id,
@@ -139,15 +139,15 @@ export function mockStripeLiaison({
 				subscription_id: subscription.id
 			},
 		}
-		insertSetupIntent(setupIntent)
+		await insertSetupIntent(setupIntent)
 		return setupIntent
 	}
 
-	function mockSubscription({planId, customer, paymentMethod}: {
+	async function mockSubscription({planId, customer, paymentMethod}: {
 			planId: string
 			customer: MockCustomer
 			paymentMethod: MockPaymentMethod
-		}): MockSubscription {
+		}): Promise<MockSubscription> {
 		const subscription: MockSubscription = {
 			id: generateId(),
 			status: "active",
@@ -157,7 +157,7 @@ export function mockStripeLiaison({
 			current_period_end: Date.now() + days(30),
 			default_payment_method: paymentMethod.id,
 		}
-		insertSubscription(subscription)
+		await insertSubscription(subscription)
 		return subscription
 	}
 
@@ -168,7 +168,7 @@ export function mockStripeLiaison({
 	return {
 
 		async createCustomer() {
-			const customer = mockCustomer()
+			const customer = await mockCustomer()
 			return {stripeCustomerId: customer.id}
 		},
 
@@ -179,8 +179,8 @@ export function mockStripeLiaison({
 				stripeCustomerId,
 			}) {
 			const customer = await fetchCustomer(stripeCustomerId)
-			const paymentMethod = mockPaymentMethod()
-			const subscription = mockSubscription({
+			const paymentMethod = await mockPaymentMethod()
+			const subscription = await mockSubscription({
 				customer,
 				paymentMethod,
 				planId: stripePlanId,
@@ -209,8 +209,8 @@ export function mockStripeLiaison({
 			const customer = await fetchCustomer(stripeCustomerId)
 			const subscription = await fetchSubscription(stripeSubscriptionId)
 
-			const paymentMethod = mockPaymentMethod()
-			const setupIntent = mockSetupIntent({
+			const paymentMethod = await mockPaymentMethod()
+			const setupIntent = await mockSetupIntent({
 				customer,
 				subscription,
 				paymentMethod,
