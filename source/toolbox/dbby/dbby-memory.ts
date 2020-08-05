@@ -1,7 +1,5 @@
 
-import {DbbyTable, DbbyRow, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional, DbbyUpdateAmbiguated} from "./types.js"
-
-import {DbbyStorage} from "./dbby-storage.js"
+import {DbbyTable, DbbyRow, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional, DbbyUpdateAmbiguated, DbbyStorage} from "./types.js"
 
 export function dbbyMemory<Row extends DbbyRow>({
 		dbbyStorage,

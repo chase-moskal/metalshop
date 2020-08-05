@@ -1,5 +1,5 @@
 
-import {DbbyRow} from "./types.js"
+import {DbbyRow, DbbyStorage} from "./types.js"
 import {SimpleStorage, makeJsonStorage} from "../json-storage.js"
 
 const indexKey = "dbby-index"
@@ -7,11 +7,6 @@ const indexKey = "dbby-index"
 type DbbyIndex = {
 	key: string
 }[]
-
-export interface DbbyStorage<Row extends DbbyRow> {
-	save(table: Row[]): void
-	load(): Row[]
-}
 
 export function wipeAllDbbyStorage(storage: SimpleStorage) {
 	const jsonStorage = makeJsonStorage(storage)

@@ -72,3 +72,8 @@ export interface DbbyTable<Row extends DbbyRow> {
 	delete(options: DbbyConditional<Row>): Promise<void>
 	count(options: DbbyConditional<Row>): Promise<number>
 }
+
+export interface DbbyStorage<Row extends DbbyRow> {
+	save(table: Row[]): void
+	load(): Row[]
+}
