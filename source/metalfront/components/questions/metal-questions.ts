@@ -170,8 +170,17 @@ export class MetalQuestions extends MetalshopComponent<QuestionsShare> {
 	private prepareHandleDeleteClick = (questionId: string) => async() => {
 		if (this.warnUnauthenticatedUser())
 			return
-		if (confirm(`Really delete question ${questionId}?`))
-			await this.share.uiBureau.archiveQuestion({questionId})
+		if (confirm(`Really delete question ${questionId}?`)) {
+			try {
+				this.load = loading.loading()
+				await this.share.uiBureau.archiveQuestion({questionId})
+				this.load = loading.ready()
+			}
+			catch (error) {
+				this.load = loading.error("error deleting question")
+				console.error(error)
+			}
+		}
 	}
 
 	private prepareHandleLikeClick: PrepareHandleLikeClick = ({like, questionId}: {
