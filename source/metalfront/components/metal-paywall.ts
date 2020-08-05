@@ -74,10 +74,10 @@ export class MetalPaywall extends MetalshopComponent<PaywallShare> {
 		})()
 		return html`
 			<div class="panel no-subscription">
-				<p>No active billing subscription</p>
 				${days
 					? html`<p>Remaining: ${days} day${days === 1 ? "": "s"}</p>`
 					: null}
+				<p>No active billing subscription</p>
 				${premium
 					? null
 					: html`

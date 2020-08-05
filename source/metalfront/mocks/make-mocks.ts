@@ -3,9 +3,10 @@ import {mockSignToken} from "redcrypto/dist/curries/mock-sign-token.js"
 import {mockVerifyToken} from "redcrypto/dist/curries/mock-verify-token.js"
 
 import {DbbyTable} from "../../toolbox/dbby/types.js"
+import {generateId} from "../../toolbox/generate-id.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
-import {generateId as defaultGenerateId} from "../../toolbox/generate-id.js"
+import {makeDbbyStorage} from "../../toolbox/dbby/dbby-storage.js"
 
 import {
 	ClaimsRow,
@@ -29,6 +30,12 @@ import {
 	QuestionQuarryTopic,
 	PremiumPachydermTopic,
 } from "../../types.js"
+import {
+	MetalOptions,
+	DecodeAccessToken,
+	TriggerAccountPopup,
+	TriggerCheckoutPopup,
+} from "../types.js"
 
 import {makeTokenStore} from "../../business/core/token-store.js"
 import {makeCoreSystems} from "../../business/core/core-systems.js"
@@ -42,15 +49,7 @@ import {makePremiumPachyderm} from "../../business/paywall/premium-pachyderm.js"
 import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circuit.js"
 import {verifyGoogleToken, signGoogleToken} from "../../business/core/mocks/mock-google-tokens.js"
 
-import {makeDbbyStorage} from "../../toolbox/dbby/dbby-storage.js"
-
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
-import {
-	MetalOptions,
-	DecodeAccessToken,
-	TriggerAccountPopup,
-	TriggerCheckoutPopup,
-} from "../types.js"
 
 export type PrepareMockData = (options: {
 		authAardvark: AuthAardvarkTopic,
@@ -61,17 +60,15 @@ export type PrepareMockData = (options: {
 
 export async function makeMocks({
 		logger = console,
-		generateId = defaultGenerateId,
 		googleUserName = "Steve Stephenson",
-		generateNickname = defaultGenerateId,
-		decodeAccessToken = defaultDecodeAccessToken,
 		googleUserAvatar = "https://i.imgur.com/CEqYyCy.jpg",
+		generateNickname,
+		decodeAccessToken = defaultDecodeAccessToken,
 	}: {
 		logger: Logger
 		googleUserName?: string
 		googleUserAvatar?: string
-		generateId?: () => string
-		generateNickname?: () => string
+		generateNickname: () => string
 		decodeAccessToken?: DecodeAccessToken<MetalUser>
 	}) {
 

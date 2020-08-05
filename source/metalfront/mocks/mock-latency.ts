@@ -6,7 +6,6 @@ import {Method} from "renraku/dist/interfaces.js"
 const lag = <T extends (...args: any[]) => Promise<any>>(func: T, duration: number) => {
 	return async function(...args: any[]) {
 		const ms = duration + (Math.random() * duration)
-		// console.log(`mock lag added: ${func.name} by ${ms.toFixed(0)} milliseconds`)
 		await nap(ms)
 		return func.apply(this, args)
 	}
