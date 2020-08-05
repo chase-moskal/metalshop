@@ -4,10 +4,12 @@ import {MetalUser, StripeWebhooks, PremiumGiftRow, StripeBillingRow, StripePremi
 import {DbbyTable} from "../../../toolbox/dbby/types.js"
 import {pubsubs, pubsub} from "../../../toolbox/pubsub.js"
 import {Logger} from "../../../toolbox/logger/interfaces.js"
+import {dbbyMemory} from "../../../toolbox/dbby/dbby-memory.js"
 
 import {makeStripeWebhooks} from "../stripe-webhooks.js"
 import {makePremiumDatalayer} from "../premium-datalayer.js"
 
+import {MockStripeTables} from "./mock-stripe-types.js"
 import {mockStripeLiaison} from "./mock-stripe-liaison.js"
 
 /**
@@ -26,8 +28,15 @@ export function mockStripeCircuit({
 		premiumGiftTable,
 		stripeBillingTable,
 		stripePremiumTable,
+		tables = {
+			customers: dbbyMemory(),
+			setupIntents: dbbyMemory(),
+			subscriptions: dbbyMemory(),
+			paymentMethods: dbbyMemory(),
+		},
 	}: {
 		logger: Logger
+		tables: MockStripeTables
 		userUmbrella: UserUmbrellaTopic<MetalUser>
 		premiumGiftTable: DbbyTable<PremiumGiftRow>
 		stripeBillingTable: DbbyTable<StripeBillingRow>
@@ -45,7 +54,7 @@ export function mockStripeCircuit({
 	})
 
 	// give the publishers to the mock stripe liaison
-	const stripeLiaison = mockStripeLiaison({webhooks: webhookPublishers})
+	const stripeLiaison = mockStripeLiaison({tables, webhooks: webhookPublishers})
 	const premiumDatalayer = makePremiumDatalayer({
 		stripeLiaison,
 		premiumGiftTable,

@@ -50,6 +50,7 @@ import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circui
 import {verifyGoogleToken, signGoogleToken} from "../../business/core/mocks/mock-google-tokens.js"
 
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
+import { MockStripeTables } from "../../business/paywall/mocks/mock-stripe-types.js"
 
 export type PrepareMockData = (options: {
 		authAardvark: AuthAardvarkTopic,
@@ -90,11 +91,17 @@ export async function makeMocks({
 	const liveshowTable: DbbyTable<LiveshowRow> = dbbyMemory({dbbyStorage: s("liveshow")})
 	const settingsTable: DbbyTable<SettingsRow> = dbbyMemory({dbbyStorage: s("settings")})
 	const premiumGiftTable: DbbyTable<PremiumGiftRow> = dbbyMemory({dbbyStorage: s("premium")})
-	const questionLikeTable: DbbyTable<QuestionLikeRow> = dbbyMemory({dbbyStorage: s("questionlike")})
-	const stripeBillingTable: DbbyTable<StripeBillingRow> = dbbyMemory({dbbyStorage: s("stripebilling")})
-	const stripePremiumTable: DbbyTable<StripePremiumRow> = dbbyMemory({dbbyStorage: s("stripepremium")})
-	const scheduleEventTable: DbbyTable<ScheduleEventRow> = dbbyMemory({dbbyStorage: s("scheduleevent")})
-	const questionReportTable: DbbyTable<QuestionReportRow> = dbbyMemory({dbbyStorage: s("questionreport")})
+	const questionLikeTable: DbbyTable<QuestionLikeRow> = dbbyMemory({dbbyStorage: s("questionLike")})
+	const stripeBillingTable: DbbyTable<StripeBillingRow> = dbbyMemory({dbbyStorage: s("stripeBilling")})
+	const stripePremiumTable: DbbyTable<StripePremiumRow> = dbbyMemory({dbbyStorage: s("stripePremium")})
+	const scheduleEventTable: DbbyTable<ScheduleEventRow> = dbbyMemory({dbbyStorage: s("scheduleEvent")})
+	const questionReportTable: DbbyTable<QuestionReportRow> = dbbyMemory({dbbyStorage: s("questionReport")})
+	const mockStripeTables: MockStripeTables = {
+		customers: dbbyMemory({dbbyStorage: s("stripeLiaison-customers")}),
+		setupIntents: dbbyMemory({dbbyStorage: s("stripeLiaison-setupIntents")}),
+		subscriptions: dbbyMemory({dbbyStorage: s("stripeLiaison-subscriptions")}),
+		paymentMethods: dbbyMemory({dbbyStorage: s("stripeLiaison-paymentMethods")}),
+	}
 
 	const signToken = mockSignToken()
 	const verifyToken = mockVerifyToken()
@@ -156,6 +163,7 @@ export async function makeMocks({
 		premiumGiftTable,
 		stripeBillingTable,
 		stripePremiumTable,
+		tables: mockStripeTables,
 	})
 
 	const premiumPachyderm = makePremiumPachyderm({

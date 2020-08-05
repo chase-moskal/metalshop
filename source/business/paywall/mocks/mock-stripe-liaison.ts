@@ -1,82 +1,62 @@
 
 import {Stripe} from "../../../commonjs/stripe.js"
+import {generateId} from "../../../toolbox/generate-id.js"
+import {randomSequence, numbers} from "../../../toolbox/random8.js"
+
 import {toPaymentDetails, toSubscriptionDetails} from "../helpers.js"
-import {random8, randomSequence, numbers} from "../../../toolbox/random8.js"
 import {StripeLiaison, StripeWebhooks, UpdateFlow} from "../../../types.js"
 
-interface MockCustomer extends Partial<Stripe.Customer> {
-	id: string
-}
+import {MockStripeTables, MockCustomer, MockSetupIntent, MockSubscription, MockPaymentMethod} from "./mock-stripe-types.js"
 
-interface MockSubscription extends Partial<Stripe.Subscription> {
-	id: string
-	plan: {id: string} & any
-	current_period_end: number
-	cancel_at_period_end: boolean
-	default_payment_method: string
-	status: Stripe.Subscription.Status
-}
+const days = (n: number) => n * (1000 * 60 * 60 * 24)
 
-interface MockPaymentMethod extends Partial<Stripe.PaymentMethod> {
-	id: string
-	card: Stripe.PaymentMethod.Card
-}
-
-interface MockSetupIntent extends Partial<Stripe.SetupIntent> {
-	id: string
-	customer: string
-	payment_method: string
-	metadata: {
-		subscription_id: string
-	}
-}
-
-export function mockStripeLiaison({webhooks}: {
+export function mockStripeLiaison({
+		tables,
+		webhooks,
+	}: {
+		tables: MockStripeTables
 		webhooks: StripeWebhooks
 	}): StripeLiaison {
 
-	const data = {
-		customers: <MockCustomer[]>[],
-		setupIntents: <MockSetupIntent[]>[],
-		subscriptions: <MockSubscription[]>[],
-		paymentMethods: <MockPaymentMethod[]>[],
+	//
+	// functions for low level data interaction with the tables
+	//
+
+	async function insertCustomer(customer: MockCustomer) {
+		await tables.customers.create(customer)
 	}
 
-	const idTag = (tag: string) => `${tag}-${random8()}`
-	const webhookId = () => `mock-stripe-webhook-event-${random8()}`
-	const days = (n: number) => n * (1000 * 60 * 60 * 24)
-
-	function insertCustomer(customer: MockCustomer) {
-		data.customers.push(customer)
+	async function insertSetupIntent(setupIntent: MockSetupIntent) {
+		await tables.setupIntents.create(setupIntent)
 	}
 
-	function insertSetupIntent(setupIntent: MockSetupIntent) {
-		data.setupIntents.push(setupIntent)
+	async function insertSubscription(subscription: MockSubscription) {
+		await tables.subscriptions.create(subscription)
 	}
 
-	function insertSubscription(subscription: MockSubscription) {
-		data.subscriptions.push(subscription)
+	async function insertPaymentMethod(paymentMethod: MockPaymentMethod) {
+		await tables.paymentMethods.create(paymentMethod)
 	}
 
-	function insertPaymentMethod(paymentMethod: MockPaymentMethod) {
-		data.paymentMethods.push(paymentMethod)
+	async function fetchCustomer(id: string) {
+		return tables.customers.one({conditions: {equal: {id}}})
 	}
 
-	function fetchCustomer(id: string) {
-		return data.customers.find(c => c.id === id)
+	async function fetchSubscription(id: string) {
+		return tables.subscriptions.one({conditions: {equal: {id}}})
 	}
 
-	function fetchSubscription(id: string) {
-		return data.subscriptions.find(c => c.id === id)
+	async function fetchPaymentMethod(id: string) {
+		return tables.paymentMethods.one({conditions: {equal: {id}}})
 	}
 
-	function fetchPaymentMethod(id: string) {
-		return data.paymentMethods.find(c => c.id === id)
+	async function fetchSetupIntent(id: string) {
+		return tables.setupIntents.one({conditions: {equal: {id}}})
 	}
 
-	function fetchSetupIntent(id: string) {
-		return data.setupIntents.find(c => c.id === id)
-	}
+	//
+	// functions to create mock stripe objects
+	//
 
 	function mockSessionForSubscriptionPurchase({
 			userId,
@@ -88,7 +68,7 @@ export function mockStripeLiaison({webhooks}: {
 			subscription: MockSubscription
 		}): Partial<Stripe.Checkout.Session> {
 		return {
-			id: idTag("mock-stripe-session"),
+			id: generateId(),
 			mode: "subscription",
 			customer: customer.id,
 			client_reference_id: userId,
@@ -108,7 +88,7 @@ export function mockStripeLiaison({webhooks}: {
 			setupIntent: MockSetupIntent
 		}): Partial<Stripe.Checkout.Session> {
 		return {
-			id: idTag("mock-stripe-session"),
+			id: generateId(),
 			mode: "setup",
 			metadata: {flow},
 			customer: customer.id,
@@ -119,7 +99,7 @@ export function mockStripeLiaison({webhooks}: {
 
 	function mockCustomer(): MockCustomer {
 		const customer = {
-			id: idTag("mock-stripe-customer")
+			id: generateId()
 		}
 		insertCustomer(customer)
 		return customer
@@ -127,7 +107,7 @@ export function mockStripeLiaison({webhooks}: {
 
 	function mockPaymentMethod(): MockPaymentMethod {
 		const paymentMethod = {
-			id: idTag("mock-stripe-payment-method"),
+			id: generateId(),
 			card: {
 				brand: "FAKEVISA",
 				country: "US",
@@ -152,7 +132,7 @@ export function mockStripeLiaison({webhooks}: {
 			paymentMethod: MockPaymentMethod
 		}): MockSetupIntent {
 		const setupIntent: MockSetupIntent = {
-			id: idTag("mock-stripe-setup-intent"),
+			id: generateId(),
 			customer: customer.id,
 			payment_method: paymentMethod.id,
 			metadata: {
@@ -169,7 +149,7 @@ export function mockStripeLiaison({webhooks}: {
 			paymentMethod: MockPaymentMethod
 		}): MockSubscription {
 		const subscription: MockSubscription = {
-			id: idTag("mock-stripe-subscription"),
+			id: generateId(),
 			status: "active",
 			plan: {id: planId},
 			customer: customer.id,
@@ -180,6 +160,10 @@ export function mockStripeLiaison({webhooks}: {
 		insertSubscription(subscription)
 		return subscription
 	}
+
+	//
+	// return stripe liaison object
+	//
 
 	return {
 
@@ -194,7 +178,7 @@ export function mockStripeLiaison({webhooks}: {
 				stripePlanId,
 				stripeCustomerId,
 			}) {
-			const customer = fetchCustomer(stripeCustomerId)
+			const customer = await fetchCustomer(stripeCustomerId)
 			const paymentMethod = mockPaymentMethod()
 			const subscription = mockSubscription({
 				customer,
@@ -208,7 +192,7 @@ export function mockStripeLiaison({webhooks}: {
 			})
 
 			await webhooks["checkout.session.completed"](<any>{
-				id: webhookId(),
+				id: generateId(),
 				data: {object: session},
 			})
 
@@ -222,8 +206,8 @@ export function mockStripeLiaison({webhooks}: {
 				stripeSubscriptionId,
 			}) {
 
-			const customer = fetchCustomer(stripeCustomerId)
-			const subscription = fetchSubscription(stripeSubscriptionId)
+			const customer = await fetchCustomer(stripeCustomerId)
+			const subscription = await fetchSubscription(stripeSubscriptionId)
 
 			const paymentMethod = mockPaymentMethod()
 			const setupIntent = mockSetupIntent({
@@ -239,7 +223,7 @@ export function mockStripeLiaison({webhooks}: {
 			})
 
 			await webhooks["checkout.session.completed"](<any>{
-				id: webhookId(),
+				id: generateId(),
 				data: {object: session},
 			})
 
@@ -250,10 +234,10 @@ export function mockStripeLiaison({webhooks}: {
 				stripeSubscriptionId,
 				stripePaymentMethodId,
 			}) {
-			const subscription = fetchSubscription(stripeSubscriptionId)
+			const subscription = await fetchSubscription(stripeSubscriptionId)
 			subscription.default_payment_method = stripePaymentMethodId
 			await webhooks["customer.subscription.updated"](<any>{
-				id: webhookId(),
+				id: generateId(),
 				data: {object: subscription}
 			})
 		},
@@ -261,34 +245,34 @@ export function mockStripeLiaison({webhooks}: {
 		async scheduleSubscriptionCancellation({
 				stripeSubscriptionId,
 			}) {
-			const subscription = fetchSubscription(stripeSubscriptionId)
+			const subscription = await fetchSubscription(stripeSubscriptionId)
 			subscription.cancel_at_period_end = true
 			subscription.status = "canceled"
 			await webhooks["customer.subscription.updated"](<any>{
-				id: webhookId(),
+				id: generateId(),
 				data: {object: subscription}
 			})
 		},
 
 		async fetchSubscriptionDetails(subscriptionId) {
-			const subscription = fetchSubscription(subscriptionId)
+			const subscription = await fetchSubscription(subscriptionId)
 			return toSubscriptionDetails(subscription)
 		},
 
 		async fetchPaymentDetails(paymentMethodId) {
-			const paymentMethod = fetchPaymentMethod(paymentMethodId)
+			const paymentMethod = await fetchPaymentMethod(paymentMethodId)
 			return toPaymentDetails(paymentMethod)
 		},
 
 		async fetchPaymentDetailsByIntentId(setupIntentId) {
-			const setupIntent = fetchSetupIntent(setupIntentId)
-			const paymentMethod = fetchPaymentMethod(setupIntent.payment_method)
+			const setupIntent = await fetchSetupIntent(setupIntentId)
+			const paymentMethod = await fetchPaymentMethod(setupIntent.payment_method)
 			return toPaymentDetails(paymentMethod)
 		},
 
 		async fetchPaymentDetailsBySubscriptionId(subscriptionId) {
-			const subscription = fetchSubscription(subscriptionId)
-			const paymentMethod = fetchPaymentMethod(subscription.default_payment_method)
+			const subscription = await fetchSubscription(subscriptionId)
+			const paymentMethod = await fetchPaymentMethod(subscription.default_payment_method)
 			return toPaymentDetails(paymentMethod)
 		},
 	}
