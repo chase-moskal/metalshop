@@ -6,8 +6,6 @@ import {styles} from "./styles/metal-paywall-styles.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {MetalshopComponent, html, property} from "../framework/metalshop-component.js"
 
-import {isStaff} from "../../business/core/user-evaluators.js"
-
  @mixinStyles(styles)
 export class MetalPaywall extends MetalshopComponent<PaywallShare> {
 
