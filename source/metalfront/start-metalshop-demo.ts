@@ -204,7 +204,7 @@ function generateAvatar() {
 
 	if (startLoggedIn || startAdmin || startStaff || startPremium || startBanned) {
 		const authTokens = await authAardvark.authenticateViaGoogle({googleToken})
-		const {accessToken, refreshToken} = authTokens
+		const {accessToken} = authTokens
 		const {user} = await verifyToken<AccessPayload>(accessToken)
 		const {userId, claims} = user
 
