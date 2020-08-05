@@ -202,8 +202,6 @@ function generateAvatar() {
 		},
 	})
 
-	await tokenStore.clearTokens()
-
 	if (startLoggedIn || startAdmin || startStaff || startPremium || startBanned) {
 		const authTokens = await authAardvark.authenticateViaGoogle({googleToken})
 		const {accessToken, refreshToken} = authTokens

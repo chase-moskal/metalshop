@@ -48,7 +48,7 @@ COOLBUTTONS
 	user-select: none;
 	font-family: var(--coolbutton-font-family, inherit);
 	font-weight: bold;
-	font-size: var(--coolbutton-font-size, 1rem);
+	font-size: var(--coolbutton-font-size, 1em);
 	border: none;
 	padding: 0.2em 1em;
 	background: var(--coolbutton-background, #5c54d8);

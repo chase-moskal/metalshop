@@ -1,8 +1,21 @@
 
-import {DbbyTable, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional, DbbyUpdateAmbiguated} from "./types.js"
+import {DbbyTable, DbbyRow, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional, DbbyUpdateAmbiguated} from "./types.js"
 
-export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
-	let table: Row[] = []
+import {DbbyStorage} from "./dbby-storage.js"
+
+export function dbbyMemory<Row extends DbbyRow>({
+		dbbyStorage,
+	}: {
+		dbbyStorage?: DbbyStorage<Row>
+	} = {}): DbbyTable<Row> {
+
+	let table: Row[] = dbbyStorage
+		? dbbyStorage.load() || []
+		: []
+
+	function save() {
+		if (dbbyStorage) dbbyStorage.save(table)
+	}
 
 	function select(conditional: DbbyConditional<Row>): Row[] {
 		return table.filter(row => rowVersusConditional(row, conditional))
@@ -31,6 +44,7 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 
 		async create(row) {
 			insertCopy(row)
+			save()
 		},
 
 		async read({max = 1000, offset = 0, ...conditional}) {
@@ -47,6 +61,7 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 				const made = await make()
 				insertCopy(made)
 				row = copy(made)
+				save()
 			}
 			return row
 		},
@@ -66,10 +81,12 @@ export function dbbyMemory<Row extends {}>(): DbbyTable<Row> {
 				else insertCopy(upsert)
 			}
 			else throw new Error("invalid update")
+			save()
 		},
 
 		async delete(conditional) {
 			eliminateRow(conditional)
+			save()
 		},
 
 		async count(conditional) {

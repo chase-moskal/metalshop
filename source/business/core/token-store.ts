@@ -2,11 +2,16 @@
 import {tokenDecode} from "redcrypto/dist/token-decode.js"
 import {TokenStoreTopic, AuthAardvarkTopic} from "../../types.js"
 
+import {SimpleStorage} from "../../toolbox/json-storage.js"
+
+const expiryGraceTime = 10 * 1000
+
 const tokenIsValid = (token: string) => {
 	let valid = false
 	if (token) {
-		const decoded: any = tokenDecode(token)
-		const expired = decoded.exp < (Date.now() / 1000)
+		const decoded = tokenDecode<any>(token)
+		const expiry = decoded.exp - expiryGraceTime
+		const expired = Date.now() > expiry
 		valid = !expired
 	}
 	return valid
@@ -16,7 +21,7 @@ export function makeTokenStore({
 		storage,
 		authAardvark,
 	}: {
-		storage: Storage
+		storage: SimpleStorage
 		authAardvark: AuthAardvarkTopic
 	}): TokenStoreTopic {
 

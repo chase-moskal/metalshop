@@ -33,7 +33,6 @@ import {
 import {makeTokenStore} from "../../business/core/token-store.js"
 import {makeCoreSystems} from "../../business/core/core-systems.js"
 import * as evaluators from "../../business/core/user-evaluators.js"
-import {mockStorage} from "../../business/core/mocks/mock-storage.js"
 import {makeClaimsCardinal} from "../../business/core/claims-cardinal.js"
 import {makeLiveshowLizard} from "../../business/liveshow/liveshow-lizard.js"
 import {makeScheduleSentry} from "../../business/schedule/schedule-sentry.js"
@@ -42,6 +41,8 @@ import {makeSettingsSheriff} from "../../business/settings/settings-sheriff.js"
 import {makePremiumPachyderm} from "../../business/paywall/premium-pachyderm.js"
 import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circuit.js"
 import {verifyGoogleToken, signGoogleToken} from "../../business/core/mocks/mock-google-tokens.js"
+
+import {makeDbbyStorage} from "../../toolbox/dbby/dbby-storage.js"
 
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
 import {
@@ -84,18 +85,19 @@ export async function makeMocks({
 		avatar: googleUserAvatar,
 	})
 
-	const claimsTable: DbbyTable<ClaimsRow> = dbbyMemory()
-	const accountTable: DbbyTable<AccountRow> = dbbyMemory()
-	const profileTable: DbbyTable<ProfileRow> = dbbyMemory()
-	const questionTable: DbbyTable<QuestionRow> = dbbyMemory()
-	const liveshowTable: DbbyTable<LiveshowRow> = dbbyMemory()
-	const settingsTable: DbbyTable<SettingsRow> = dbbyMemory()
-	const premiumGiftTable: DbbyTable<PremiumGiftRow> = dbbyMemory()
-	const questionLikeTable: DbbyTable<QuestionLikeRow> = dbbyMemory()
-	const stripeBillingTable: DbbyTable<StripeBillingRow> = dbbyMemory()
-	const stripePremiumTable: DbbyTable<StripePremiumRow> = dbbyMemory()
-	const scheduleEventTable: DbbyTable<ScheduleEventRow> = dbbyMemory()
-	const questionReportTable: DbbyTable<QuestionReportRow> = dbbyMemory()
+	const s = (name: string) => makeDbbyStorage(localStorage, name)
+	const claimsTable: DbbyTable<ClaimsRow> = dbbyMemory({dbbyStorage: s("claims")})
+	const accountTable: DbbyTable<AccountRow> = dbbyMemory({dbbyStorage: s("account")})
+	const profileTable: DbbyTable<ProfileRow> = dbbyMemory({dbbyStorage: s("profile")})
+	const questionTable: DbbyTable<QuestionRow> = dbbyMemory({dbbyStorage: s("question")})
+	const liveshowTable: DbbyTable<LiveshowRow> = dbbyMemory({dbbyStorage: s("liveshow")})
+	const settingsTable: DbbyTable<SettingsRow> = dbbyMemory({dbbyStorage: s("settings")})
+	const premiumGiftTable: DbbyTable<PremiumGiftRow> = dbbyMemory({dbbyStorage: s("premium")})
+	const questionLikeTable: DbbyTable<QuestionLikeRow> = dbbyMemory({dbbyStorage: s("questionlike")})
+	const stripeBillingTable: DbbyTable<StripeBillingRow> = dbbyMemory({dbbyStorage: s("stripebilling")})
+	const stripePremiumTable: DbbyTable<StripePremiumRow> = dbbyMemory({dbbyStorage: s("stripepremium")})
+	const scheduleEventTable: DbbyTable<ScheduleEventRow> = dbbyMemory({dbbyStorage: s("scheduleevent")})
+	const questionReportTable: DbbyTable<QuestionReportRow> = dbbyMemory({dbbyStorage: s("questionreport")})
 
 	const signToken = mockSignToken()
 	const verifyToken = mockVerifyToken()
@@ -126,7 +128,7 @@ export async function makeMocks({
 
 	const tokenStore = makeTokenStore({
 		authAardvark,
-		storage: mockStorage(),
+		storage: localStorage,
 	})
 
 	const questionQuarry = makeQuestionQuarry({

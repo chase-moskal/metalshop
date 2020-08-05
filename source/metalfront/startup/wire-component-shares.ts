@@ -2,6 +2,7 @@
 import {share} from "../framework/share.js"
 import {ButtonPremiumShare, PersonalShare, MyAvatarShare, AdminModeShare, AdminOnlyShare, QuestionsShare, Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare} from "../types.js"
 
+import {IronReset} from "../components/iron-reset.js"
 import {IronLoading} from "../components/iron-loading.js"
 import {IronTextInput} from "../components/iron-text-input.js"
 
@@ -29,6 +30,7 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 		authLoad: supermodel.auth.authLoad,
 	})
 	return {
+		IronReset,
 		IronLoading,
 		IronTextInput,
 

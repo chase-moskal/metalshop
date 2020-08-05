@@ -45,6 +45,13 @@ metal-account {
 	--metal-admin-color: green;
 }
 
+metal-account > iron-reset {
+	display: block;
+	opacity: 0.5;
+	font-size: 0.75em;
+	text-align: left;
+}
+
 body {
 	max-width: 960px;
 	padding: 0 5%;
