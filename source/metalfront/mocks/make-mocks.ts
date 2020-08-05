@@ -8,6 +8,8 @@ import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
 import {makeDbbyStorage} from "../../toolbox/dbby/dbby-storage.js"
 
+import {mockLatency} from "../mocks/mock-latency.js"
+
 import {
 	ClaimsRow,
 	MetalUser,
@@ -186,6 +188,35 @@ export async function makeMocks({
 
 	const triggerCheckoutPopup: TriggerCheckoutPopup
 		= async({stripeSessionId}) => null
+
+	const lag1 = 100
+	mockLatency(lag1, claimsTable)
+	mockLatency(lag1, accountTable)
+	mockLatency(lag1, profileTable)
+	mockLatency(lag1, questionTable)
+	mockLatency(lag1, liveshowTable)
+	mockLatency(lag1, settingsTable)
+	mockLatency(lag1, premiumGiftTable)
+	mockLatency(lag1, questionLikeTable)
+	mockLatency(lag1, stripeBillingTable)
+	mockLatency(lag1, stripePremiumTable)
+	mockLatency(lag1, scheduleEventTable)
+	mockLatency(lag1, questionReportTable)
+	mockLatency(lag1, mockStripeTables.customers)
+	mockLatency(lag1, mockStripeTables.setupIntents)
+	mockLatency(lag1, mockStripeTables.subscriptions)
+	mockLatency(lag1, mockStripeTables.paymentMethods)
+
+	const lag2 = 200
+	mockLatency(lag2, tokenStore)
+	mockLatency(lag2, userUmbrella)
+	mockLatency(lag2, liveshowLizard)
+	mockLatency(lag2, questionQuarry)
+	mockLatency(lag2, scheduleSentry)
+	mockLatency(lag2, settingsSheriff)
+	mockLatency(lag2, premiumPachyderm)
+	mockLatency(lag2, authAardvark)
+	mockLatency(lag2, claimsCardinal)
 
 	return {
 		options: <MetalOptions>{

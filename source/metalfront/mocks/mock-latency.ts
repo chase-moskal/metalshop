@@ -11,7 +11,7 @@ const lag = <T extends (...args: any[]) => Promise<any>>(func: T, duration: numb
 	}
 }
 
-export function mockLatency<T extends Topic>(topic: T, duration: number) {
+export function mockLatency<T extends Topic>(duration: number, topic: T) {
 	for (const [key, value] of Object.entries<Method>(topic)) {
 		topic[key] = lag(value, duration)
 	}

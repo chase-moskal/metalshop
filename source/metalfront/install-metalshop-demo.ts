@@ -1,7 +1,6 @@
 
 import {theme} from "./system/theme.js"
 import {makeMocks} from "./mocks/make-mocks.js"
-import {mockLatency} from "./mocks/mock-latency.js"
 import {themeComponents} from "./framework/theme-components.js"
 import {assembleSupermodel} from "./startup/assemble-supermodel.js"
 import {wireComponentShares } from "./startup/wire-component-shares.js"
@@ -132,17 +131,6 @@ export async function installMetalshopDemo({mockAvatars, nicknameData}: {
 		}
 	}
 
-	const lag = 200
-	mockLatency(authAardvark, lag)
-	mockLatency(claimsCardinal, lag)
-	mockLatency(tokenStore, lag)
-	mockLatency(premiumPachyderm, lag)
-	mockLatency(userUmbrella, lag)
-	mockLatency(scheduleSentry, lag)
-	mockLatency(settingsSheriff, lag)
-	mockLatency(questionQuarry, lag)
-	mockLatency(liveshowLizard, lag)
-
 	//
 	// metalshop installation and startup
 	//
@@ -157,6 +145,8 @@ export async function installMetalshopDemo({mockAvatars, nicknameData}: {
 	}
 
 	return {
+		options,
+		mockeries,
 		supermodel,
 		components,
 		async start() {
