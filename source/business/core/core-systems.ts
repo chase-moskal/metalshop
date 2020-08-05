@@ -127,9 +127,7 @@ export function makeCoreSystems<U extends MetalUser>({
 					conditions: {equal: {googleId}},
 					make: async() => ({
 						userId: generateId(),
-						name,
 						googleId,
-						googleName: name,
 						googleAvatar: avatar,
 					}),
 				})

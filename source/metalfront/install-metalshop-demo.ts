@@ -28,6 +28,7 @@ export async function installMetalshopDemo({mockAvatars, nicknameData}: {
 	const {options, mockeries} = await makeMocks({
 		logger: console,
 		generateNickname,
+		googleUserName: generateNickname(),
 		googleUserAvatar: generateAvatar(),
 	})
 

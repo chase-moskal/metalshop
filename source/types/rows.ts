@@ -4,9 +4,7 @@ import {MetalClaims, MetalProfile, MetalSettings, CardClues} from "../types.js"
 
 export interface AccountRow extends DbbyRow<AccountRow> {
 	userId: string
-	name: string
 	googleId: string
-	googleName: string
 	googleAvatar: string
 }
 

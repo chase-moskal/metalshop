@@ -63,14 +63,14 @@ export type PrepareMockData = (options: {
 
 export async function makeMocks({
 		logger = console,
-		googleUserName = "Steve Stephenson",
-		googleUserAvatar = "https://i.imgur.com/CEqYyCy.jpg",
+		googleUserName,
+		googleUserAvatar,
 		generateNickname,
 		decodeAccessToken = defaultDecodeAccessToken,
 	}: {
 		logger: Logger
-		googleUserName?: string
-		googleUserAvatar?: string
+		googleUserName: string
+		googleUserAvatar: string
 		generateNickname: () => string
 		decodeAccessToken?: DecodeAccessToken<MetalUser>
 	}) {
