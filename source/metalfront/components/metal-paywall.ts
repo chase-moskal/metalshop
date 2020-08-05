@@ -6,6 +6,8 @@ import {styles} from "./styles/metal-paywall-styles.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {MetalshopComponent, html, property} from "../framework/metalshop-component.js"
 
+import {isStaff} from "../../business/core/user-evaluators.js"
+
  @mixinStyles(styles)
 export class MetalPaywall extends MetalshopComponent<PaywallShare> {
 
@@ -66,7 +68,7 @@ export class MetalPaywall extends MetalshopComponent<PaywallShare> {
 	}
 
 	private renderPanelNoSubscription () {
-		const {premiumUntil} = this.share
+		const {premiumUntil, premium} = this.share
 		const days = (() => {
 			if (!premiumUntil) return null
 			const duration = premiumUntil - Date.now()
@@ -78,11 +80,16 @@ export class MetalPaywall extends MetalshopComponent<PaywallShare> {
 				${days
 					? html`<p>Remaining: ${days} day${days === 1 ? "": "s"}</p>`
 					: null}
-				<div class="buttonbar">
-					<button class="subscribe" @click=${this.handleCheckoutPremiumClick}>
-						Subscribe
-					</button>
-				</div>
+				${premium
+					? null
+					: html`
+						<div class="buttonbar">
+							<button class="subscribe" @click=${this.handleCheckoutPremiumClick}>
+								Subscribe
+							</button>
+						</div>
+					`
+				}
 			</div>
 		`
 	}
