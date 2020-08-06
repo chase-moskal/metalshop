@@ -57,13 +57,13 @@
 		"lit-element": "^2.3.1",
 		"lit-html": "^1.2.1",
 		"menutown": "0.0.1",
-		"mobx": "^5.15.4",
+		"mobx": "^5.15.5",
 		"mobx-lit-element": "^0.1.2",
 		"mongodb": "^3.6.0",
 		"pug": "^3.0.0",
 		"redcrypto": "0.0.0-dev.6",
 		"renraku": "0.0.0-dev.30",
-		"stripe": "^8.82.0",
+		"stripe": "^8.83.0",
 		"unique-names-generator": "^4.3.0"
 	},
 	"keywords": [
