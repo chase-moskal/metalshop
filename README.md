@@ -13,7 +13,7 @@ metalshop is an easy-to-use extensible web-app starter kit, enabling webdevs fro
 **looking for collaborators**  
 of course, i'm building my own apps with metalshop. and you should too! join me and we can collaborate together on new features so everybody can benefit. what features would interest you for your own app ideas? we currently need help designing new features, building new web components, and writing business logic for the microservices, kubernetes, and more  
 &nbsp; &nbsp; 📌 post a github issue if you have any questions  
-&nbsp; &nbsp; 👉😎👉 [join my discord](https://discord.gg/YfmhMZU) and give me a shoutout!  
+&nbsp; &nbsp; 👉😎👉 [join the metalshop discord](https://discord.gg/KQTbj2K) and give me a shoutout!  
 
 **🤖 let's build next-gen web apps together with es-modules!**  
 &nbsp; &nbsp; 🌈 obsessive focus on idyllic developer experience  
