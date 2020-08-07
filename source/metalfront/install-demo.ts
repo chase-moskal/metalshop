@@ -176,26 +176,28 @@ export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 				// create each mock user
 				const {user, accessToken} = await makeUser({premium: true, tagline})
 
-				// ban the user if that's what's called for
-				if (ban) await claimsCardinal.writeClaims({
-					userId: user.userId,
-					claims: {
-						banUntil: Date.now() + (ban.days * 14),
-						banReason: ban.reason,
-					}
-				})
-
 				// make this user post a question
 				const question = await questionQuarry.postQuestion({
 					accessToken,
 					draft: {board, content},
 				})
 
+				// ban the user if that's what's called for
+				if (ban) {
+					await claimsCardinal.writeClaims({
+						userId: user.userId,
+						claims: {
+							banUntil: Date.now() + (day * ban.days),
+							banReason: ban.reason,
+						}
+					})
+				}
+
 				return {user, accessToken, question, likes}
 			}))
 
 			// for each user-question pair, perform the likes called for
-			await Promise.all(units.map(async({likes}) => {
+			await Promise.all(units.map(async({likes, question}) => {
 
 				// randomly select users who will perform each like
 				const likerPool = [...units]
@@ -209,11 +211,13 @@ export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 				const likers = Array.from(Array(likes), () => pluckRandomLiker()).filter(u => !!u)
 
 				// each liker likes the question
-				await Promise.all(likers.map(({accessToken, question}) => questionQuarry.likeQuestion({
-					accessToken,
-					like: true,
-					questionId: question.questionId,
-				})))
+				await Promise.all(likers.map(
+					({accessToken}) => questionQuarry.likeQuestion({
+						accessToken,
+						like: true,
+						questionId: question.questionId,
+					})
+				))
 			}))
 		},
 	])

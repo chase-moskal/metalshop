@@ -144,11 +144,9 @@ export async function makeMocks({
 		questionReportTable,
 		authorize,
 		generateId,
-		userCanPost: evaluators.isPremium,
 		userCanArchiveBoard: evaluators.isStaff,
-		userCanArchiveQuestion: (user, authorId) => {
-			return (evaluators.isStaff(user) || user.userId === authorId)
-		},
+		userCanPost: user => evaluators.isPremium(user) && !evaluators.isBanned(user),
+		userCanArchiveQuestion: (user, authorId) => evaluators.isStaff(user) || user.userId === authorId,
 	})
 
 	const liveshowLizard = makeLiveshowLizard({
