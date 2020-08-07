@@ -2,11 +2,12 @@
 # 🤘 metalshop
 
 &nbsp; &nbsp; 🕹 live demo: https://metalshop.dev  
+&nbsp; &nbsp; 🧪 [codepen demo](https://codepen.io/ChaseMoskal/pen/gOrbxRv?editors=1000) shows drop-in html usage  
 
 **open source web components, microservices, and infrastructure**  
 hello, my name is chase. metalshop is my dream project to perfect the art of building modern high-end cross-domain microservice-oriented isomorphic web applications. metalshop is a library, and this repository contains everything: frontend, backend, even continuous deployment. features like auth, users, profiles, paywalls and premium subscriptions, community features like forums and questions boards — you get it
 
-**plug and play**  
+**start making apps with plug-and-play html components**  
 metalshop is an easy-to-use extensible web-app starter kit, enabling webdevs from junior to expert to get started quickly and easily by plunking down html web components onto any webpage. there's a focus on developer experience, leveraging latest technologies, and exploring best practices. it's easy for juniors to use, but you can take the training wheels off: this is real heavy-duty app developer stuff
 
 **looking for collaborators**  
@@ -18,8 +19,8 @@ of course, i'm building my own apps with metalshop. and you should too! join me 
 &nbsp; &nbsp; 🌈 obsessive focus on idyllic developer experience  
 &nbsp; &nbsp; ⛲ big features as simple html web components  
 &nbsp; &nbsp; 🖧 node microservices: orchestrated kubernetes backend  
+&nbsp; &nbsp; 🔐 authentication and authorization: google login, token based  
 &nbsp; &nbsp; ♻️ isomorphic: robust mock mode runs all business logic on frontend  
-&nbsp; &nbsp; 🔐 authentication and authorization: token-based logins  
 &nbsp; &nbsp; 🃏 standardized user profiles: nicknames, avatars, stuff like that  
 &nbsp; &nbsp; 💳 paywalls and subscriptions: collecting the big bucks via stripe  
 &nbsp; &nbsp; 📺 private livestreams: for premium subscribers, via vimeo  
@@ -30,6 +31,10 @@ of course, i'm building my own apps with metalshop. and you should too! join me 
 &nbsp; &nbsp; 🎓 better documentation and readme: coming eventually  
 
 **🎁 "metalfront" web components**  
+&nbsp; &nbsp; i really need to document these  
+&nbsp; &nbsp; some of them require certain attributes or properties  
+&nbsp; &nbsp; come talk to me on the discord, link above somewhere  
+
 &nbsp; &nbsp; `<metal-config>` — *configure metalshop, server urls and stuff*  
 
 &nbsp; &nbsp; `<metal-account>` — *login, logout*  
@@ -50,10 +55,6 @@ of course, i'm building my own apps with metalshop. and you should too! join me 
 &nbsp; &nbsp; `<metal-is-loggedin>` — *display any dom content when user is logged in*  
 &nbsp; &nbsp; `<metal-is-premium>` — *display any dom content when user is subscribed*  
 &nbsp; &nbsp; `<metal-is-staff>` — *display any dom content when user is a staff member*  
-
-**📅 future features we could use help with**  
-&nbsp; &nbsp; community forum  
-&nbsp; &nbsp; more robust paywall systems  
 
 **🐋 "metalback" microservices**  
 &nbsp; &nbsp; ⭐ metalback/ — *metalshop's helm chart for kubernetes*  
