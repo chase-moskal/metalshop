@@ -147,8 +147,9 @@ cobalt-avatar {
 	padding: 1em;
 	font: inherit;
 	color: inherit;
-	background: transparent;
 	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	background: transparent;
 }
 
 textarea.content {
