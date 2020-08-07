@@ -88,7 +88,7 @@ export class CobaltAvatar extends MetalshopComponent<void> {
 			<div class=container ?data-is-premium=${premium} ?data-is-banned=${banned}>
 				<div class=avatar>
 					${avatar && !banned
-						? html`<img src=${avatar} alt="[avatar]"/>`
+						? html`<img crossorigin=anonymous src=${avatar} alt="[avatar]"/>`
 						: fallbackAvatar}
 				</div>
 				${this.renderBadges(user)}
