@@ -48,11 +48,11 @@ import {makeScheduleSentry} from "../../business/schedule/schedule-sentry.js"
 import {makeQuestionQuarry} from "../../business/questions/question-quarry.js"
 import {makeSettingsSheriff} from "../../business/settings/settings-sheriff.js"
 import {makePremiumPachyderm} from "../../business/paywall/premium-pachyderm.js"
+import {MockStripeTables} from "../../business/paywall/mocks/mock-stripe-types.js"
 import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circuit.js"
-import {verifyGoogleToken, signGoogleToken} from "../../business/core/mocks/mock-google-tokens.js"
+import {mockVerifyGoogleToken, mockSignGoogleToken} from "../../business/core/mocks/mock-google-tokens.js"
 
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
-import { MockStripeTables } from "../../business/paywall/mocks/mock-stripe-types.js"
 
 export type PrepareMockData = (options: {
 		authAardvark: AuthAardvarkTopic,
@@ -79,7 +79,7 @@ export async function makeMocks({
 	const day = minute * 60 * 24
 
 	const premiumStripePlanId = generateId()
-	const googleToken = await signGoogleToken({
+	const googleToken = await mockSignGoogleToken({
 		googleId: generateId(),
 		name: googleUserName,
 		avatar: googleUserAvatar,
@@ -113,7 +113,7 @@ export async function makeMocks({
 		return user
 	}
 
-	const claimsCardinal = makeClaimsCardinal({claimsTable})
+	const claimsCardinal = makeClaimsCardinal<MetalUser>({claimsTable})
 	const {authAardvark, userUmbrella} = makeCoreSystems({
 		claimsTable,
 		accountTable,
@@ -123,8 +123,8 @@ export async function makeMocks({
 		signToken,
 		verifyToken,
 		generateNickname,
-		verifyGoogleToken,
 		validateProfile: () => true,
+		verifyGoogleToken: mockVerifyGoogleToken,
 	})
 
 	const settingsSheriff = makeSettingsSheriff({
@@ -189,34 +189,36 @@ export async function makeMocks({
 	const triggerCheckoutPopup: TriggerCheckoutPopup
 		= async({stripeSessionId}) => null
 
-	const lag1 = 100
-	mockLatency(lag1, claimsTable)
-	mockLatency(lag1, accountTable)
-	mockLatency(lag1, profileTable)
-	mockLatency(lag1, questionTable)
-	mockLatency(lag1, liveshowTable)
-	mockLatency(lag1, settingsTable)
-	mockLatency(lag1, premiumGiftTable)
-	mockLatency(lag1, questionLikeTable)
-	mockLatency(lag1, stripeBillingTable)
-	mockLatency(lag1, stripePremiumTable)
-	mockLatency(lag1, scheduleEventTable)
-	mockLatency(lag1, questionReportTable)
-	mockLatency(lag1, mockStripeTables.customers)
-	mockLatency(lag1, mockStripeTables.setupIntents)
-	mockLatency(lag1, mockStripeTables.subscriptions)
-	mockLatency(lag1, mockStripeTables.paymentMethods)
-
-	const lag2 = 200
-	mockLatency(lag2, tokenStore)
-	mockLatency(lag2, userUmbrella)
-	mockLatency(lag2, liveshowLizard)
-	mockLatency(lag2, questionQuarry)
-	mockLatency(lag2, scheduleSentry)
-	mockLatency(lag2, settingsSheriff)
-	mockLatency(lag2, premiumPachyderm)
-	mockLatency(lag2, authAardvark)
-	mockLatency(lag2, claimsCardinal)
+	function applyMockLatency() {
+		const lag1 = 100
+		mockLatency(lag1, claimsTable)
+		mockLatency(lag1, accountTable)
+		mockLatency(lag1, profileTable)
+		mockLatency(lag1, questionTable)
+		mockLatency(lag1, liveshowTable)
+		mockLatency(lag1, settingsTable)
+		mockLatency(lag1, premiumGiftTable)
+		mockLatency(lag1, questionLikeTable)
+		mockLatency(lag1, stripeBillingTable)
+		mockLatency(lag1, stripePremiumTable)
+		mockLatency(lag1, scheduleEventTable)
+		mockLatency(lag1, questionReportTable)
+		mockLatency(lag1, mockStripeTables.customers)
+		mockLatency(lag1, mockStripeTables.setupIntents)
+		mockLatency(lag1, mockStripeTables.subscriptions)
+		mockLatency(lag1, mockStripeTables.paymentMethods)
+	
+		const lag2 = 200
+		mockLatency(lag2, tokenStore)
+		mockLatency(lag2, userUmbrella)
+		mockLatency(lag2, liveshowLizard)
+		mockLatency(lag2, questionQuarry)
+		mockLatency(lag2, scheduleSentry)
+		mockLatency(lag2, settingsSheriff)
+		mockLatency(lag2, premiumPachyderm)
+		mockLatency(lag2, authAardvark)
+		mockLatency(lag2, claimsCardinal)
+	}
 
 	return {
 		options: <MetalOptions>{
@@ -234,11 +236,12 @@ export async function makeMocks({
 			triggerCheckoutPopup,
 		},
 		mockeries: {
-			signToken,
-			verifyToken,
 			googleToken,
 			authAardvark,
 			claimsCardinal,
+			signToken,
+			verifyToken,
+			applyMockLatency,
 		},
 	}
 }

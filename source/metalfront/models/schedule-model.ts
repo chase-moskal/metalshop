@@ -24,7 +24,7 @@ export class ScheduleModel {
 		let event = this.events.find(e => e.label === event.name)
 		if (!event) {
 			event = await this.scheduleSentry.getEvent({label})
-			this.saveToCache(event)
+			if (event) this.saveToCache(event)
 		}
 		return event
 	}

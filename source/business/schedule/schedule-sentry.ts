@@ -18,7 +18,7 @@ export function makeScheduleSentry({
 			const row = await scheduleEventTable.one({
 				conditions: {equal: {label}}
 			})
-			return {
+			return row && {
 				label,
 				time: row.time,
 			}

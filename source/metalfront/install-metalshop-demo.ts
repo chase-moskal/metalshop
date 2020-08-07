@@ -1,16 +1,19 @@
 
 import {theme} from "./system/theme.js"
 import {makeMocks} from "./mocks/make-mocks.js"
+import {generateMockUser} from "./mocks/generate-mock-user.js"
 import {themeComponents} from "./framework/theme-components.js"
 import {assembleSupermodel} from "./startup/assemble-supermodel.js"
 import {wireComponentShares } from "./startup/wire-component-shares.js"
 
+import {hatPuller} from "../toolbox/hat-puller.js"
 import {randomSample} from "../toolbox/random8.js"
 import {parseQuery} from "./toolbox/parse-query.js"
 import {generateId} from "../toolbox/generate-id.js"
-import {hatPuller} from "../toolbox/hat-puller.js"
 
 import {AccessPayload, MetalScope, MetalUser} from "../types.js"
+import { AccessToken } from "../types/tokens.js"
+import { Question } from "../types/business.js"
 
 export async function installMetalshopDemo({mockAvatars, nicknameData}: {
 		mockAvatars: string[]
@@ -46,11 +49,12 @@ export async function installMetalshopDemo({mockAvatars, nicknameData}: {
 		premiumPachyderm,
 	} = options
 	const {
-		signToken,
-		verifyToken,
 		googleToken,
 		authAardvark,
 		claimsCardinal,
+		signToken,
+		verifyToken,
+		applyMockLatency,
 	} = mockeries
 
 	const minute = 1000 * 60
@@ -87,19 +91,113 @@ export async function installMetalshopDemo({mockAvatars, nicknameData}: {
 		lifespan: day * 365,
 	})
 
-	await liveshowLizard.setShow({
-		label: "livestream",
-		vimeoId: "109943349",
-		accessToken: mockAdminAccessToken,
-	})
+	async function makeUser({premium, tagline}: {
+			premium: boolean
+			tagline: string
+		}) {
+		let {user, accessToken, refreshToken} = await generateMockUser({
+			authAardvark,
+			verifyToken,
+			generateAvatar,
+		})
+		if (premium) {
+			await claimsCardinal.writeClaims({
+				userId: user.userId,
+				claims: {premiumUntil: Date.now() + (day * 30)},
+			})
+			accessToken = await authAardvark.authorize({scope: {core: true}, refreshToken})
+		}
+		await userUmbrella.setProfile({
+			userId: user.userId,
+			accessToken,
+			profile: {
+				...user.profile,
+				tagline,
+			},
+		})
+		return {user, accessToken}
+	}
 
-	await scheduleSentry.setEvent({
-		accessToken: mockAdminAccessToken,
-		event: {
-			label: "countdown1",
-			time: Date.now() + (day * 3.14159),
+	async function all(funcs: (() => Promise<void>)[]) {
+		return Promise.all(funcs.map(f => f()))
+	}
+
+	await all([
+		async() => {
+			await liveshowLizard.setShow({
+				label: "livestream",
+				vimeoId: "109943349",
+				accessToken: mockAdminAccessToken,
+			})
 		},
-	})
+		async() => {
+			await scheduleSentry.setEvent({
+				accessToken: mockAdminAccessToken,
+				event: {
+					label: "countdown1",
+					time: Date.now() + (day * 3.14159),
+				},
+			})
+		},
+		async() => {
+
+			// only do once per session
+			const key = "metalshop-demo-mockusers"
+			if (localStorage.getItem(key)) return
+			localStorage.setItem(key, "true")
+
+			const board = "qa1"
+			const users = await Promise.all([
+				makeUser({premium: true, tagline: "Victoria BC, Canada"}),
+				makeUser({premium: true, tagline: "professional badass"}),
+				makeUser({premium: true, tagline: "Deep Sea Diver"}),
+				makeUser({premium: true, tagline: "Podcaster"}),
+				makeUser({premium: true, tagline: "literally a wizard!!"}),
+				makeUser({premium: true, tagline: "THE REAL DEAL"}),
+			])
+
+			async function postQuestion({accessToken}: {accessToken: AccessToken}, content: string) {
+				return questionQuarry.postQuestion({
+					accessToken: accessToken,
+					draft: {board, content},
+				})
+			}
+
+			async function questionLikes({questionId}: Question, likers: {accessToken: AccessToken}[]) {
+				for (const {accessToken} of likers) {
+					await questionQuarry.likeQuestion({
+						like: true,
+						questionId,
+						accessToken,
+					})
+				}
+			}
+
+			await claimsCardinal.writeClaims({
+				userId: users[4].user.userId,
+				claims: {
+					banUntil: Date.now() + (day * 14),
+					banReason: "posted rude question",
+				},
+			})
+
+			const questions = await Promise.all([
+				postQuestion(users[0], "how many hexadecimal digits are reasonable to avoid birthday-problem collisions when generating id's in the system?"),
+				postQuestion(users[1], "What's the number of starts in the milky way galaxy?"),
+				postQuestion(users[2], "why is the sky blue? is there a planet with a green sky?"),
+				postQuestion(users[3], "The Pyramids. WERE THEY CREATED BY ALIENS"),
+				postQuestion(users[4], "I THINK STEVEN SEAGAL IS GAY??"),
+				postQuestion(users[5], "i don't even care 👉😎👉"),
+			])
+
+			await Promise.all([
+				questionLikes(questions[0], [users[0], users[1], users[2], users[3], users[4]]),
+				questionLikes(questions[1], [users[0], users[1], users[2], users[3], users[4]]),
+				questionLikes(questions[2], [users[1], users[2], users[3]]),
+				questionLikes(questions[3], [users[1]]),
+			])
+		},
+	])
 
 	if (startLoggedIn || startAdmin || startStaff || startPremium || startBanned) {
 		const authTokens = await authAardvark.authenticateViaGoogle({googleToken})
@@ -131,6 +229,8 @@ export async function installMetalshopDemo({mockAvatars, nicknameData}: {
 			await tokenStore.writeTokens(authTokens)
 		}
 	}
+
+	applyMockLatency()
 
 	//
 	// metalshop installation and startup

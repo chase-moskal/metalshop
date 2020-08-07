@@ -81,12 +81,13 @@ export class CobaltAvatar extends MetalshopComponent<void> {
 	render() {
 		const {user, fallbackAvatar} = this
 		const avatar = user?.profile.avatar
+		const banned = evaluators.isBanned(user)
 		const premium = evaluators.isPremium(user)
 
 		return html`
-			<div class=container ?data-is-premium=${premium}>
+			<div class=container ?data-is-premium=${premium} ?data-is-banned=${banned}>
 				<div class=avatar>
-					${avatar
+					${avatar && !banned
 						? html`<img src=${avatar} alt="[avatar]"/>`
 						: fallbackAvatar}
 				</div>
