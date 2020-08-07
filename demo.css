@@ -199,9 +199,6 @@ details[open] > summary {
 	70% {
 		transform: translateY(-0.2em);
 	}
-	98% {
-		transform: translateY(-0.15em);
-	}
 	100% {
 		opacity: 1;
 		transform: none;

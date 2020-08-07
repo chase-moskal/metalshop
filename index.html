@@ -36,14 +36,15 @@
 		<main class="content">
 			<section class="twoside">
 				<section>
-					<h2>metalshop is open source love</h2>
-					<p>hi, i'm chase moskal, and metalshop is my open source journey into modern javascript app architecture and infrastructure</p>
-					<p>see the <strong><a href="https://github.com/chase-moskal/metalshop#readme">metalshop readme</a></strong> on github for more details</p>
+					<h2>welcome to the proving grounds</h2>
+					<p>see the <strong><a href="https://github.com/chase-moskal/metalshop#readme">metalshop readme</a></strong> on github</p>
+					<p>this is a testing playground used during development</p>
+					<p>some of the component tests below will give you an idea of metalshop's capabilities</p>
+					<p>this page operates in a local testing mock mode. this demo is operating without connecting to any microservices. instead, all of the system's business logic is running locally in your browser, using mocked database connections</p>
+					<p>the database state is persisted in localstorage. you can clear it with the reset button below</p>
 				</section>
 				<section>
-					<h2>this is the demo/dev page</h2>
-					<p>so go ahead and play around, login at the top right!</p>
-					<h3>mix-and-match mock mode</h3>
+					<h2>mix-and-match mock mode</h2>
 					<p>"mock" querystring generates new account on page load</p>
 					<ul>
 						<li><a href="/?mock=loggedin">/?mock=loggedin</a> ← start logged in</li>
@@ -125,6 +126,7 @@
 					<summary>&lt;metal-button-*&gt;</summary>
 					<div>
 						<metal-button-auth></metal-button-auth>
+						<br/>
 						<metal-button-premium></metal-button-premium>
 					</div>
 				</details>

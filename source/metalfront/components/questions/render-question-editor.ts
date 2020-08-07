@@ -12,7 +12,7 @@ export function renderQuestionEditor({
 		maxCharacterLimit,
 		handleTextAreaChange,
 		author = {
-			userId: "FAKE_USER_UD",
+			userId: "",
 			claims: {
 				admin: false,
 				staff: undefined,
@@ -23,9 +23,9 @@ export function renderQuestionEditor({
 			},
 			profile: {
 				avatar: null,
-				userId: "FAKE_USER_ID",
-				tagline: "fake_tagline",
-				nickname: "FAKE_NICKNAME",
+				userId: "",
+				tagline: "",
+				nickname: "",
 			},
 		},
 	}: {
