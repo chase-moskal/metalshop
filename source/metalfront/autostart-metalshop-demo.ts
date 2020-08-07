@@ -10,6 +10,7 @@ import {adjectives, animals, colors} from "../toolbox/nickname-dictionaries.js"
 ~async function startMetalshopDemo() {
 
 	const {components, start} = await installMetalshopDemo({
+		metalshopRoot: ".",
 		mockAvatars,
 		nicknameData: [
 			[...adjectives, ...colors],

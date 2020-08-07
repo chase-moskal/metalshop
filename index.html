@@ -39,25 +39,18 @@
 				<section>
 					<h2>metalshop is open source love</h2>
 					<p>hi, i'm chase moskal, and metalshop is my open source journey into modern javascript app architecture and infrastructure</p>
-					<p></p>
-					<p><a href="https://github.com/chase-moskal/metalshop">metalshop on github</a></p>
-					<h3>app features as web components</h3>
-					<p>features like user logins and paywalls and stuff are implemented as web components, whose pastable and customizable html snippets can be freely sprinked around your web apps</p>
-					<h3>authentication and authorization</h3>
-					<p>metalshop's plug-and-play token-based auth system works cross-domain and is built for node microservices</p>
-					<h3>microservices orchestrated on kubernetes</h3>
-					<p>metalshop comes with a bunch of node microservices, which are organized as a helm chart called "metalback", deployable to any cloud provider</p>
+					<p>see the <strong><a href="https://github.com/chase-moskal/metalshop#readme">metalshop readme</a></strong> on github for more details</p>
 				</section>
 				<section>
 					<h2>this is the demo/dev page</h2>
 					<p>so go ahead and play around, login at the top right!</p>
-					<p>remember, this stuff is work-in-progress, so some stuff doesn't work yet in various modes</p>
-					<h3>Mix-and-match mock mode</h3>
+					<h3>mix-and-match mock mode</h3>
+					<p>"mock" querystring generates new account on page load</p>
 					<ul>
-						<li><a href="/?mock">/?mock</a> ← start logged out</li>
 						<li><a href="/?mock=loggedin">/?mock=loggedin</a> ← start logged in</li>
 						<li><a href="/?mock=loggedin+open">/?mock=loggedin+open</a> ← with menu open</li>
 						<li><a href="/?mock=loggedin+banned">/?mock=loggedin+banned</a> ← be banned</li>
+						<li><a href="/?mock=loggedin+staff">/?mock=loggedin+staff</a> ← be staff member</li>
 						<li><a href="/?mock=loggedin+admin">/?mock=loggedin+admin</a> ← be an administrator</li>
 						<li><a href="/?mock=loggedin+premium">/?mock=loggedin+premium</a> ← be a premium user</li>
 						<li><a href="/?mock=loggedin+premium+admin">/?mock=loggedin+premium+admin</a> ← god mode</li>

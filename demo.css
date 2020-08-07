@@ -122,21 +122,24 @@ main > iron-reset {
 	flex: 0 0 48%;
 }
 
-.twoside * + p {
-	padding-top: 0.25em;
+.twoside > section > * + p {
+	padding-top: 0.3rem;
 }
 
-.twoside * + h2,
-.twoside * + h3,
-.twoside * + h4 {
-	padding-top: 0.5em;
+.twoside > section > * + h1,
+.twoside > section > * + h2,
+.twoside > section > * + h3,
+.twoside > section > * + h4,
+.twoside > section > * + h5,
+.twoside > section > * + h6 {
+	padding-top: 0.6rem;
 }
 
 .twoside ol, .twoside ul {
 	padding-left: 1.5em;
 }
 
-@media (max-width: 550px) {
+@media (max-width: 800px) {
 	.twoside {
 		flex-direction: column;
 	}

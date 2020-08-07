@@ -11,11 +11,10 @@ import {randomSample} from "../toolbox/random8.js"
 import {parseQuery} from "./toolbox/parse-query.js"
 import {generateId} from "../toolbox/generate-id.js"
 
-import {AccessPayload, MetalScope, MetalUser} from "../types.js"
-import { AccessToken } from "../types/tokens.js"
-import { Question } from "../types/business.js"
+import {AccessPayload, MetalScope, MetalUser, AccessToken, Question} from "../types.js"
 
-export async function installMetalshopDemo({mockAvatars, nicknameData, mockQuestionData}: {
+export async function installMetalshopDemo({metalshopRoot, mockAvatars, nicknameData, mockQuestionData}: {
+		metalshopRoot: string
 		mockAvatars: string[]
 		nicknameData: string[][]
 		mockQuestionData: {
@@ -23,6 +22,23 @@ export async function installMetalshopDemo({mockAvatars, nicknameData, mockQuest
 			taglines: [string, string, string, string, string, string],
 		},
 	}) {
+
+	// get version, and reset on version change
+	{
+		const packageFetch = await fetch(`${metalshopRoot}/package.json`)
+		const {version} = await packageFetch.json()
+		console.log(`metalshop version: ${version}`)
+		const key = "metalshop-version"
+		const previousVersion = localStorage.getItem(key)
+		if (previousVersion) {
+			if (version !== previousVersion) {
+				console.log(`new metalshop version (previously ${previousVersion}), wiping storage`)
+				localStorage.clear()
+				sessionStorage.clear()
+			}
+		}
+		localStorage.setItem(key, version)
+	}
 
 	const generateAvatar = hatPuller(mockAvatars)
 
