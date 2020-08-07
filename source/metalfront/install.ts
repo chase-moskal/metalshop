@@ -9,7 +9,7 @@ import {themeComponents} from "./framework/theme-components.js"
 import {assembleSupermodel} from "./startup/assemble-supermodel.js"
 import {wireComponentShares} from "./startup/wire-component-shares.js"
 
-export async function installMetalshop(options?: MetalOptions) {
+export async function install(options?: MetalOptions) {
 	options = options || await optionsFromDom(metalConfigTagName)
 	const supermodel = assembleSupermodel(options)
 	const wiredComponents = wireComponentShares(supermodel)

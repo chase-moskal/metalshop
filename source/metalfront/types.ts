@@ -16,7 +16,6 @@ import {
 	QuestionDraft,
 	TokenStoreTopic,
 	UserUmbrellaTopic,
-	AuthAardvarkTopic,
 	ScheduleSentryTopic,
 	QuestionQuarryTopic,
 	LiveshowLizardTopic,
@@ -33,7 +32,6 @@ import {LiveshowViewModel, LiveshowModel} from "./models/liveshow-model.js"
 
 import * as loading from "./toolbox/loading.js"
 import {Logger} from "../toolbox/logger/interfaces.js"
-import { ClaimsCardinalTopic } from "../types/topics.js"
 
 ////////////////////////
 
@@ -120,6 +118,16 @@ export interface QuestionQuarryUi {
 	archiveBoard(o: {
 			board: string
 		}): Promise<void>
+}
+
+export interface MockQuestion {
+	tagline: string
+	content: string
+	likes: number
+	ban?: {
+		days: number
+		reason: string
+	}
 }
 
 export interface VideoPayload {

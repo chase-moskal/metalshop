@@ -11,21 +11,19 @@ import {randomSample} from "../toolbox/random8.js"
 import {parseQuery} from "./toolbox/parse-query.js"
 import {generateId} from "../toolbox/generate-id.js"
 
-import {AccessPayload, MetalScope, MetalUser, AccessToken, Question} from "../types.js"
+import {MockQuestion} from "./types.js"
+import {AccessPayload, MetalScope, MetalUser} from "../types.js"
 
-export async function installMetalshopDemo({metalshopRoot, mockAvatars, nicknameData, mockQuestionData}: {
-		metalshopRoot: string
+export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 		mockAvatars: string[]
 		nicknameData: string[][]
-		mockQuestionData: {
-			contents: [string, string, string, string, string, string],
-			taglines: [string, string, string, string, string, string],
-		},
+		mockQuestions: MockQuestion[]
 	}) {
 
 	// get version, and reset on version change
 	{
-		const packageFetch = await fetch(`${metalshopRoot}/package.json`)
+		const packagePath = new URL("../../package.json", import.meta.url).toString()
+		const packageFetch = await fetch(packagePath)
 		const {version} = await packageFetch.json()
 		console.log(`metalshop version: ${version}`)
 		const key = "metalshop-version"
@@ -143,6 +141,8 @@ export async function installMetalshopDemo({metalshopRoot, mockAvatars, nickname
 	}
 
 	await all([
+
+		// set demo liveshow
 		async() => {
 			await liveshowLizard.setShow({
 				label: "livestream",
@@ -150,6 +150,8 @@ export async function installMetalshopDemo({metalshopRoot, mockAvatars, nickname
 				accessToken: mockAdminAccessToken,
 			})
 		},
+
+		// set demo countdown schedule
 		async() => {
 			await scheduleSentry.setEvent({
 				accessToken: mockAdminAccessToken,
@@ -159,50 +161,60 @@ export async function installMetalshopDemo({metalshopRoot, mockAvatars, nickname
 				},
 			})
 		},
-		async() => {
 
-			// only do once per session
+		// create mock questions (create users, post questions, perform likes)
+		async() => {
+			const board = "qa1"
+
+			// only post questions once per session
 			const key = "metalshop-demo-mockusers"
 			if (localStorage.getItem(key)) return
 			localStorage.setItem(key, "true")
-			const {contents, taglines} = mockQuestionData
 
-			const board = "qa1"
-			const users = await Promise.all(taglines.map(tagline => makeUser({premium: true, tagline})))
+			const units = await Promise.all(mockQuestions.map(async({tagline, content, ban, likes}) => {
 
-			async function postQuestion({accessToken}: {accessToken: AccessToken}, content: string) {
-				return questionQuarry.postQuestion({
-					accessToken: accessToken,
+				// create each mock user
+				const {user, accessToken} = await makeUser({premium: true, tagline})
+
+				// ban the user if that's what's called for
+				if (ban) await claimsCardinal.writeClaims({
+					userId: user.userId,
+					claims: {
+						banUntil: Date.now() + (ban.days * 14),
+						banReason: ban.reason,
+					}
+				})
+
+				// make this user post a question
+				const question = await questionQuarry.postQuestion({
+					accessToken,
 					draft: {board, content},
 				})
-			}
 
-			async function questionLikes({questionId}: Question, likers: {accessToken: AccessToken}[]) {
-				for (const {accessToken} of likers) {
-					await questionQuarry.likeQuestion({
-						like: true,
-						questionId,
-						accessToken,
-					})
+				return {user, accessToken, question, likes}
+			}))
+
+			// for each user-question pair, perform the likes called for
+			await Promise.all(units.map(async({likes}) => {
+
+				// randomly select users who will perform each like
+				const likerPool = [...units]
+				function pluckRandomLiker() {
+					if (likerPool.length === 0) return undefined
+					const index = Math.floor(Math.random() * likerPool.length)
+					const liker = likerPool[index]
+					likerPool.splice(index, 1)
+					return liker
 				}
-			}
+				const likers = Array.from(Array(likes), () => pluckRandomLiker()).filter(u => !!u)
 
-			await claimsCardinal.writeClaims({
-				userId: users[4].user.userId,
-				claims: {
-					banUntil: Date.now() + (day * 14),
-					banReason: "posted rude question",
-				},
-			})
-
-			const questions = await Promise.all(contents.map((content, i) => postQuestion(users[i], content)))
-
-			await Promise.all([
-				questionLikes(questions[0], [users[0], users[1], users[2], users[3], users[4]]),
-				questionLikes(questions[1], [users[0], users[1], users[2], users[3], users[4]]),
-				questionLikes(questions[2], [users[1], users[2], users[3]]),
-				questionLikes(questions[3], [users[1]]),
-			])
+				// each liker likes the question
+				await Promise.all(likers.map(({accessToken, question}) => questionQuarry.likeQuestion({
+					accessToken,
+					like: true,
+					questionId: question.questionId,
+				})))
+			}))
 		},
 	])
 
