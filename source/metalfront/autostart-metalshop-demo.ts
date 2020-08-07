@@ -15,6 +15,24 @@ import {adjectives, animals, colors} from "../toolbox/nickname-dictionaries.js"
 			[...adjectives, ...colors],
 			[...animals],
 		],
+		mockQuestionData: {
+			taglines: [
+				"Victoria BC, Canada",
+				"Deep Sea Diver",
+				"podcaster extraordinaire",
+				"Literally a wizard!! 🔬",
+				"THE REAL DEAL",
+				"professional badass",
+			],
+			contents: [
+				"how many hexadecimal digits are reasonable to avoid birthday-problem collisions when generating id's in the system?",
+				"What's the number of starts in the milky way galaxy?",
+				"why is the sky blue? is there a planet with a green sky?",
+				"The Pyramids. WERE THEY CREATED BY ALIENS",
+				"I THINK STEVEN SEAGAL IS GAY??",
+				"i don't even care 👉😎👉",
+			],
+		},
 	})
 
 	registerComponents({

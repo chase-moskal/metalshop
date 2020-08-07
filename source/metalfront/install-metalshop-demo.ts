@@ -15,9 +15,13 @@ import {AccessPayload, MetalScope, MetalUser} from "../types.js"
 import { AccessToken } from "../types/tokens.js"
 import { Question } from "../types/business.js"
 
-export async function installMetalshopDemo({mockAvatars, nicknameData}: {
+export async function installMetalshopDemo({mockAvatars, nicknameData, mockQuestionData}: {
 		mockAvatars: string[]
 		nicknameData: string[][]
+		mockQuestionData: {
+			contents: [string, string, string, string, string, string],
+			taglines: [string, string, string, string, string, string],
+		},
 	}) {
 
 	const generateAvatar = hatPuller(mockAvatars)
@@ -145,16 +149,10 @@ export async function installMetalshopDemo({mockAvatars, nicknameData}: {
 			const key = "metalshop-demo-mockusers"
 			if (localStorage.getItem(key)) return
 			localStorage.setItem(key, "true")
+			const {contents, taglines} = mockQuestionData
 
 			const board = "qa1"
-			const users = await Promise.all([
-				makeUser({premium: true, tagline: "Victoria BC, Canada"}),
-				makeUser({premium: true, tagline: "professional badass"}),
-				makeUser({premium: true, tagline: "Deep Sea Diver"}),
-				makeUser({premium: true, tagline: "Podcaster"}),
-				makeUser({premium: true, tagline: "literally a wizard!!"}),
-				makeUser({premium: true, tagline: "THE REAL DEAL"}),
-			])
+			const users = await Promise.all(taglines.map(tagline => makeUser({premium: true, tagline})))
 
 			async function postQuestion({accessToken}: {accessToken: AccessToken}, content: string) {
 				return questionQuarry.postQuestion({
@@ -181,14 +179,7 @@ export async function installMetalshopDemo({mockAvatars, nicknameData}: {
 				},
 			})
 
-			const questions = await Promise.all([
-				postQuestion(users[0], "how many hexadecimal digits are reasonable to avoid birthday-problem collisions when generating id's in the system?"),
-				postQuestion(users[1], "What's the number of starts in the milky way galaxy?"),
-				postQuestion(users[2], "why is the sky blue? is there a planet with a green sky?"),
-				postQuestion(users[3], "The Pyramids. WERE THEY CREATED BY ALIENS"),
-				postQuestion(users[4], "I THINK STEVEN SEAGAL IS GAY??"),
-				postQuestion(users[5], "i don't even care 👉😎👉"),
-			])
+			const questions = await Promise.all(contents.map((content, i) => postQuestion(users[i], content)))
 
 			await Promise.all([
 				questionLikes(questions[0], [users[0], users[1], users[2], users[3], users[4]]),
