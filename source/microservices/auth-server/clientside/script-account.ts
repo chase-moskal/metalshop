@@ -1,9 +1,9 @@
 
-import {unpackCorsConfig} from "authoritarian/dist/toolbox/unpack-cors-config.js"
-import {setupAccountPopup} from "authoritarian/dist/business/auth/account-popup/setup-account-popup.js"
+import {unpackCorsConfig} from "../../../toolbox/unpack-cors-config.js"
+import {setupAccountPopup} from "../../../business/core/account-popup/setup-account-popup.js"
 
+import {AccountSettings} from "./types.js"
 import {prepareAuth} from "./auth/prepare-auth.js"
-import {AccountSettings} from "./interfaces.js"
 
 declare global {
 	interface Window {
@@ -14,10 +14,10 @@ declare global {
 }
 
 window.start = function start() {
-	const {settings} = window
-	const auth = prepareAuth(settings.googleAuthDetails)
-	const cors = unpackCorsConfig(settings.cors)
-	setupAccountPopup({auth, cors})
+	// const {settings} = window
+	// const auth = prepareAuth(settings.googleAuthDetails)
+	// const cors = unpackCorsConfig(settings.cors)
+	// setupAccountPopup({auth, cors})
 }
 
 if (window.startReady) window.start()

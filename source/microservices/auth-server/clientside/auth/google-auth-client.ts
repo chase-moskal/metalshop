@@ -3,7 +3,7 @@ import {
 	GoogleAuthFixed,
 	GoogleAuthDetails,
 	GoogleAuthClientInterface,
-} from "../interfaces.js"
+} from "../types.js"
 
 export class GoogleAuthClient implements GoogleAuthClientInterface {
 	private _googleAuth: GoogleAuthFixed

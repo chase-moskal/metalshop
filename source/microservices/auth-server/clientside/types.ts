@@ -1,5 +1,5 @@
 
-import {CorsConfig} from "authoritarian/dist/interfaces.js"
+import {CorsConfig} from "../../../types.js"
 
 export interface AccountConfig {
 	cors: CorsConfig
