@@ -1,6 +1,6 @@
 
 export * from "mobx"
-import {objectMap} from "../toolbox/object-map.js"
+import {objectMap} from "../../toolbox/object-map.js"
 import {action, computed, observable, IAction, IComputed, IObservable} from "mobx"
 
 export type Amend<T extends {}> = {[K in keyof T]: T[K]}

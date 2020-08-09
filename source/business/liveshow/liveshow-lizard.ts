@@ -6,7 +6,7 @@ import {
 	LiveshowLizardTopic,
 } from "../../types.js"
 
-import {DbbyTable} from "../../toolbox/dbby/types.js"
+import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 
 export function makeLiveshowLizard({
 		liveshowTable,

@@ -1,6 +1,6 @@
 
 import {Stripe} from "../../../commonjs/stripe.js"
-import {DbbyTable} from "../../../toolbox/dbby/types.js"
+import {DbbyTable} from "../../../toolbox/dbby/dbby-types.js"
 
 export interface MockCustomer extends Partial<Stripe.Customer> {
 	id: string

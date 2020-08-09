@@ -36,6 +36,15 @@ export default <Suite>{
 					).ok()
 			)
 		},
+		"read one with by property not set": async() => {
+			const dbby = await setupThreeUserDemo()
+			await dbby.create({userId: "u999", balance: 1, location: undefined})
+			return expect(
+				(
+					await dbby.one({conditions: {notSet: {location: true}}})
+				).userId
+			).equals("u999")
+		},
 		"assert one": async() => {
 			const dbby = await setupThreeUserDemo()
 			const fallback: DemoUser = {
@@ -58,7 +67,21 @@ export default <Suite>{
 					).equals("russia")
 			)
 		},
-		"read with single sets of conditions": async() => {
+		"read sorting via order": async() => {
+			const dbby = await setupThreeUserDemo()
+			const result1 = await dbby.read({conditions: false, order: {balance: "ascend"}})
+			const result2 = await dbby.read({conditions: false, order: {balance: "descend"}})
+			return expect(result1[0].balance).equals(-100)
+				&& expect(result2[0].balance).equals(100)
+		},
+		"read pagination, limit and offset": async() => {
+			const dbby = await setupThreeUserDemo()
+			const result1 = await dbby.read({conditions: false, limit: 2})
+			const result2 = await dbby.read({conditions: false, limit: 2, offset: 1})
+			return expect(result1.length).equals(2)
+				&& expect(result2[0].userId).equals("u124")
+		},
+		"read with single conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true
 				&& expect([
@@ -81,7 +104,10 @@ export default <Suite>{
 						await dbby.read({conditions: {less: {balance: 50}}})
 					).length).equals(2)
 				&& expect((
-						await dbby.read({conditions: {includes: {location: "can"}}})
+						await dbby.read({conditions: {search: {location: "can"}}})
+					).length).equals(2)
+				&& expect((
+						await dbby.read({conditions: {search: {location: /can/}}})
 					).length).equals(2)
 			)
 		},

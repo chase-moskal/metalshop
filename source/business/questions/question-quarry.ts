@@ -1,5 +1,5 @@
 
-import {DbbyTable} from "../../toolbox/dbby/types.js"
+import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {concurrent} from "../../toolbox/concurrent.js"
 import {QuestionQuarryTopic, QuestionRow, QuestionLikeRow, QuestionReportRow, MetalUser, UserUmbrellaTopic, Question, Authorizer} from "../../types.js"
 

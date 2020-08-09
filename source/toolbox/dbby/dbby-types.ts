@@ -11,23 +11,23 @@ export type DbbyRow<T extends {} = {}> = {
 }
 
 export interface DbbyConditions<Row extends DbbyRow> {
+	set?: Partial<{[P in keyof Row]: true}>
 	equal?: Partial<Row>
-	truthy?: Partial<Row>
-	falsy?: Partial<Row>
 	less?: Partial<Row>
 	lessy?: Partial<Row>
 	greater?: Partial<Row>
 	greatery?: Partial<Row>
-	includes?: Partial<Row>
+	listed?: Partial<Row>
+	search?: Partial<{[P in keyof Row]: string | RegExp}>
 
+	notSet?: Partial<{[P in keyof Row]: true}>
 	notEqual?: Partial<Row>
-	notTruthy?: Partial<Row>
-	notFalsy?: Partial<Row>
 	notLess?: Partial<Row>
 	notLessy?: Partial<Row>
 	notGreater?: Partial<Row>
 	notGreatery?: Partial<Row>
-	notIncludes?: Partial<Row>
+	notListed?: Partial<Row>
+	notSearch?: Partial<{[P in keyof Row]: string | RegExp}>
 }
 
 export interface DbbyNonConditional {
@@ -54,9 +54,14 @@ export type DbbyConditional<Row extends DbbyRow> =
 	| DbbyMultiConditional<Row>
 	| DbbyNonConditional
 
+export type DbbyOrder<Row extends DbbyRow> = Partial<{
+	[P in keyof Row]: "ascend" | "descend" | undefined
+}>
+
 export type DbbyPaginated<Row extends DbbyRow> = DbbyConditional<Row> & {
-	max?: number
+	limit?: number
 	offset?: number
+	order?: Partial<{[P in keyof Row]: "ascend" | "descend" | undefined}>
 }
 
 export type DbbyAssertion<Row extends DbbyRow> = DbbyConditional<Row> & {
@@ -64,7 +69,7 @@ export type DbbyAssertion<Row extends DbbyRow> = DbbyConditional<Row> & {
 }
 
 export interface DbbyTable<Row extends DbbyRow> {
-	create(row: Row): Promise<void>
+	create(row: Row, ...args: Row[]): Promise<void>
 	read(options: DbbyPaginated<Row>): Promise<Row[]>
 	one(options: DbbyConditional<Row>): Promise<Row>
 	assert(options: DbbyAssertion<Row>): Promise<Row>

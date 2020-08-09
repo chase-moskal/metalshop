@@ -1,6 +1,6 @@
 
 import {User} from "../types.js"
-import {DbbyValue} from "../toolbox/dbby/types.js"
+import {DbbyValue} from "../toolbox/dbby/dbby-types.js"
 
 export * from "redcrypto/dist/types.js"
 

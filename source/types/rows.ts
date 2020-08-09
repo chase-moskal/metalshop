@@ -1,5 +1,5 @@
 
-import {DbbyRow} from "../toolbox/dbby/types.js"
+import {DbbyRow} from "../toolbox/dbby/dbby-types.js"
 import {MetalClaims, MetalProfile, MetalSettings, CardClues} from "../types.js"
 
 export interface AccountRow extends DbbyRow<AccountRow> {

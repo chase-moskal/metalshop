@@ -1,5 +1,5 @@
 
-import {DbbyTable} from "../../toolbox/dbby/types.js"
+import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {SettingsSheriffTopic, MetalSettings, SettingsRow, Authorizer} from "../../types.js"
 
 export function makeSettingsSheriff<S extends MetalSettings>({settingsTable, authorize}: {

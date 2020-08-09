@@ -1,5 +1,5 @@
 
-import {DbbyRow, DbbyStorage} from "./types.js"
+import {DbbyRow, DbbyStorage} from "./dbby-types.js"
 import {SimpleStorage, makeJsonStorage} from "../json-storage.js"
 
 const indexKey = "dbby-index"

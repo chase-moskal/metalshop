@@ -2,7 +2,7 @@
 import {mockSignToken} from "redcrypto/dist/curries/mock-sign-token.js"
 import {mockVerifyToken} from "redcrypto/dist/curries/mock-verify-token.js"
 
-import {DbbyTable} from "../../toolbox/dbby/types.js"
+import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {generateId} from "../../toolbox/generate-id.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"

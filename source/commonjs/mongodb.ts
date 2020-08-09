@@ -8,6 +8,7 @@ const mongodb: typeof _mongodb = require("mongodb") as typeof _mongodb
 type Db = _mongodb.Db
 type ObjectID = _mongodb.ObjectID
 type Collection = _mongodb.Collection
+type FilterQuery<T> = _mongodb.FilterQuery<T>
 
 // values
 const {
@@ -21,6 +22,7 @@ export {
 	Db,
 	ObjectID,
 	Collection,
+	FilterQuery,
 	
 	// values
 	ObjectId,

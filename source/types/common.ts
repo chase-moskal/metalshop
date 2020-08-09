@@ -1,5 +1,5 @@
 
-import {DbbyValue} from "../toolbox/dbby/types.js"
+import {DbbyValue} from "../toolbox/dbby/dbby-types.js"
 
 //
 // bare-bones unopinionated agnostic basics

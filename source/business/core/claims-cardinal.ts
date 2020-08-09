@@ -1,5 +1,5 @@
 
-import {DbbyTable} from "../../toolbox/dbby/types.js"
+import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {User, ClaimsRow, ClaimsCardinalTopic} from "../../types.js"
 
 export function makeClaimsCardinal<U extends User>({claimsTable}: {

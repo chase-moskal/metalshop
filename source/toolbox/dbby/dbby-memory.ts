@@ -1,5 +1,7 @@
 
-import {DbbyTable, DbbyRow, DbbyConditions, DbbyMultiConditional, DbbyConditional, DbbySingleConditional, DbbyUpdateAmbiguated, DbbyStorage} from "./types.js"
+import {evaluateConditional} from "./dbby-common.js"
+
+import {DbbyTable, DbbyRow, DbbyConditions, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage} from "./dbby-types.js"
 
 export function dbbyMemory<Row extends DbbyRow>({
 		dbbyStorage,
@@ -40,13 +42,23 @@ export function dbbyMemory<Row extends DbbyRow>({
 
 	return {
 
-		async create(row) {
-			insertCopy(row)
+		async create(...rows) {
+			for (const row of rows) insertCopy(row)
 			save()
 		},
 
-		async read({max = 1000, offset = 0, ...conditional}) {
-			return copy(select(conditional).slice(offset * max, offset + max))
+		async read({order, offset = 0, limit = 1000, ...conditional}) {
+			const rows = copy(select(conditional))
+			if (order) {
+				for (const [key, value] of Object.entries(order)) {
+					rows.sort((a, b) =>
+						value === "ascend"
+							? a[key] > b[key] ? 1 : -1
+							: a[key] > b[key] ? -1 : 1
+					)
+				}
+			}
+			return rows.slice(offset, offset + limit)
 		},
 
 		async one(conditional) {
@@ -66,17 +78,16 @@ export function dbbyMemory<Row extends DbbyRow>({
 
 		async update({write, whole, upsert, ...conditional}: DbbyUpdateAmbiguated<Row>) {
 			const rows = select(conditional)
-			if (write) {
-				if (rows.length) updateRow(rows, write)
-				else throw new Error("no row to update")
-			}
-			else if (whole) {
-				eliminateRow(conditional)
-				insertCopy(whole)
+			if (write && rows.length) {
+				updateRow(rows, write)
 			}
 			else if (upsert) {
 				if (rows.length) updateRow(rows, upsert)
 				else insertCopy(upsert)
+			}
+			else if (whole) {
+				eliminateRow(conditional)
+				insertCopy(whole)
 			}
 			else throw new Error("invalid update")
 			save()
@@ -118,13 +129,22 @@ function rowVersusConditional<Row extends {}>(
 		row: Row,
 		conditional: DbbyConditional<Row>,
 	): boolean {
+	const {
+		nonConditional,
+		multiConditional,
+		singleConditional,
+	} = evaluateConditional(conditional)
 
-	// evaluate multi conditional
-	if ((<DbbyMultiConditional<Row>>conditional).multi) {
-		const multipleConditional = <DbbyMultiConditional<Row>>conditional
-		const and = multipleConditional.multi === "and"
+	if (nonConditional) {
+		return true
+	}
+	else if (singleConditional) {
+		return rowVersusConditions<Row>(row, singleConditional.conditions)
+	}
+	else if (multiConditional) {
+		const and = multiConditional.multi === "and"
 		let finalResult = and
-		for (const conditions of multipleConditional.conditions) {
+		for (const conditions of multiConditional.conditions) {
 			const result = rowVersusConditions<Row>(row, conditions)
 			finalResult = and
 				? finalResult && result
@@ -132,15 +152,7 @@ function rowVersusConditional<Row extends {}>(
 		}
 		return finalResult
 	}
-
-	// evaluate single conditional
-	else if ((<DbbySingleConditional<Row>>conditional).conditions) {
-		const singleConditional = <DbbySingleConditional<Row>>conditional
-		return rowVersusConditions<Row>(row, singleConditional.conditions)
-	}
-
-	// no conditions
-	else return true
+	else throw new Error("failed conditional evaluation")
 }
 
 function rowVersusConditions<Row extends {}>(
@@ -152,31 +164,48 @@ function rowVersusConditions<Row extends {}>(
 
 	let failures = 0
 
+	type Evaluator = (a: any, b: any) => boolean
+
 	const check = (
-			conditional: Partial<Row>,
-			evaluator: (a: any, b: any) => boolean
+			conditions: Partial<{[P in keyof Row]: any}>,
+			evaluator: Evaluator
 		) => {
-		if (conditional && !compare(row, conditional, evaluator))
+		if (conditions && !compare(row, conditions, evaluator))
 			failures += 1
 	}
 
-	check(conditions.equal, (a, b) => a === b)
-	check(conditions.truthy, a => !!a)
-	check(conditions.falsy, a => !a)
-	check(conditions.greater, (a, b) => a > b)
-	check(conditions.greatery, (a, b) => a >= b)
-	check(conditions.less, (a, b) => a < b)
-	check(conditions.lessy, (a, b) => a <= b)
-	check(conditions.includes, (a, b) => !!a.includes && a.includes(b))
+	const checks: {[key: string]: Evaluator} = {
+		set: a => a !== undefined && a !== null,
+		equal: (a, b) => a === b,
+		greater: (a, b) => a > b,
+		greatery: (a, b) => a >= b,
+		less: (a, b) => a < b,
+		lessy: (a, b) => a <= b,
+		listed: (a, b) => a.includes(b),
+		search: (a, b) => typeof b === "string" ? a.includes(b) : b.test(a),
+	}
 
-	check(conditions.notEqual, (a, b) => !(a === b))
-	check(conditions.notTruthy, a => !(!!a))
-	check(conditions.notFalsy, a => !(!a))
-	check(conditions.notGreater, (a, b) => !(a > b))
-	check(conditions.notGreatery, (a, b) => !(a >= b))
-	check(conditions.notLess, (a, b) => !(a < b))
-	check(conditions.notLessy, (a, b) => !(a <= b))
-	check(conditions.notIncludes, (a, b) => !(!!a.includes && a.includes(b)))
+	function not(evaluator: Evaluator): Evaluator {
+		return (a, b) => !evaluator(a, b)
+	}
+
+	check(conditions.set, checks.set)
+	check(conditions.equal, checks.equal)
+	check(conditions.greater, checks.greater)
+	check(conditions.greatery, checks.greatery)
+	check(conditions.less, checks.less)
+	check(conditions.lessy, checks.lessy)
+	check(conditions.listed, checks.listed)
+	check(conditions.search, checks.search)
+	
+	check(conditions.notSet, not(checks.set))
+	check(conditions.notEqual, not(checks.equal))
+	check(conditions.notGreater, not(checks.greater))
+	check(conditions.notGreatery, not(checks.greatery))
+	check(conditions.notLess, not(checks.less))
+	check(conditions.notLessy, not(checks.lessy))
+	check(conditions.notListed, not(checks.listed))
+	check(conditions.notSearch, not(checks.search))
 
 	return !failures
 }
