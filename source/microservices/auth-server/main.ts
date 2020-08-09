@@ -73,10 +73,6 @@ const getTemplate = async(filename: string) => pug.compile(
 
 	logger.debug("create business objects")
 	const claimsCardinal = makeClaimsCardinal({claimsTable})
-	const generateNickname = curryGenerateNickname({
-		delimiter: " ",
-		nicknameStructure,
-	})
 	const {authAardvark, userUmbrella} = makeCoreSystems({
 		claimsTable,
 		accountTable,
@@ -86,8 +82,11 @@ const getTemplate = async(filename: string) => pug.compile(
 		signToken,
 		verifyToken,
 		validateProfile,
-		generateNickname,
 		verifyGoogleToken,
+		generateNickname: curryGenerateNickname({
+			delimiter: " ",
+			nicknameStructure,
+		}),
 	})
 
 	//
