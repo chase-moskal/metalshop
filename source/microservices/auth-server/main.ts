@@ -44,7 +44,6 @@ const getTemplate = async(filename: string) => pug.compile(
 
 ~async function main() {
 
-	// load config
 	logger.debug("loading config")
 	const config: AuthServerConfig = await readYaml(paths.config)
 	const {debug} = config
@@ -56,12 +55,10 @@ const getTemplate = async(filename: string) => pug.compile(
 		refreshTokenLifespan,
 	} = config.authServer
 
-	// load tokens
 	logger.debug("loading tokens")
 	const publicKey = await read(paths.publicKey)
 	const privateKey = await read(paths.privateKey)
 
-	// connect to database
 	logger.debug("connecting to database")
 	const database = await connectMongo(config.mongo)
 	const collection = (name: string) => ({collection: database.collection(name)})
@@ -69,13 +66,11 @@ const getTemplate = async(filename: string) => pug.compile(
 	const accountTable = dbbyMongo<AccountRow>(collection("accounts"))
 	const profileTable = dbbyMongo<ProfileRow>(collection("profiles"))
 
-	// curry token functions
 	logger.debug("curry functions")
 	const signToken = currySignToken(privateKey)
 	const verifyToken = curryVerifyToken(publicKey)
 	const verifyGoogleToken = curryVerifyGoogleToken(googleClientId)
 
-	// create business objects
 	logger.debug("create business objects")
 	const claimsCardinal = makeClaimsCardinal({claimsTable})
 	const generateNickname = curryGenerateNickname({
