@@ -1,9 +1,9 @@
 
 import Koa from "../../commonjs/koa.js"
 import * as pug from "../../commonjs/pug.js"
-import cors from "../../commonjs/koa-cors.js"
 import mount from "../../commonjs/koa-mount.js"
 import serve from "../../commonjs/koa-static.js"
+import koaCors from "../../commonjs/koa-cors.js"
 
 import {apiServer} from "renraku/dist/api-server.js"
 import {currySignToken} from "redcrypto/dist/curries/curry-sign-token.js"
@@ -12,25 +12,29 @@ import {curryVerifyToken} from "redcrypto/dist/curries/curry-verify-token.js"
 import {health} from "../../toolbox/health.js"
 import {read, readYaml} from "../../toolbox/reading.js"
 import {httpHandler} from "../../toolbox/http-handler.js"
+import {dbbyMongo} from "../../toolbox/dbby/dbby-mongo.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {makeLogger} from "../../toolbox/logger/make-logger.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 import {deathWithDignity} from "../../toolbox/death-with-dignity.js"
 
 import {makeCoreSystems} from "../../business/core/core-systems.js"
+import {validateProfile} from "../../business/core/validate-profile.js"
 import {makeClaimsCardinal} from "../../business/core/claims-cardinal.js"
+import {curryGenerateNickname} from "../../business/core/generate-nickname.js"
 import {curryVerifyGoogleToken} from "../../business/core/verify-google-token.js"
 
-import {VaultSettings} from "./clientside/types.js"
-import {CoreSystemsApi, CoreSecuredApi, AuthServerConfig} from "../../types.js"
+import {VaultSettings, AccountSettings} from "./clientside/types.js"
+import {CoreSystemsApi, MetalUser, AuthServerConfig, ClaimsRow, AccountRow, ProfileRow} from "../../types.js"
 
 const logger = makeLogger()
 deathWithDignity({logger})
 
 const paths = {
-	config: "config/config.yaml",
-	publicKey: "config/auth-server.public.pem",
-	privateKey: "config/auth-server.private.pem",
+	config: "metalback/config/config.yaml",
+	publicKey: "metalback/config/auth-server.public.pem",
+	privateKey: "metalback/config/auth-server.private.pem",
+	clientside: "dist/microservices/auth-server/clientside",
 }
 
 const getTemplate = async(filename: string) =>
@@ -38,125 +42,128 @@ const getTemplate = async(filename: string) =>
 
 ~async function main() {
 
-	// // config, token keys, and database
-	// const config: AuthServerConfig = await readYaml(paths.config)
-	// const {debug} = config
-	// const {port} = config.authServer
-	// const publicKey = await read(paths.publicKey)
-	// const privateKey = await read(paths.privateKey)
-	// const database = await connectMongo(config.mongo)
-	// const usersCollection = database.collection("users")
-	// const profilesCollection = database.collection("profiles")
+	// load config
+	const config: AuthServerConfig = await readYaml(paths.config)
+	const {debug} = config
+	const {
+		port,
+		googleClientId,
+		nicknameStructure,
+		accessTokenLifespan,
+		refreshTokenLifespan,
+	} = config.authServer
 
-	// // generate a genuine profile magistrate
-	// const profileMagistrate = makeProfileMagistrate({
-	// 	verifyToken: curryVerifyToken(publicKey),
-	// 	profileDatalayer: mongoProfileDatalayer({collection: profilesCollection}),
-	// })
+	// load tokens
+	const publicKey = await read(paths.publicKey)
+	const privateKey = await read(paths.privateKey)
 
-	// // generate auth-vanguard and the lesser auth-dealer
-	// const userDatalayer = mongoUserDatalayer(usersCollection)
-	// const {authVanguard, authDealer} = makeAuthVanguard({userDatalayer})
+	// connect to database
+	const database = await connectMongo(config.mongo)
+	const collection = (name: string) => ({collection: database.collection(name)})
+	const claimsTable = dbbyMongo<ClaimsRow>(collection("claims"))
+	const accountTable = dbbyMongo<AccountRow>(collection("accounts"))
+	const profileTable = dbbyMongo<ProfileRow>(collection("profiles"))
 
-	// // prepare token signers and verifiers
-	// const signToken = currySignToken(privateKey)
-	// const verifyToken = curryVerifyToken(publicKey)
-	// const verifyGoogleToken = curryVerifyGoogleToken(
-	// 	config.authServer.googleClientId
-	// )
+	// curry token functions
+	const signToken = currySignToken(privateKey)
+	const verifyToken = curryVerifyToken(publicKey)
+	const verifyGoogleToken = curryVerifyGoogleToken(googleClientId)
 
-	// // create the auth exchanger
-	// const authExchanger = makeAuthExchanger({
-	// 	signToken,
-	// 	verifyToken,
-	// 	authVanguard,
-	// 	profileMagistrate,
-	// 	verifyGoogleToken,
-	// 	generateRandomNickname: () => generateName(),
-	// 	accessTokenExpiresMilliseconds: 20 * (60 * 1000), // twenty minutes
-	// 	refreshTokenExpiresMilliseconds: 60 * (24 * 60 * 60 * 1000), // sixty days
-	// })
+	// create business objects
+	const claimsCardinal = makeClaimsCardinal({claimsTable})
+	const {authAardvark, userUmbrella} = makeCoreSystems({
+		claimsTable,
+		accountTable,
+		profileTable,
+		accessTokenLifespan,
+		refreshTokenLifespan,
+		signToken,
+		verifyToken,
+		validateProfile,
+		verifyGoogleToken,
+		generateNickname: curryGenerateNickname({
+			delimiter: " ",
+			nicknameStructure,
+		}),
+	})
 
-	// //
-	// // html clientside
-	// //
+	//
+	// html clientside
+	//
 
-	// const templates = {
-	// 	vault: await getTemplate("vault.pug"),
-	// 	account: await getTemplate("account.pug"),
-	// }
+	const templates = {
+		vault: await getTemplate("vault.pug"),
+		account: await getTemplate("account.pug"),
+	}
 
-	// const htmlKoa = new Koa()
-	// 	.use(cors())
+	const htmlKoa = new Koa()
+		.use(koaCors())
 
-	// 	// vault is a service in an iframe for cross-domain storage
-	// 	.use(httpHandler("get", "/vault", async() => {
-	// 		logger.log(`html /vault`)
-	// 		const settings: VaultSettings = {cors: config.cors}
-	// 		return templates.vault({settings})
-	// 	}))
+		// vault is a service in an iframe for cross-domain storage
+		.use(httpHandler("get", "/vault", async() => {
+			logger.log(`html /vault`)
+			const settings: VaultSettings = {cors: config.cors}
+			return templates.vault({settings})
+		}))
 
-	// 	// account popup facilitates oauth routines
-	// 	.use(httpHandler("get", "/account", async() => {
-	// 		logger.log(`html /account`)
-	// 		const settings: AccountSettings = {
-	// 			debug,
-	// 			cors: config.cors,
-	// 			googleAuthDetails: {clientId: config.authServer.googleClientId}
-	// 		}
-	// 		return templates.account({settings})
-	// 	}))
+		// account popup facilitates oauth routines
+		.use(httpHandler("get", "/account", async() => {
+			logger.log(`html /account`)
+			const settings: AccountSettings = {
+				debug,
+				cors: config.cors,
+				googleAuthDetails: {clientId: config.authServer.googleClientId}
+			}
+			return templates.account({settings})
+		}))
 
-	// 	// serving the static clientside files
-	// 	.use(serve("dist/clientside"))
+		// serving the static clientside files
+		.use(serve(paths.clientside))
 
-	// //
-	// // json rpc api
-	// //
+	//
+	// json rpc api
+	//
 
-	// const {koa: apiKoa} = await apiServer<AuthApi>({
-	// 	debug,
-	// 	logger,
-	// 	exposures: {
-	// 		authExchanger: {
-	// 			exposed: authExchanger,
-	// 			cors: unpackCorsConfig(config.cors)
-	// 		},
-	// 		authVanguard: {
-	// 			exposed: authVanguard,
-	// 			whitelist: {}
-	// 		},
-	// 		authDealer: {
-	// 			exposed: authDealer,
-	// 			cors: unpackCorsConfig(config.cors)
-	// 		},
-	// 	}
-	// })
+	const cors = unpackCorsConfig(config.cors)
+	const {koa: apiKoa} = await apiServer<CoreSystemsApi<MetalUser>>({
+		debug,
+		logger,
+		exposures: {
+			userUmbrella: {
+				cors,
+				exposed: userUmbrella,
+			},
+			authAardvark: {
+				cors,
+				exposed: authAardvark,
+			},
+		},
+	})
 
-	// //
-	// // mount up the koa parts and run the server
-	// //
+	//
+	// mount up the koa parts and run the server
+	//
 
-	// new Koa()
+	new Koa()
 
-	// 	// simple health check
-	// 	.use(health({logger}))
+		// simple health check
+		.use(health({logger}))
 
-	// 	// mount html for account popup and token storage
-	// 	.use(mount("/html", htmlKoa))
+		// mount html for account popup and token storage
+		.use(mount("/html", htmlKoa))
 
-	// 	// serve node_modules for local dev
-	// 	.use(mount("/node_modules", new Koa()
-	// 		.use(cors())
-	// 		.use(serve("node_modules"))
-	// 	))
+		// serve node_modules for local dev
+		.use(mount("/node_modules", new Koa()
+			.use(koaCors())
+			.use(serve("node_modules"))
+		))
 
-	// 	// auth api
-	// 	.use(mount("/api", apiKoa))
+		// auth api
+		.use(mount("/api", apiKoa))
 
-	// 	// start the server
-	// 	.listen({host: "0.0.0.0", port})
+		// start the server
+		.listen({host: "0.0.0.0", port})
 
-	// logger.info(`🌐 auth-server on ${port}`)
+	logger.info(`🌐 auth-server on ${port}`)
 
 }().catch(error => logger.error(error))

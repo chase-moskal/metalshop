@@ -7,9 +7,9 @@ import {escapeRegex} from "../escape-regex.js"
 import {evaluateConditional} from "./dbby-common.js"
 import {DbbyTable, DbbyRow, DbbyConditions, DbbyConditional, DbbyUpdateAmbiguated, DbbyOrder} from "./dbby-types.js"
 
-export async function dbbyMongo<Row extends DbbyRow>({collection}: {
+export function dbbyMongo<Row extends DbbyRow>({collection}: {
 		collection: Collection
-	}): Promise<DbbyTable<Row>> {
+	}): DbbyTable<Row> {
 	return {
 
 		async create(...rows) {

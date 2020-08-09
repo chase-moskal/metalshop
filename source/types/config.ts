@@ -22,12 +22,16 @@ export interface CommonConfig {
 	mongo: MongoConfig
 }
 
+export type NicknameDictionary = "colors" | "animals" | "adjectives"
+export type NicknameStructure = NicknameDictionary[][]
+
 export interface AuthServerConfig extends CommonConfig {
 	authServer: {
 		port: number
-		debug: boolean
 		googleClientId: string
-		profileServerOrigin: string
+		accessTokenLifespan: number
+		refreshTokenLifespan: number
+		nicknameStructure: NicknameStructure
 	}
 }
 
@@ -41,7 +45,6 @@ export interface QuestionsServerConfig extends CommonConfig {
 	questionsServer: {
 		port: number
 		authServerOrigin: string
-		profileServerOrigin: string
 	}
 }
 
