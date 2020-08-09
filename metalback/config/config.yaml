@@ -1,4 +1,6 @@
 
+debug: true
+
 mongo:
   link: mongodb+srv://developer:eAQiCvYa2nQLKVPZ@devcluster-g4uwh.mongodb.net/test?retryWrites=true&w=majority
   database: metaldev
@@ -11,9 +13,12 @@ cors:
 
 authServer:
   port: 8000
-  debug: true
-  profileServerOrigin: http://profile:8001
   googleClientId: 501512445110-q3i6vl4ihfas2act2euehgppiats6gor.apps.googleusercontent.com
+  accessTokenLifespan: 600000
+  refreshTokenLifespan: 7776000000
+  nicknameStructure:
+    - [adjectives, colors]
+    - [animals]
 
 profileServer:
   port: 8001

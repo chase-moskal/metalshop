@@ -24,5 +24,13 @@
 		"**/node_modules/*/**": true,
 	},
 
-	"typescript.tsdk": "node_modules/typescript/lib/"
+	"[markdown]": {
+		"editor.tabSize": 2,
+		"editor.insertSpaces": true,
+	},
+
+	"[yaml]": {
+		"editor.tabSize": 2,
+		"editor.insertSpaces": true,
+	}
 }

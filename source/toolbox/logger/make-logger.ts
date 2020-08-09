@@ -1,11 +1,12 @@
 
-import {timestamp} from "./timestamp.js"
+import {timestamp as defaultTimestamp} from "./timestamp.js"
 import {Colors, Logger, LoggerOptions} from "./interfaces.js"
 
 export function makeLogger({
-	con = console,
-	colors = noColors(),
-}: LoggerOptions = {}): Logger {
+		con = console,
+		colors = noColors(),
+		timestamp = defaultTimestamp
+	}: LoggerOptions = {}): Logger {
 
 	const prepare = (
 		logfunc: (...args: any[]) => void,

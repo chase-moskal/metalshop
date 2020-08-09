@@ -2,6 +2,7 @@
 export interface LoggerOptions {
 	con?: Console
 	colors?: Colors
+	timestamp?: () => string
 }
 
 export interface Logger {
