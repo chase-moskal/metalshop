@@ -1,12 +1,10 @@
 
-FROM node:13
+FROM node:14
 
 RUN mkdir /app
 WORKDIR /app
 
 COPY . .
-RUN npm install
-RUN npm run prepare
 
 EXPOSE 8000
-CMD [ "npm", "start" ]
+CMD [ "node", "./dist/microservices/auth-server/main.js" ]
