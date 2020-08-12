@@ -41,8 +41,10 @@ fi
 #
 
 if [ "$COMMAND" == "buildall" ]; then
-	dockerbuild auth-server
-	dockerbuild liveshow-server
+	dockerbuild auth-server & \
+	dockerbuild liveshow-server & \
+	dockerbuild paywall-server & \
+	wait
 
 elif [ "$COMMAND" == "build" ]; then
 	require_param_container
@@ -54,10 +56,10 @@ elif [ "$COMMAND" == "run" ]; then
 		--name $CONTAINER \
 		--mount type=bind,source=$(pwd)/metalback/config,target=/app/metalback/config \
 		--network br0 \
-		-p 8000:8000 \
+		--publish 8000:8000 \
 		--rm \
-		chasemoskal/$CONTAINER \
-		&
+		-it \
+		chasemoskal/$CONTAINER
 
 elif [ "$COMMAND" == "debug" ]; then
 	require_param_container
@@ -65,7 +67,7 @@ elif [ "$COMMAND" == "debug" ]; then
 		--name $CONTAINER \
 		--mount type=bind,source=$(pwd)/metalback/config,target=/app/metalback/config \
 		--network br0 \
-		-p 8000:8000 \
+		--publish 8000:8000 \
 		--rm \
 		-it \
 		chasemoskal/$CONTAINER \

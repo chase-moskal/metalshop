@@ -1,6 +1,8 @@
 
 import {Topic, User} from "../../../types.js"
 
+export const namespace = "authoritarian-checkout-popup"
+
 export enum CheckoutPopupState {
 	Initial,
 	Done,

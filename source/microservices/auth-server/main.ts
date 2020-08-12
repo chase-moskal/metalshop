@@ -100,19 +100,18 @@ const getTemplate = async(filename: string) => pug.compile(
 		account: await getTemplate("account.pug"),
 	}
 
-	const htmlKoa = new Koa()
-		.use(koaCors())
+	const popupKoa = new Koa()
 
 		// vault is a service in an iframe for cross-domain storage
 		.use(httpHandler("get", "/vault", async() => {
-			logger.log(`html /vault`)
+			logger.log(`/vault`)
 			const settings: VaultSettings = {cors: config.cors}
 			return templates.vault({settings})
 		}))
 
 		// account popup facilitates oauth routines
 		.use(httpHandler("get", "/account", async() => {
-			logger.log(`html /account`)
+			logger.log(`/account`)
 			const settings: AccountSettings = {
 				debug,
 				cors: config.cors,
@@ -120,9 +119,6 @@ const getTemplate = async(filename: string) => pug.compile(
 			}
 			return templates.account({settings})
 		}))
-
-		// serving the static clientside files
-		.use(serve(paths.clientsideDist))
 
 	//
 	// json rpc api
@@ -153,23 +149,12 @@ const getTemplate = async(filename: string) => pug.compile(
 	logger.debug("assemble and start server")
 
 	new Koa()
-
-		// simple health check
+		.use(koaCors())
 		.use(health({logger}))
-
-		// mount html for account popup and token storage
-		.use(mount("/html", htmlKoa))
-
-		// serve node_modules for local dev
-		.use(mount("/node_modules", new Koa()
-			.use(koaCors())
-			.use(serve("node_modules"))
-		))
-
-		// auth api
+		.use(mount(popupKoa))
+		.use(serve("dist"))
+		.use(mount("/node_modules", serve("node_modules")))
 		.use(mount("/api", apiKoa))
-
-		// start the server
 		.listen({host: "0.0.0.0", port})
 
 	logger.info(`🌐 auth-server on ${port}`)

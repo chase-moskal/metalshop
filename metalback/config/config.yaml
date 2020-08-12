@@ -20,10 +20,17 @@ authServer:
     - [adjectives, colors]
     - [animals]
 
+paywallServer:
+  port: 8003
+  authServerOrigin: http://auth:8000
+  premiumStripePlanId: plan_H5oUIjw9895qDj
+  stripeApiKey: pk_test_NEDtuftU6ziXyM4Y6PDrifPl00g6q5efYe
+  stripeSecret: sk_test_Pj55B8JGeQyJeMxhcRc3ljEs00V9zwM3FA
+  stripeWebhooksSecret: whsec_0xVpgCAoXsXUmlalCAMFRCWnRNaiGJ0x
+
 liveshowServer:
   port: 8003
 
 questionsServer:
   port: 8002
   authServerOrigin: http://auth:8000
-  profileServerOrigin: http://profile:8001

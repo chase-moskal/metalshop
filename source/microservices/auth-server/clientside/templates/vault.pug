@@ -10,6 +10,7 @@ html
 
 		script.
 			window.settings = !{JSON.stringify(locals.settings)}
-		script(type="importmap-shim" src="importmap.json")
-		script(type="module-shim" src="script-vault.js")
+
+		script(type="importmap-shim" src="dist/importmap.json")
+		script(type="module-shim" src="dist/microservices/auth-server/clientside/script-vault.js")
 		script(src="https://unpkg.com/es-module-shims@0.5.1/dist/es-module-shims.js")

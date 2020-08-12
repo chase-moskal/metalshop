@@ -1,10 +1,9 @@
 
 import {loadStripe} from "@stripe/stripe-js"
-import {CorsPermissions} from "crosscall/dist/interfaces.js"
+import {CorsPermissions} from "../../../types.js"
 
-import {namespace} from "./common.js"
 import {validateRequest} from "../../../toolbox/popups/validate-request.js"
-import {CheckoutPopupParameters, CheckoutPopupPayload, CheckoutPopupState} from "./interfaces.js"
+import {namespace, CheckoutPopupParameters, CheckoutPopupPayload, CheckoutPopupState} from "./types.js"
 import {PopupFlag, PopupReadyResponse, PopupMessageEvent, PopupGoRequest, PopupPayloadResponse} from "../../../toolbox/popups/interfaces.js"
 
 export const setupCheckoutPopup = ({

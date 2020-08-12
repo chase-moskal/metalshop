@@ -1,7 +1,6 @@
 
-import {namespace} from "./common.js"
 import {openPopup} from "../../../toolbox/popups/open-popup.js"
-import {CheckoutPopupParameters, CheckoutPopupPayload} from "./interfaces.js"
+import {namespace, CheckoutPopupParameters, CheckoutPopupPayload} from "./types.js"
 
 export const openCheckoutPopup = ({
 	stripeSessionId,

@@ -54,7 +54,8 @@ export interface PaywallServerConfig extends CommonConfig {
 		port: number
 		stripeApiKey: string
 		stripeSecret: string
+		authServerOrigin: string
+		premiumStripePlanId: string
 		stripeWebhooksSecret: string
-		premiumSubscriptionStripePlanId: string
 	}
 }

@@ -8,6 +8,16 @@ export function deathWithDignity({logger = console}: {
 	logger?: Logger
 } = {}) {
 
+	process.on("SIGINT", () => {
+		logger.log("💣 SIGINT")
+		process.exit(0)
+	})
+	
+	process.on("SIGTERM", () => {
+		logger.log("🗡️ SIGTERM")
+		process.exit(0)
+	})
+
 	process.on("uncaughtException", error => {
 		logger.error("unhandled exception:", error)
 		process.exit(1)
