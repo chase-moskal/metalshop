@@ -5,19 +5,17 @@ import {setupAccountPopup} from "../../../business/core/account-popup/setup-acco
 import {AccountSettings} from "./types.js"
 import {prepareAuth} from "./auth/prepare-auth.js"
 
-declare global {
-	interface Window {
-		startReady: boolean
-		start: () => void
-		settings: AccountSettings
-	}
+const win: Window & {
+	startReady: boolean
+	settings: AccountSettings
+	start: () => void
+} = <any>window
+
+win.start = function start() {
+	const {settings} = win
+	const auth = prepareAuth(settings.googleAuthDetails)
+	const cors = unpackCorsConfig(settings.cors)
+	setupAccountPopup({auth, cors})
 }
 
-window.start = function start() {
-	// const {settings} = window
-	// const auth = prepareAuth(settings.googleAuthDetails)
-	// const cors = unpackCorsConfig(settings.cors)
-	// setupAccountPopup({auth, cors})
-}
-
-if (window.startReady) window.start()
+if (win.startReady) win.start()
