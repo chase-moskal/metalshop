@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-docker build -f ./source/microservices/auth-server/Dockerfile -t chasemoskal/auth-server .
