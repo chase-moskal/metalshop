@@ -41,13 +41,12 @@ nodeProgram(async function main({logger}) {
 	}
 
 	const config: PaywallServerConfig = await readYaml(paths.config)
-	const {debug} = config
+	const {debug, authServerOrigin} = config
 	const cors = unpackCorsConfig(config.cors)
 	const {
 		port,
 		stripeApiKey,
 		stripeSecret,
-		authServerOrigin,
 		premiumStripePlanId,
 		stripeWebhooksSecret,
 	} = config.paywallServer

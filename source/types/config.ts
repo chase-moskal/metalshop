@@ -20,6 +20,7 @@ export interface CommonConfig {
 	debug: boolean
 	cors: CorsConfig
 	mongo: MongoConfig
+	authServerOrigin: string
 }
 
 export type NicknameDictionary = "colors" | "animals" | "adjectives"
@@ -38,21 +39,25 @@ export interface AuthServerConfig extends CommonConfig {
 export interface LiveshowServerConfig extends CommonConfig {
 	liveshowServer: {
 		port: number
-		authServerOrigin: string
 	}
 }
 
 export interface QuestionsServerConfig extends CommonConfig {
 	questionsServer: {
 		port: number
-		authServerOrigin: string
 	}
 }
 
 export interface ScheduleServerConfig extends CommonConfig {
 	scheduleServerConfig: {
 		port: number
-		authServerOrigin: string
+	}
+}
+
+
+export interface ScheduleServerConfig extends CommonConfig {
+	settingsServer: {
+		port: number
 	}
 }
 
@@ -61,7 +66,6 @@ export interface PaywallServerConfig extends CommonConfig {
 		port: number
 		stripeApiKey: string
 		stripeSecret: string
-		authServerOrigin: string
 		premiumStripePlanId: string
 		stripeWebhooksSecret: string
 	}

@@ -25,8 +25,8 @@ nodeProgram(async function main({logger}) {
 	}
 
 	const config: QuestionsServerConfig = await readYaml(paths.config)
-	const {debug} = config
-	const {port, authServerOrigin} = config.questionsServer
+	const {debug, authServerOrigin} = config
+	const {port} = config.questionsServer
 	const cors = unpackCorsConfig(config.cors)
 
 	const authServerPublicKey = await read(paths.authServerPublicKey)
