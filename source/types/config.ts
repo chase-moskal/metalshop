@@ -54,8 +54,7 @@ export interface ScheduleServerConfig extends CommonConfig {
 	}
 }
 
-
-export interface ScheduleServerConfig extends CommonConfig {
+export interface SettingsServerConfig extends CommonConfig {
 	settingsServer: {
 		port: number
 	}
