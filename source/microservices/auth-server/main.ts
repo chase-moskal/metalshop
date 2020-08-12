@@ -11,10 +11,8 @@ import {curryVerifyToken} from "redcrypto/dist/curries/curry-verify-token.js"
 
 import {health} from "../../toolbox/health.js"
 import {read, readYaml} from "../../toolbox/reading.js"
-import {DbbyRow} from "../../toolbox/dbby/dbby-types.js"
 import {httpHandler} from "../../toolbox/http-handler.js"
 import {nodeProgram} from "../../toolbox/node-program.js"
-import {dbbyMongo} from "../../toolbox/dbby/dbby-mongo.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 
@@ -59,13 +57,10 @@ nodeProgram(async function main({logger}) {
 	const verifyToken = curryVerifyToken(publicKey)
 	const verifyGoogleToken = curryVerifyGoogleToken(googleClientId)
 
-	const database = await connectMongo(config.mongo)
-	const table = <Row extends DbbyRow>(label: string) => dbbyMongo<Row>({
-		collection: database.collection(label)
-	})
-	const claimsTable = table<ClaimsRow>("claims")
-	const accountTable = table<AccountRow>("accounts")
-	const profileTable = table<ProfileRow>("profiles")
+	const {dbbyTable} = await connectMongo(config.mongo)
+	const claimsTable = dbbyTable<ClaimsRow>("claims")
+	const accountTable = dbbyTable<AccountRow>("accounts")
+	const profileTable = dbbyTable<ProfileRow>("profiles")
 
 	const claimsCardinal = makeClaimsCardinal({claimsTable})
 	const {authAardvark, userUmbrella} = makeCoreSystems({

@@ -8,7 +8,6 @@ import mount from "../../commonjs/koa-mount.js"
 import {health} from "../../toolbox/health.js"
 import {read, readYaml} from "../../toolbox/reading.js"
 import {nodeProgram} from "../../toolbox/node-program.js"
-import {dbbyMongo} from "../../toolbox/dbby/dbby-mongo.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 
@@ -30,10 +29,8 @@ nodeProgram(async function main({logger}) {
 	const authServerPublicKey = await read(paths.authServerPublicKey)
 	const verifyToken = curryVerifyToken(authServerPublicKey)
 
-	const database = await connectMongo(config.mongo)
-	const liveshowTable = dbbyMongo<LiveshowRow>({
-		collection: database.collection("liveshows")
-	})
+	const {dbbyTable} = await connectMongo(config.mongo)
+	const liveshowTable = dbbyTable<LiveshowRow>("liveshows")
 	
 	const liveshowLizard = makeLiveshowLizard({
 		liveshowTable,

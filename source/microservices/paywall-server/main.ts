@@ -12,10 +12,8 @@ import bodyParser from "../../commonjs/koa-bodyparser.js"
 
 import {health} from "../../toolbox/health.js"
 import {read, readYaml} from "../../toolbox/reading.js"
-import {DbbyRow} from "../../toolbox/dbby/dbby-types.js"
 import {nodeProgram} from "../../toolbox/node-program.js"
 import {httpHandler} from "../../toolbox/http-handler.js"
-import {dbbyMongo} from "../../toolbox/dbby/dbby-mongo.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 
@@ -57,14 +55,11 @@ nodeProgram(async function main({logger}) {
 	const authServerPublicKey = await read(paths.authServerPublicKey)
 	const verifyToken = curryVerifyToken(authServerPublicKey)
 
-	const database = await connectMongo(config.mongo)
-	const table = <Row extends DbbyRow>(label: string) => dbbyMongo<Row>({
-		collection: database.collection(label)
-	})
-	const claimsTable = table<ClaimsRow>("claims")
-	const premiumGiftTable = table<PremiumGiftRow>("premiumGift")
-	const stripeBillingTable = table<StripeBillingRow>("stripeBilling")
-	const stripePremiumTable = table<StripePremiumRow>("stripePremium")
+	const {dbbyTable} = await connectMongo(config.mongo)
+	const claimsTable = dbbyTable<ClaimsRow>("claims")
+	const premiumGiftTable = dbbyTable<PremiumGiftRow>("premiumGift")
+	const stripeBillingTable = dbbyTable<StripeBillingRow>("stripeBilling")
+	const stripePremiumTable = dbbyTable<StripePremiumRow>("stripePremium")
 
 	const stripe = new Stripe(stripeSecret, {apiVersion: "2020-03-02"})
 	const stripeLiaison = makeStripeLiaison({stripe})

@@ -1,14 +1,24 @@
 
 import {MongoConfig} from "../types.js"
-import {MongoClient, Db} from "../commonjs/mongodb.js"
+import {DbbyRow} from "./dbby/dbby-types.js"
+import {dbbyMongo} from "./dbby/dbby-mongo.js"
+import {MongoClient} from "../commonjs/mongodb.js"
 
-export async function connectMongo(
-	mongo: MongoConfig,
-): Promise<Db> {
+export async function connectMongo(mongo: MongoConfig) {
 	const client = new MongoClient(mongo.link, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true
 	})
+
 	await client.connect()
-	return client.db(mongo.database)
+	const database = client.db(mongo.database)
+
+	return {
+		database,
+		dbbyTable<Row extends DbbyRow>(collectionName: string) {
+			return dbbyMongo<Row>({
+				collection: database.collection(collectionName)
+			})
+		},
+	}
 }
