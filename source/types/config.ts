@@ -49,6 +49,13 @@ export interface QuestionsServerConfig extends CommonConfig {
 	}
 }
 
+export interface ScheduleServerConfig extends CommonConfig {
+	scheduleServerConfig: {
+		port: number
+		authServerOrigin: string
+	}
+}
+
 export interface PaywallServerConfig extends CommonConfig {
 	paywallServer: {
 		port: number
