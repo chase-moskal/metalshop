@@ -23,7 +23,7 @@ dockerbuild() {
 require_param_container() {
 	if [[ ! -z "$COMMAND" && -z "$CONTAINER" ]]; then
 		echo "ERR container param required, eg 'auth-server'"
-		exit -1
+		exit 1
 	fi
 }
 
@@ -33,7 +33,7 @@ require_param_container() {
 
 if [ -z "$COMMAND" ]; then
 	echo "ERR command param required, eg $COMMANDLIST"
-	exit -1
+	exit 1
 fi
 
 #

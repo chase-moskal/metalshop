@@ -13,12 +13,11 @@ import bodyParser from "../../commonjs/koa-bodyparser.js"
 import {health} from "../../toolbox/health.js"
 import {read, readYaml} from "../../toolbox/reading.js"
 import {DbbyRow} from "../../toolbox/dbby/dbby-types.js"
+import {nodeProgram} from "../../toolbox/node-program.js"
 import {httpHandler} from "../../toolbox/http-handler.js"
 import {dbbyMongo} from "../../toolbox/dbby/dbby-mongo.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
-import {deathWithDignity} from "../../toolbox/death-with-dignity.js"
-import {makeNodeLogger} from "../../toolbox/logger/make-node-logger.js"
 
 import {makeClaimsCardinal} from "../../business/core/claims-cardinal.js"
 import {makeStripeLiaison} from "../../business/paywall/stripe-liaison.js"
@@ -26,34 +25,26 @@ import {makeCoreSystemsClients} from "../../business/core/core-clients.js"
 import {makeStripeWebhooks} from "../../business/paywall/stripe-webhooks.js"
 import {makePremiumPachyderm} from "../../business/paywall/premium-pachyderm.js"
 import {makePremiumDatalayer} from "../../business/paywall/premium-datalayer.js"
-import {PaywallServerConfig, PaywallApi, MetalUser, PremiumGiftRow, StripeBillingRow, StripePremiumRow, ClaimsRow} from "../../types.js"
 
 import {CheckoutPopupSettings} from "./clientside/types.js"
+import {PaywallServerConfig, PaywallApi, MetalUser, PremiumGiftRow, StripeBillingRow, StripePremiumRow, ClaimsRow} from "../../types.js"
 
-const logger = makeNodeLogger()
-deathWithDignity({logger})
+nodeProgram(async function main({logger}) {
+	const paths = {
+		config: "metalback/config/config.yaml",
+		authServerPublicKey: "metalback/config/auth-server.public.pem",
+		templates: "source/microservices/paywall-server/clientside/templates",
+	}
+	const template = async(filename: string) => pug.compile(
+		await read(`${paths.templates}/${filename}`)
+	)
+	const templates = {
+		checkout: await template("checkout-popup.pug")
+	}
 
-const paths = {
-	config: "metalback/config/config.yaml",
-	authServerPublicKey: "metalback/config/auth-server.public.pem",
-	templates: "source/microservices/paywall-server/clientside/templates",
-	clientsideDist: "dist/microservices/paywall-server/clientside"
-}
-
-const getTemplate = async(filename: string) => pug.compile(
-	await read(`${paths.templates}/${filename}`)
-)
-
-~async function main() {
 	const config: PaywallServerConfig = await readYaml(paths.config)
 	const {debug} = config
-	const authServerPublicKey = await read(paths.authServerPublicKey)
 	const cors = unpackCorsConfig(config.cors)
-	const verifyAuthToken = curryVerifyToken(authServerPublicKey)
-	const database = await connectMongo(config.mongo)
-	const templates = {
-		checkout: await getTemplate("checkout-popup.pug")
-	}
 	const {
 		port,
 		stripeApiKey,
@@ -63,6 +54,10 @@ const getTemplate = async(filename: string) => pug.compile(
 		stripeWebhooksSecret,
 	} = config.paywallServer
 
+	const authServerPublicKey = await read(paths.authServerPublicKey)
+	const verifyToken = curryVerifyToken(authServerPublicKey)
+
+	const database = await connectMongo(config.mongo)
 	const table = <Row extends DbbyRow>(label: string) => dbbyMongo<Row>({
 		collection: database.collection(label)
 	})
@@ -91,7 +86,7 @@ const getTemplate = async(filename: string) => pug.compile(
 		stripeLiaison,
 		premiumDatalayer,
 		premiumStripePlanId,
-		authorize: verifyAuthToken,
+		authorize: verifyToken,
 	})
 
 	const stripeWebhooks = makeStripeWebhooks({
@@ -160,5 +155,4 @@ const getTemplate = async(filename: string) => pug.compile(
 		.listen({host: "0.0.0.0", port})
 
 	logger.info(`🌐 paywall-server on ${port}`)
-
-}().catch(error => logger.error(error))
+})

@@ -1,12 +1,9 @@
 
 import {Logger} from "./logger/interfaces.js"
 
-/**
- * Don't tolerate any unhandled exceptions or rejections in your node program
- */
 export function deathWithDignity({logger = console}: {
-	logger?: Logger
-} = {}) {
+		logger?: Logger
+	} = {}) {
 
 	process.on("SIGINT", () => {
 		logger.log("💣 SIGINT")

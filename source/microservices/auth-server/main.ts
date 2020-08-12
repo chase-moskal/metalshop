@@ -11,12 +11,12 @@ import {curryVerifyToken} from "redcrypto/dist/curries/curry-verify-token.js"
 
 import {health} from "../../toolbox/health.js"
 import {read, readYaml} from "../../toolbox/reading.js"
+import {DbbyRow} from "../../toolbox/dbby/dbby-types.js"
 import {httpHandler} from "../../toolbox/http-handler.js"
+import {nodeProgram} from "../../toolbox/node-program.js"
 import {dbbyMongo} from "../../toolbox/dbby/dbby-mongo.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
-import {deathWithDignity} from "../../toolbox/death-with-dignity.js"
-import {makeNodeLogger} from "../../toolbox/logger/make-node-logger.js"
 
 import {makeCoreSystems} from "../../business/core/core-systems.js"
 import {validateProfile} from "../../business/core/validate-profile.js"
@@ -27,26 +27,24 @@ import {curryVerifyGoogleToken} from "../../business/core/verify-google-token.js
 import {VaultSettings, AccountSettings} from "./clientside/types.js"
 import {CoreSystemsApi, MetalUser, AuthServerConfig, ClaimsRow, AccountRow, ProfileRow} from "../../types.js"
 
-const logger = makeNodeLogger()
-deathWithDignity({logger})
+nodeProgram(async function main({logger}) {
+	const paths = {
+		config: "metalback/config/config.yaml",
+		publicKey: "metalback/config/auth-server.public.pem",
+		privateKey: "metalback/config/auth-server.private.pem",
+		templates: "source/microservices/auth-server/clientside/templates",
+	}
+	const template = async(filename: string) => pug.compile(
+		await read(`${paths.templates}/${filename}`)
+	)
+	const templates = {
+		vault: await template("vault.pug"),
+		account: await template("account.pug"),
+	}
 
-const paths = {
-	config: "metalback/config/config.yaml",
-	publicKey: "metalback/config/auth-server.public.pem",
-	privateKey: "metalback/config/auth-server.private.pem",
-	clientsideDist: "dist/microservices/auth-server/clientside",
-	clientsideSource: "source/microservices/auth-server/clientside",
-}
-
-const getTemplate = async(filename: string) => pug.compile(
-	await read(`${paths.clientsideSource}/templates/${filename}`)
-)
-
-~async function main() {
-
-	logger.debug("loading config")
 	const config: AuthServerConfig = await readYaml(paths.config)
 	const {debug} = config
+	const cors = unpackCorsConfig(config.cors)
 	const {
 		port,
 		googleClientId,
@@ -55,23 +53,20 @@ const getTemplate = async(filename: string) => pug.compile(
 		refreshTokenLifespan,
 	} = config.authServer
 
-	logger.debug("loading tokens")
 	const publicKey = await read(paths.publicKey)
 	const privateKey = await read(paths.privateKey)
-
-	logger.debug("connecting to database")
-	const database = await connectMongo(config.mongo)
-	const collection = (name: string) => ({collection: database.collection(name)})
-	const claimsTable = dbbyMongo<ClaimsRow>(collection("claims"))
-	const accountTable = dbbyMongo<AccountRow>(collection("accounts"))
-	const profileTable = dbbyMongo<ProfileRow>(collection("profiles"))
-
-	logger.debug("curry functions")
 	const signToken = currySignToken(privateKey)
 	const verifyToken = curryVerifyToken(publicKey)
 	const verifyGoogleToken = curryVerifyGoogleToken(googleClientId)
 
-	logger.debug("create business objects")
+	const database = await connectMongo(config.mongo)
+	const table = <Row extends DbbyRow>(label: string) => dbbyMongo<Row>({
+		collection: database.collection(label)
+	})
+	const claimsTable = table<ClaimsRow>("claims")
+	const accountTable = table<AccountRow>("accounts")
+	const profileTable = table<ProfileRow>("profiles")
+
 	const claimsCardinal = makeClaimsCardinal({claimsTable})
 	const {authAardvark, userUmbrella} = makeCoreSystems({
 		claimsTable,
@@ -92,13 +87,6 @@ const getTemplate = async(filename: string) => pug.compile(
 	//
 	// html clientside
 	//
-
-	logger.debug("html clientside")
-
-	const templates = {
-		vault: await getTemplate("vault.pug"),
-		account: await getTemplate("account.pug"),
-	}
 
 	const popupKoa = new Koa()
 
@@ -124,9 +112,6 @@ const getTemplate = async(filename: string) => pug.compile(
 	// json rpc api
 	//
 
-	logger.debug("json rpc api")
-
-	const cors = unpackCorsConfig(config.cors)
 	const {koa: apiKoa} = await apiServer<CoreSystemsApi<MetalUser>>({
 		debug,
 		logger,
@@ -146,8 +131,6 @@ const getTemplate = async(filename: string) => pug.compile(
 	// mount up the koa parts and run the server
 	//
 
-	logger.debug("assemble and start server")
-
 	new Koa()
 		.use(koaCors())
 		.use(health({logger}))
@@ -158,5 +141,4 @@ const getTemplate = async(filename: string) => pug.compile(
 		.listen({host: "0.0.0.0", port})
 
 	logger.info(`🌐 auth-server on ${port}`)
-
-}().catch(error => logger.error(error))
+})
