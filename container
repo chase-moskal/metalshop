@@ -1,34 +1,77 @@
 #!/usr/bin/env bash
 
-if [ -z "$1" ]; then echo "ERR command required, 'build', 'run', or 'debug'"; fi
-if [ -z "$2" ]; then echo "ERR container name required, eg 'auth-server'"; fi
+#
+# parameters and handy variables
+#
 
-if [ "$1" == "build" ]; then
+COMMAND=$1
+CONTAINER=$2
+COMMANDLIST="'build', 'run', 'debug', or 'buildall'"
+
+#
+# functions
+#
+
+dockerbuild() {
+	NAME=$1
 	docker build \
-		-f ./source/microservices/$2/Dockerfile \
-		-t chasemoskal/$2 \
+		-f ./source/microservices/$NAME/Dockerfile \
+		-t chasemoskal/$NAME \
 		.
+}
+
+require_param_container() {
+	if [[ ! -z "$COMMAND" && -z "$CONTAINER" ]]; then
+		echo "ERR container param required, eg 'auth-server'"
+		exit -1
+	fi
+}
+
+#
+# always require the command parameter
+#
+
+if [ -z "$COMMAND" ]; then
+	echo "ERR command param required, eg $COMMANDLIST"
+	exit -1
 fi
 
-if [ "$1" == "run" ]; then
+#
+# command implementations
+#
+
+if [ "$COMMAND" == "buildall" ]; then
+	dockerbuild auth-server
+	dockerbuild liveshow-server
+
+elif [ "$COMMAND" == "build" ]; then
+	require_param_container
+	dockerbuild $CONTAINER
+
+elif [ "$COMMAND" == "run" ]; then
+	require_param_container
 	docker run \
-		--name $2 \
+		--name $CONTAINER \
 		--mount type=bind,source=$(pwd)/metalback/config,target=/app/metalback/config \
 		--network br0 \
 		-p 8000:8000 \
 		--rm \
-		chasemoskal/$2 \
+		chasemoskal/$CONTAINER \
 		&
-fi
 
-if [ "$1" == "debug" ]; then
+elif [ "$COMMAND" == "debug" ]; then
+	require_param_container
 	docker run \
-		--name $2 \
+		--name $CONTAINER \
 		--mount type=bind,source=$(pwd)/metalback/config,target=/app/metalback/config \
 		--network br0 \
 		-p 8000:8000 \
 		--rm \
 		-it \
-		chasemoskal/$2 \
+		chasemoskal/$CONTAINER \
 		bash
+
+else
+	echo "ERR unknown command, must be $COMMANDLIST"
+
 fi
