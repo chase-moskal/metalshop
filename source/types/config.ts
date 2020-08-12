@@ -35,9 +35,10 @@ export interface AuthServerConfig extends CommonConfig {
 	}
 }
 
-export interface ProfileServerConfig extends CommonConfig {
-	profileServer: {
+export interface LiveshowServerConfig extends CommonConfig {
+	liveshowServer: {
 		port: number
+		authServerOrigin: string
 	}
 }
 

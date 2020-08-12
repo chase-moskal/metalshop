@@ -20,8 +20,8 @@ authServer:
     - [adjectives, colors]
     - [animals]
 
-profileServer:
-  port: 8001
+liveshowServer:
+  port: 8003
 
 questionsServer:
   port: 8002
