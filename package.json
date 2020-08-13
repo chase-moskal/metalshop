@@ -11,7 +11,7 @@
 	],
 	"scripts": {
 		"build": "run-s clean && run-p importmap compile && run-s test",
-		"clean": "rimraf dist *.pem && mkdirp dist && chmod -R 755 dist",
+		"clean": "rimraf dist *.pem && mkdirp dist",
 		"importmap": "importly < package.json > dist/importmap.json",
 		"compile": "tsc",
 		"watch": "tsc -w",
