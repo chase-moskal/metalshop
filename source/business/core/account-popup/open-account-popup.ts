@@ -6,7 +6,7 @@ import {namespace} from "./types.js"
 
 export const openAccountPopup = ({
 		authServerOrigin,
-		popupPath = "/html/account",
+		popupPath = "/account",
 	}: {
 		popupPath?: string
 		authServerOrigin: string

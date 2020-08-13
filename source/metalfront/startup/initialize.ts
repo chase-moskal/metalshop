@@ -20,7 +20,7 @@ import {decodeAccessToken} from "../system/decode-access-token.js"
 export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 	const logger = makeLogger()
 
-	const checkoutPopupUrl = `${config["paywall-server"]}/html/checkout`
+	const checkoutPopupUrl = `${config["paywall-server"]}/checkout`
 
 	async function triggerAccountPopup() {
 		const {promisedPayload} = openAccountPopup({

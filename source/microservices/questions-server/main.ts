@@ -67,7 +67,7 @@ nodeProgram(async function main({logger}) {
 			},
 		}
 	})
-	
+
 	new Koa()
 		.use(koaCors())
 		.use(health({logger}))

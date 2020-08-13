@@ -9,7 +9,7 @@ import {namespace} from "./types.js"
 
 export async function openVaultIframe({
 		coreServerOrigin,
-		iframePath = "/html/vault"
+		iframePath = "/vault"
 	}: {
 		iframePath?: string
 		coreServerOrigin: string

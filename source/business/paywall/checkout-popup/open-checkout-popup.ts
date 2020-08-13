@@ -5,7 +5,7 @@ import {namespace, CheckoutPopupParameters, CheckoutPopupPayload} from "./types.
 export const openCheckoutPopup = ({
 	stripeSessionId,
 	paywallServerOrigin,
-	popupPath = "/html/checkout-popup",
+	popupPath = "/checkout-popup",
 }: {
 	stripeSessionId: string
 	paywallServerOrigin: string
