@@ -108,7 +108,8 @@ function mapwise(x: any, y: (value: any) => any) {
 }
 
 function notwise(x: any, y: (value: any) => any) {
-	return {$not: mapwise(x, y)}
+	const cond = mapwise(x, y)
+	return cond && {$nor: [cond]}
 }
 
 const mongoloids: {[key: string]: (value: any) => any} = {
