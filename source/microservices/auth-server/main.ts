@@ -130,7 +130,7 @@ nodeProgram(async function main({logger}) {
 		.use(koaCors())
 		.use(health({logger}))
 		.use(mount(popupKoa))
-		.use(serve("dist"))
+		.use(mount("/dist", serve("dist")))
 		.use(mount("/node_modules", serve("node_modules")))
 		.use(mount("/api", apiKoa))
 		.listen({host: "0.0.0.0", port})

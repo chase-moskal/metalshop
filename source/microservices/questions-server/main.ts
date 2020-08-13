@@ -4,6 +4,7 @@ import {curryVerifyToken} from "redcrypto/dist/curries/curry-verify-token.js"
 
 import Koa from "../../commonjs/koa.js"
 import mount from "../../commonjs/koa-mount.js"
+import koaCors from "../../commonjs/koa-cors.js"
 
 import {health} from "../../toolbox/health.js"
 import {generateId} from "../../toolbox/generate-id.js"
@@ -68,6 +69,7 @@ nodeProgram(async function main({logger}) {
 	})
 	
 	new Koa()
+		.use(koaCors())
 		.use(health({logger}))
 		.use(mount("/api", apiKoa))
 		.listen({host: "0.0.0.0", port})

@@ -142,7 +142,7 @@ nodeProgram(async function main({logger}) {
 		.use(koaCors())
 		.use(health({logger}))
 		.use(mount(clientsideKoa))
-		.use(serve("dist"))
+		.use(mount("/dist", serve("dist")))
 		.use(mount("/node_modules", serve("node_modules")))
 		.use(mount("/stripe/webhooks", stripeWebhooksKoa))
 		.use(mount("/api", apiKoa))
