@@ -8,9 +8,28 @@ COMMAND=$1
 CONTAINER=$2
 COMMANDLIST="'build', 'run', 'debug', or 'buildall'"
 
+declare -a microservices=(
+	auth-server
+	liveshow-server
+	paywall-server
+	questions-server
+	schedule-server
+	settings-server
+)
+
 #
 # functions
 #
+
+require_param_container() {
+	if [[ ! -z "$COMMAND" && -z "$CONTAINER" ]]; then
+		echo "ERR container param required, one of: ${microservices[*]}"
+		exit 1
+	elif [[ ! " ${microservices[@]} " =~ " $CONTAINER " ]]; then
+		echo "ERR unknown container param $CONTAINER, must be one of: ${microservices[*]}"
+		exit 1
+	fi
+}
 
 dockerbuild() {
 	NAME=$1
@@ -20,11 +39,18 @@ dockerbuild() {
 		.
 }
 
-require_param_container() {
-	if [[ ! -z "$COMMAND" && -z "$CONTAINER" ]]; then
-		echo "ERR container param required, eg 'auth-server'"
-		exit 1
-	fi
+dockerrun() {
+	NAME=$1
+	CMD=$2
+	docker run \
+		--name $NAME \
+		--mount type=bind,source=$(pwd)/metalback/config,target=/app/metalback/config \
+		--network br0 \
+		--publish 8000:8000 \
+		--rm \
+		-it \
+		chasemoskal/$NAME \
+		$CMD
 }
 
 #
@@ -41,9 +67,9 @@ fi
 #
 
 if [ "$COMMAND" == "buildall" ]; then
-	dockerbuild auth-server & \
-	dockerbuild liveshow-server & \
-	dockerbuild paywall-server & \
+	for server in "${microservices[@]}"; do
+		dockerbuild $server & \
+	done
 	wait
 
 elif [ "$COMMAND" == "build" ]; then
@@ -52,26 +78,11 @@ elif [ "$COMMAND" == "build" ]; then
 
 elif [ "$COMMAND" == "run" ]; then
 	require_param_container
-	docker run \
-		--name $CONTAINER \
-		--mount type=bind,source=$(pwd)/metalback/config,target=/app/metalback/config \
-		--network br0 \
-		--publish 8000:8000 \
-		--rm \
-		-it \
-		chasemoskal/$CONTAINER
+	dockerrun $CONTAINER
 
 elif [ "$COMMAND" == "debug" ]; then
 	require_param_container
-	docker run \
-		--name $CONTAINER \
-		--mount type=bind,source=$(pwd)/metalback/config,target=/app/metalback/config \
-		--network br0 \
-		--publish 8000:8000 \
-		--rm \
-		-it \
-		chasemoskal/$CONTAINER \
-		bash
+	dockerrun $CONTAINER bash
 
 else
 	echo "ERR unknown command, must be $COMMANDLIST"
