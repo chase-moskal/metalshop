@@ -43,7 +43,7 @@
 	"dependencies": {
 		"@adobe/lit-mobx": "0.0.4",
 		"@koa/cors": "^3.1.0",
-		"@stripe/stripe-js": "^1.8.0",
+		"@stripe/stripe-js": "^1.9.0",
 		"chalk": "^4.1.0",
 		"commotion": "^0.1.0-dev.0",
 		"crosscall": "0.0.6-dev.19",
@@ -63,7 +63,7 @@
 		"pug": "^3.0.0",
 		"redcrypto": "0.0.0-dev.6",
 		"renraku": "0.0.0-dev.30",
-		"stripe": "^8.83.0",
+		"stripe": "^8.84.0",
 		"unique-names-generator": "^4.3.0"
 	},
 	"keywords": [
