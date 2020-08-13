@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+tmux new-session "node ./dist/microservices/auth-server/main.js; bash -i" \; \
+	split-window -v "node ./dist/microservices/liveshow-server/main.js; bash -i" \; select-layout tiled \; \
+	split-window -v "node ./dist/microservices/paywall-server/main.js; bash -i" \; select-layout tiled \; \
+	split-window -v "node ./dist/microservices/questions-server/main.js; bash -i" \; select-layout tiled \; \
+	split-window -v "node ./dist/microservices/schedule-server/main.js; bash -i" \; select-layout tiled \; \
+	split-window -v "node ./dist/microservices/settings-server/main.js; bash -i" \; select-layout tiled \; \
+	select-layout tiled \; \
+	attach
