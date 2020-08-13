@@ -1,10 +1,11 @@
 
-import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
+import {MetalUser, AccessToken, ClaimsRow, SignToken, AccountRow, ProfileRow, VerifyToken, AccessPayload, UserUmbrellaTopic, RefreshPayload, AuthAardvarkTopic} from "../../types.js"
+
 import {concurrent} from "../../toolbox/concurrent.js"
 import {generateId} from "../../toolbox/generate-id.js"
+import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 
-import {MetalUser, AccessToken, ClaimsRow, SignToken, AccountRow, ProfileRow, VerifyToken, AccessPayload, UserUmbrellaTopic, RefreshPayload, AuthAardvarkTopic, VerifyGoogleToken} from "../../types.js"
-
+import {VerifyGoogleToken} from "./types.js"
 import {validateProfile as defaultValidateProfile} from "./validate-profile.js"
 
 export function makeCoreSystems<U extends MetalUser>({

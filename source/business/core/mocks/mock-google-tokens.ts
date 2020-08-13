@@ -1,5 +1,5 @@
 
-import {GoogleResult} from "../../../types.js"
+import {GoogleResult} from "../types.js"
 
 export async function mockSignGoogleToken(googleResult: GoogleResult): Promise<string> {
 	return JSON.stringify(googleResult)

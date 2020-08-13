@@ -1,7 +1,8 @@
 
-import {namespace} from "./common.js"
 import {AuthTokens} from "../../../types.js"
 import {openPopup} from "../../../toolbox/popups/open-popup.js"
+
+import {namespace} from "./types.js"
 
 export const openAccountPopup = ({
 		authServerOrigin,

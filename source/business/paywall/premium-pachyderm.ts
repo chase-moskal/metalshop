@@ -1,7 +1,7 @@
 
-import {PremiumPachydermTopic, PremiumDatalayer, StripeLiaison, Authorizer} from "../../types.js"
-
 import {concurrent} from "../../toolbox/concurrent.js"
+import {PremiumDatalayer, StripeLiaison} from "./types.js"
+import {PremiumPachydermTopic, Authorizer} from "../../types.js"
 
 export function makePremiumPachyderm({
 		authorize,

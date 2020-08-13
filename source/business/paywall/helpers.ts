@@ -1,6 +1,6 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {PaymentDetails, SubscriptionDetails, MinimalCard} from "../../types.js"
+import {PaymentDetails, SubscriptionDetails, MinimalCard} from "./types.js"
 
 export const getStripeId = (x: string | {id: string}) => {
 	return x && (

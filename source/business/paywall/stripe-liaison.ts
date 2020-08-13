@@ -1,6 +1,6 @@
 
 import {Stripe} from "../../commonjs/stripe.js"
-import {StripeLiaison, SetupMetadata} from "../../types.js"
+import {StripeLiaison, SetupMetadata} from "./types.js"
 import {getStripeId, toPaymentDetails, toSubscriptionDetails} from "./helpers.js"
 
 export function makeStripeLiaison({stripe}: {

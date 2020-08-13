@@ -1,10 +1,11 @@
 
 import {Stripe} from "../../../commonjs/stripe.js"
+
 import {generateId} from "../../../toolbox/generate-id.js"
 import {randomSequence, numbers} from "../../../toolbox/random8.js"
 
 import {toPaymentDetails, toSubscriptionDetails} from "../helpers.js"
-import {StripeLiaison, StripeWebhooks, UpdateFlow} from "../../../types.js"
+import {StripeLiaison, StripeWebhooks, UpdateFlow} from "../types.js"
 
 import {MockStripeTables, MockCustomer, MockSetupIntent, MockSubscription, MockPaymentMethod} from "./mock-stripe-types.js"
 

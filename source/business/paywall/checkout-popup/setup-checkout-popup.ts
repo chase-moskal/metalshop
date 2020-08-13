@@ -3,8 +3,9 @@ import {loadStripe} from "@stripe/stripe-js"
 import {CorsPermissions} from "../../../types.js"
 
 import {validateRequest} from "../../../toolbox/popups/validate-request.js"
-import {namespace, CheckoutPopupParameters, CheckoutPopupPayload, CheckoutPopupState} from "./types.js"
 import {PopupFlag, PopupReadyResponse, PopupMessageEvent, PopupGoRequest, PopupPayloadResponse} from "../../../toolbox/popups/interfaces.js"
+
+import {namespace, CheckoutPopupParameters, CheckoutPopupPayload, CheckoutPopupState} from "./types.js"
 
 export const setupCheckoutPopup = ({
 	cors,

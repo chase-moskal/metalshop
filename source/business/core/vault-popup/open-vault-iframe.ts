@@ -2,9 +2,10 @@
 import {createIframe} from "crosscall/dist/create-iframe.js"
 import {crosscallClient} from "crosscall/dist/crosscall-client.js"
 
-import {namespace} from "./common.js"
 import {VaultApi} from "../../../types.js"
 import {vaultShape} from "../../../types/shapes.js"
+
+import {namespace} from "./types.js"
 
 export async function openVaultIframe({
 		coreServerOrigin,

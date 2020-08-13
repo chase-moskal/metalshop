@@ -1,12 +1,6 @@
 
-import {
-	User,
-	Authorizer,
-	LiveshowRow,
-	LiveshowLizardTopic,
-} from "../../types.js"
-
 import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
+import {User, Authorizer, LiveshowRow, LiveshowLizardTopic} from "../../types.js"
 
 export function makeLiveshowLizard({
 		liveshowTable,

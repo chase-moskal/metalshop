@@ -1,5 +1,5 @@
 
-import {GoogleResult, VerifyGoogleToken} from "../../types.js"
+import {GoogleResult, VerifyGoogleToken} from "./types.js"
 import {OAuth2Client} from "../../commonjs/google-auth-library.js"
 
 export function curryVerifyGoogleToken(

@@ -1,8 +1,7 @@
 
 import {tokenDecode} from "redcrypto/dist/token-decode.js"
-import {TokenStoreTopic, AuthAardvarkTopic} from "../../types.js"
-
 import {SimpleStorage} from "../../toolbox/json-storage.js"
+import {TokenStoreTopic, AuthAardvarkTopic} from "../../types.js"
 
 const expiryGraceTime = 10 * 1000
 

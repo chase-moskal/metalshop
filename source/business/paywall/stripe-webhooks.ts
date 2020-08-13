@@ -1,10 +1,14 @@
 
-import {getStripeId} from "./helpers.js"
 import {Stripe} from "../../commonjs/stripe.js"
+
+import {ClaimsCardinalTopic, UserUmbrellaTopic, MetalUser} from "../../types.js"
+
 import {concurrent} from "../../toolbox/concurrent.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
 
-import {ClaimsCardinalTopic, UserUmbrellaTopic, StripeLiaison, StripeWebhooks, PremiumDatalayer, SetupMetadata, MetalUser} from "../../types.js"
+import {StripeLiaison, StripeWebhooks, PremiumDatalayer, SetupMetadata} from "./types.js"
+
+import {getStripeId} from "./helpers.js"
 
 export class StripeWebhookError extends Error {
 	name = this.constructor.name

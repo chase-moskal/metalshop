@@ -1,9 +1,10 @@
 
 import {CorsPermissions} from "crosscall/dist/interfaces.js"
 
-import {namespace} from "./common.js"
 import {AuthTokens} from "../../../types.js"
 import {setupPopup} from "../../../toolbox/popups/setup-popup.js"
+
+import {namespace} from "./types.js"
 
 export const setupAccountPopup = ({
 		cors,

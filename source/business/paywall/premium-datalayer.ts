@@ -1,6 +1,7 @@
 
 import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
-import {PremiumDatalayer, StripeLiaison, StripeBillingRow, StripePremiumRow, PremiumGiftRow} from "../../types.js"
+import {PremiumDatalayer, StripeLiaison} from "./types.js"
+import {StripeBillingRow, StripePremiumRow, PremiumGiftRow} from "../../types.js"
 
 export function makePremiumDatalayer({
 		stripeLiaison,
