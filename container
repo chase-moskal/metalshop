@@ -68,7 +68,7 @@ fi
 
 if [ "$COMMAND" == "buildall" ]; then
 	for server in "${microservices[@]}"; do
-		dockerbuild $server & \
+		dockerbuild $server
 	done
 	wait
 
