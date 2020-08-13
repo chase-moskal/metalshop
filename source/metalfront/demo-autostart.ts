@@ -1,7 +1,7 @@
 
 import "menutown/dist/register-all.js"
 
-import {installDemo} from "./install-demo.js"
+import {installDemo} from "./demo-install.js"
 import {mockAvatars} from "./mocks/mock-avatars.js"
 import {mockQuestions} from "./mocks/mock-questions.js"
 import {registerComponents} from "./toolbox/register-components.js"
