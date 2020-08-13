@@ -1,6 +1,6 @@
 
 import {PaywallApi} from "../../types.js"
-import {paywallShape} from "../../shapes.js"
+import {paywallShape} from "../../types/shapes.js"
 import {apiClient} from "renraku/dist/api-client.js"
 
 export async function makePaywallClients({paywallServerOrigin}: {

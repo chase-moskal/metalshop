@@ -2,7 +2,7 @@
 import {apiClient} from "renraku/dist/api-client.js"
 
 import {SettingsApi} from "../../types.js"
-import {settingsShape} from "../../shapes.js"
+import {settingsShape} from "../../types/shapes.js"
 
 export async function makeSettingsClients({settingsServerOrigin}: {
 		settingsServerOrigin: string

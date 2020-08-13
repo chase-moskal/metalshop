@@ -12,7 +12,7 @@ import {
 	QuestionsApi,
 	CoreSecuredApi,
 	CoreSystemsApi,
-} from "./types.js"
+} from "../types.js"
 
 //
 // renraku api's

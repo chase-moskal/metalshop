@@ -1,7 +1,7 @@
 
 import {User, CoreSystemsApi} from "../../types.js"
 import {apiClient} from "renraku/dist/api-client.js"
-import {coreSystemsShape} from "../../shapes.js"
+import {coreSystemsShape} from "../../types/shapes.js"
 
 export async function makeCoreSystemsClients<U extends User>({coreServerOrigin}: {
 		coreServerOrigin: string

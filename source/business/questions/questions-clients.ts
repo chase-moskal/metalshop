@@ -2,7 +2,7 @@
 import {apiClient} from "renraku/dist/api-client.js"
 
 import {QuestionsApi} from "../../types.js"
-import {questionsShape} from "../../shapes.js"
+import {questionsShape} from "../../types/shapes.js"
 
 export async function makeQuestionsClients({questionsServerOrigin}: {
 		questionsServerOrigin: string
