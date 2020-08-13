@@ -44,7 +44,7 @@ dockerrun() {
 	CMD=$2
 	docker run \
 		--name $NAME \
-		--mount type=bind,source=$(pwd)/metalback/config,target=/app/metalback/config \
+		--mount type=bind,source="$(pwd)"/metalback/config,target=/app/metalback/config,readonly \
 		--network br0 \
 		--publish 8000:8000 \
 		--rm \
