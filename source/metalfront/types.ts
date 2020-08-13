@@ -41,14 +41,12 @@ export interface Personal {
 }
 
 export interface MetalConfig {
-	["mock"]: string
-	["mock-avatar"]: string
 	["core-server"]: string
+	["liveshow-server"]: string
 	["paywall-server"]: string
+	["questions-server"]: string
 	["schedule-server"]: string
 	["settings-server"]: string
-	["liveshow-server"]: string
-	["questions-server"]: string
 }
 
 export type CSS = CSSResult | CSSResultArray

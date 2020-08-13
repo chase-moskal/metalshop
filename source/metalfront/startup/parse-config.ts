@@ -1,14 +1,37 @@
 
 import {MetalConfig} from "../types.js"
-import {AuthoritarianStartupError} from "../system/errors.js"
+import {MetalshopStartupError} from "../system/errors.js"
 
-const err = (message: string) => new AuthoritarianStartupError(message)
+const err = (message: string) => new MetalshopStartupError(message)
 
 export function parseConfig(element: HTMLElement): MetalConfig {
-	if (!element) throw err(`metal config required`)
-	const config = {}
-	for (const {name, value} of Array.from(element.attributes)) {
+	if (!element) throw err(`<metal-config> element is required`)
+
+	//
+	// collect config attributes
+	//
+
+	const config = <MetalConfig>{}
+	for (const {name, value} of Array.from(element.attributes))
 		config[name] = value
+
+	//
+	// validate required attributes
+	//
+
+	const requiredAttributes = [
+		"core-server",
+		"liveshow-server",
+		"paywall-server",
+		"questions-server",
+		"schedule-server",
+		"settings-server",
+	]
+
+	for (const attribute of requiredAttributes) {
+		if (!config[attribute])
+			throw err(`<metal-config> requires attribute [${attribute}]`)
 	}
-	return <MetalConfig>config
+
+	return config
 }

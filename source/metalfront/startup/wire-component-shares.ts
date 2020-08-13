@@ -1,6 +1,6 @@
 
 import {share} from "../framework/share.js"
-import {ButtonPremiumShare, PersonalShare, MyAvatarShare, AdminModeShare, AdminOnlyShare, QuestionsShare, Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare} from "../types.js"
+import {ButtonPremiumShare, PersonalShare, MyAvatarShare, AdminModeShare, QuestionsShare, Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare} from "../types.js"
 
 import {IronReset} from "../components/iron-reset.js"
 import {IronLoading} from "../components/iron-loading.js"
@@ -47,13 +47,7 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 			personalLoad: supermodel.personal.personalLoad,
 			saveProfile: supermodel.personal.saveProfile,
 			setAdminMode: undefined,
-			// setAdminMode: supermodel.personal.setAdminMode,
-			// setAvatarPublicity: supermodel.personal.setAvatarPublicity,
 		})),
-		// MetalSeeker: share(MetalSeeker, (): SeekerShare => ({
-		// 	query: supermodel.seeker.query,
-		// 	resultsLoad: supermodel.seeker.resultsLoad,
-		// })),
 		MetalCountdown: share(MetalCountdown, (): CountdownShare => ({
 			events: supermodel.schedule.events,
 			authLoad: supermodel.auth.authLoad,
@@ -87,7 +81,6 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 		MetalAdminMode: share(MetalAdminMode, (): AdminModeShare => ({
 			personalLoad: supermodel.personal.personalLoad,
 			setAdminMode: undefined,
-			// setAdminMode: supermodel.personal.setAdminMode,
 		})),
 		MetalQuestions: share(MetalQuestions, (): QuestionsShare => ({
 			user: supermodel.auth.user,

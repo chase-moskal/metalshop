@@ -269,10 +269,14 @@ export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 	}
 
 	return {
+
+		// mock stuff
 		options,
 		mockeries,
-		supermodel,
+
+		// standard
 		components,
+		supermodel,
 		async start() {
 			await supermodel.auth.useExistingLogin()
 		},
