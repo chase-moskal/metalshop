@@ -1,7 +1,7 @@
 
 ingress:
   class: nginx
-  domain: metalback.chasemoskal.com
+  domain: metalshop.dev
   tls:
     production: true
     email: chasemoskal@gmail.com
