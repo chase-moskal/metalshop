@@ -11,6 +11,8 @@ cors:
     flags: i
   forbidden: null
 
+authServerOrigin: http://auth:8000
+
 authServer:
   port: 8000
   googleClientId: 501512445110-q3i6vl4ihfas2act2euehgppiats6gor.apps.googleusercontent.com
@@ -20,17 +22,21 @@ authServer:
     - [adjectives, colors]
     - [animals]
 
+liveshowServer:
+  port: 8001
+
 paywallServer:
-  port: 8003
-  authServerOrigin: http://auth:8000
+  port: 8002
   premiumStripePlanId: plan_H5oUIjw9895qDj
   stripeApiKey: pk_test_NEDtuftU6ziXyM4Y6PDrifPl00g6q5efYe
   stripeSecret: sk_test_Pj55B8JGeQyJeMxhcRc3ljEs00V9zwM3FA
   stripeWebhooksSecret: whsec_0xVpgCAoXsXUmlalCAMFRCWnRNaiGJ0x
 
-liveshowServer:
+questionsServer:
   port: 8003
 
-questionsServer:
-  port: 8002
-  authServerOrigin: http://auth:8000
+scheduleServer:
+  port: 8004
+
+settingsServer:
+  port: 8005

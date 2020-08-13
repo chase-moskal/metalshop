@@ -7,9 +7,18 @@ microservices:
   auth:
     image: chasemoskal/auth-server:latest
     replicas: 1
-  profile:
-    image: chasemoskal/profile-server:latest
+  liveshow:
+    image: chasemoskal/liveshow-server:latest
+    replicas: 1
+  paywall:
+    image: chasemoskal/paywall-server:latest
     replicas: 1
   questions:
     image: chasemoskal/questions-server:latest
+    replicas: 1
+  schedule:
+    image: chasemoskal/schedule-server:latest
+    replicas: 1
+  settings:
+    image: chasemoskal/settings-server:latest
     replicas: 1

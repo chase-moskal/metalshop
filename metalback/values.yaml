@@ -8,14 +8,26 @@ ingress:
 
 microservices:
   auth:
+    image: chasemoskal/auth-server:latest
+    replicas: 2
     port: 8000
+  liveshow:
+    image: chasemoskal/liveshow-server:latest
     replicas: 2
-    image: chasemoskal/auth-server:v0.0.0-dev.17
-  profile:
     port: 8001
+  paywall:
+    image: chasemoskal/paywall-server:latest
     replicas: 2
-    image: chasemoskal/profile-server:v0.0.0-dev.12
-  questions:
     port: 8002
+  questions:
+    image: chasemoskal/questions-server:latest
     replicas: 2
-    image: chasemoskal/profile-server:v0.0.0-dev.0
+    port: 8003
+  schedule:
+    image: chasemoskal/schedule-server:latest
+    replicas: 2
+    port: 8004
+  settings:
+    image: chasemoskal/settings-server:latest
+    replicas: 2
+    port: 8005
