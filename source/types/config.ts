@@ -49,7 +49,7 @@ export interface QuestionsServerConfig extends CommonConfig {
 }
 
 export interface ScheduleServerConfig extends CommonConfig {
-	scheduleServerConfig: {
+	scheduleServer: {
 		port: number
 	}
 }

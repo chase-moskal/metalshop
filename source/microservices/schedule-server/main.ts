@@ -23,8 +23,8 @@ nodeProgram(async function main({logger}) {
 	}
 
 	const config: ScheduleServerConfig = await readYaml(paths.config)
-	const {debug, authServerOrigin} = config
-	const {port} = config.scheduleServerConfig
+	const {debug} = config
+	const {port} = config.scheduleServer
 	const cors = unpackCorsConfig(config.cors)
 
 	const authServerPublicKey = await read(paths.authServerPublicKey)
