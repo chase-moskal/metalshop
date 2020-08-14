@@ -85,24 +85,26 @@ export async function makeMocks({
 		avatar: googleUserAvatar,
 	})
 
-	const s = (name: string) => makeDbbyStorage(localStorage, name)
-	const claimsTable: DbbyTable<ClaimsRow> = dbbyMemory({dbbyStorage: s("claims")})
-	const accountTable: DbbyTable<AccountRow> = dbbyMemory({dbbyStorage: s("account")})
-	const profileTable: DbbyTable<ProfileRow> = dbbyMemory({dbbyStorage: s("profile")})
-	const questionTable: DbbyTable<QuestionRow> = dbbyMemory({dbbyStorage: s("question")})
-	const liveshowTable: DbbyTable<LiveshowRow> = dbbyMemory({dbbyStorage: s("liveshow")})
-	const settingsTable: DbbyTable<SettingsRow> = dbbyMemory({dbbyStorage: s("settings")})
-	const premiumGiftTable: DbbyTable<PremiumGiftRow> = dbbyMemory({dbbyStorage: s("premium")})
-	const questionLikeTable: DbbyTable<QuestionLikeRow> = dbbyMemory({dbbyStorage: s("questionLike")})
-	const stripeBillingTable: DbbyTable<StripeBillingRow> = dbbyMemory({dbbyStorage: s("stripeBilling")})
-	const stripePremiumTable: DbbyTable<StripePremiumRow> = dbbyMemory({dbbyStorage: s("stripePremium")})
-	const scheduleEventTable: DbbyTable<ScheduleEventRow> = dbbyMemory({dbbyStorage: s("scheduleEvent")})
-	const questionReportTable: DbbyTable<QuestionReportRow> = dbbyMemory({dbbyStorage: s("questionReport")})
+	const memoryTable = (name: string) => dbbyMemory({
+		dbbyStorage: makeDbbyStorage(localStorage, name)
+	})
+	const claimsTable: DbbyTable<ClaimsRow> = memoryTable("claims")
+	const accountTable: DbbyTable<AccountRow> = memoryTable("account")
+	const profileTable: DbbyTable<ProfileRow> = memoryTable("profile")
+	const questionTable: DbbyTable<QuestionRow> = memoryTable("question")
+	const liveshowTable: DbbyTable<LiveshowRow> = memoryTable("liveshow")
+	const settingsTable: DbbyTable<SettingsRow> = memoryTable("settings")
+	const premiumGiftTable: DbbyTable<PremiumGiftRow> = memoryTable("premium")
+	const questionLikeTable: DbbyTable<QuestionLikeRow> = memoryTable("questionLike")
+	const stripeBillingTable: DbbyTable<StripeBillingRow> = memoryTable("stripeBilling")
+	const stripePremiumTable: DbbyTable<StripePremiumRow> = memoryTable("stripePremium")
+	const scheduleEventTable: DbbyTable<ScheduleEventRow> = memoryTable("scheduleEvent")
+	const questionReportTable: DbbyTable<QuestionReportRow> = memoryTable("questionReport")
 	const mockStripeTables: MockStripeTables = {
-		customers: dbbyMemory({dbbyStorage: s("stripeLiaison-customers")}),
-		setupIntents: dbbyMemory({dbbyStorage: s("stripeLiaison-setupIntents")}),
-		subscriptions: dbbyMemory({dbbyStorage: s("stripeLiaison-subscriptions")}),
-		paymentMethods: dbbyMemory({dbbyStorage: s("stripeLiaison-paymentMethods")}),
+		customers: memoryTable("stripeLiaison-customers"),
+		setupIntents: memoryTable("stripeLiaison-setupIntents"),
+		subscriptions: memoryTable("stripeLiaison-subscriptions"),
+		paymentMethods: memoryTable("stripeLiaison-paymentMethods"),
 	}
 
 	const signToken = mockSignToken()
