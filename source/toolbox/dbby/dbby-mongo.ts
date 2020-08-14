@@ -7,6 +7,14 @@ import {escapeRegex} from "../escape-regex.js"
 import {evaluateConditional} from "./dbby-common.js"
 import {DbbyTable, DbbyRow, DbbyConditions, DbbyConditional, DbbyUpdateAmbiguated, DbbyOrder} from "./dbby-types.js"
 
+function skimMongoId<Row extends DbbyRow>(row: Row): Row {
+	if (row) {
+		const {_id: noop, ...skimmed} = <any>row
+		return skimmed
+	}
+	return undefined
+}
+
 export function dbbyMongo<Row extends DbbyRow>({collection}: {
 		collection: Collection
 	}): DbbyTable<Row> {
@@ -22,12 +30,14 @@ export function dbbyMongo<Row extends DbbyRow>({collection}: {
 			if (offset) cursor = cursor.skip(offset)
 			if (order) cursor = cursor.sort(orderToSort(order))
 			if (limit) cursor = cursor.limit(limit)
-			return cursor.toArray()
+			const rows = await cursor.toArray()
+			return rows.map(skimMongoId)
 		},
 
 		async one(conditional) {
 			const query = prepareQuery(conditional)
-			return collection.findOne<Row>(query)
+			const row = await collection.findOne<Row>(query)
+			return skimMongoId(row)
 		},
 
 		async assert({make, ...conditional}) {
@@ -37,7 +47,7 @@ export function dbbyMongo<Row extends DbbyRow>({collection}: {
 				row = await make()
 				await collection.insertOne(row)
 			}
-			return row
+			return skimMongoId(row)
 		},
 
 		async update({
