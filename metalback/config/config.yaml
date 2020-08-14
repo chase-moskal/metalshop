@@ -7,15 +7,15 @@ mongo:
 
 cors:
   allowed:
-    pattern: ^https?://(.*)metalshop\.(dev|test)(|:8\d{3})$
+    pattern: ^https?://((.*)metalshop\.dev|metaltest\.chasemoskal\.com)(|:8\d{3})$
     flags: i
   forbidden: null
 
-authServerOrigin: http://metalshop.test:8000
+authServerOrigin: http://metaltest.chasemoskal.com:8000
 
 authServer:
   port: 8000
-  googleClientId: 501512445110-q3i6vl4ihfas2act2euehgppiats6gor.apps.googleusercontent.com
+  googleClientId: 25671840068-bbc18an921lc5tqrer7vp0h1obr1tvok.apps.googleusercontent.com
   accessTokenLifespan: 600000
   refreshTokenLifespan: 7776000000
   nicknameStructure:

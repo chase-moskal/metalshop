@@ -29,7 +29,7 @@ export function assembleSupermodel({
 		tokenStore,
 		decodeAccessToken,
 		triggerAccountPopup,
-		expiryGraceSeconds: 60
+		expiryGraceTime: 60 * 1000,
 	})
 
 	const supermodel = {

@@ -11,15 +11,20 @@
 		<!-- autostart metalshop demo -->
 		<script type="importmap-shim" src="./dist/importmap.json"></script>
 		<script type="importmap-shim">{"imports": {"metalshop/": "./"}}</script>
-		<script async defer type="module-shim" src="./dist/metalfront/autostart.js"></script>
+		<script async defer type="module-shim">
+			import {parseQuery} from "./dist/metalfront/toolbox/parse-query.js"
+			const {mock} = parseQuery()
+			const entry = mock === undefined ? "autostart.js" : "autostart-demo.js"
+			importShim(`./dist/metalfront/${entry}`)
+		</script>
 		<script async defer src="https://unpkg.com/es-module-shims@0.5.1/dist/es-module-shims.js"></script>
 		<metal-config
-			core-server="http://metalshop.test:8000"
-			liveshow-server="http://metalshop.test:8001"
-			paywall-server="http://metalshop.test:8002"
-			questions-server="http://metalshop.test:8003"
-			schedule-server="http://metalshop.test:8004"
-			settings-server="http://metalshop.test:8005"
+			core-server="http://metaltest.chasemoskal.com:8000"
+			liveshow-server="http://metaltest.chasemoskal.com:8001"
+			paywall-server="http://metaltest.chasemoskal.com:8002"
+			questions-server="http://metaltest.chasemoskal.com:8003"
+			schedule-server="http://metaltest.chasemoskal.com:8004"
+			settings-server="http://metaltest.chasemoskal.com:8005"
 		></metal-config>
 	</head>
 	<body>
@@ -55,6 +60,8 @@
 					<h2>mix-and-match mock mode</h2>
 					<p>"mock" querystring generates new account on page load</p>
 					<ul>
+						<li><a href="/">/</a> ← production mode (real)</li>
+						<li><a href="/?mock=loggedin">/?mock</a> ← mock mode</li>
 						<li><a href="/?mock=loggedin">/?mock=loggedin</a> ← start logged in</li>
 						<li><a href="/?mock=loggedin+open">/?mock=loggedin+open</a> ← with menu open</li>
 						<li><a href="/?mock=loggedin+banned">/?mock=loggedin+banned</a> ← be banned</li>

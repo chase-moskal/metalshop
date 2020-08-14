@@ -9,8 +9,8 @@ const tokenIsValid = (token: string) => {
 	let valid = false
 	if (token) {
 		const decoded = tokenDecode<any>(token)
-		const expiry = decoded.exp - expiryGraceTime
-		const expired = Date.now() > expiry
+		const expiry = decoded.exp * 1000
+		const expired = Date.now() > (expiry - expiryGraceTime)
 		valid = !expired
 	}
 	return valid

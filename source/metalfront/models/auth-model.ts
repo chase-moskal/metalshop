@@ -6,7 +6,7 @@ import {User, AccessToken, TokenStoreTopic} from "../../types.js"
 import {AuthPayload, TriggerAccountPopup, DecodeAccessToken, AuthContext} from "../types.js"
 
 export class AuthModel<U extends User> {
-	private expiryGraceSeconds: number
+	private expiryGraceTime: number
 	private tokenStore: TokenStoreTopic
 	private authContext: AuthContext<U>
 	private decodeAccessToken: DecodeAccessToken<U>
@@ -23,7 +23,7 @@ export class AuthModel<U extends User> {
 	}
 
 	constructor(options: {
-			expiryGraceSeconds: number
+			expiryGraceTime: number
 			tokenStore: TokenStoreTopic
 			decodeAccessToken: DecodeAccessToken<U>
 			triggerAccountPopup: TriggerAccountPopup
@@ -107,8 +107,8 @@ export class AuthModel<U extends User> {
 	private processAccessToken(accessToken: AccessToken): AuthPayload<U> {
 		this.authContext = this.decodeAccessToken(accessToken)
 		const getAuthContext = async() => {
-			const gracedExp = (this.authContext.exp - this.expiryGraceSeconds)
-			const expired = gracedExp < Date.now()
+			const expiry = this.authContext.exp * 1000
+			const expired = Date.now() > (expiry - this.expiryGraceTime)
 			if (expired) {
 				await this.reauthorize()
 			}

@@ -78,7 +78,7 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 			})(),
 			settingsSheriff: (async function() {
 				const {settingsSheriff} = await makeSettingsClients({
-					settingsServerOrigin: config["settingsSheriff"],
+					settingsServerOrigin: config["settings-server"],
 				})
 				return settingsSheriff
 			})(),
