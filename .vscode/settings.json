@@ -13,7 +13,8 @@
 	},
 
 	"search.exclude": {
-		"dist": true
+		"dist": true,
+		"package-lock.json": true
 	},
 
 	"files.watcherExclude": {
