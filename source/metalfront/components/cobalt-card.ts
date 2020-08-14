@@ -11,6 +11,7 @@ import {makeDebouncer} from "../toolbox/debouncer.js"
 import {deepClone, deepEqual} from "../toolbox/deep.js"
 
 import {MetalUser, MetalProfile} from "../../types.js"
+import {nicknameMax, taglineMax} from "../../business/core/validate-profile.js"
 
 const styles = css`
 
@@ -185,8 +186,8 @@ export class CobaltCard extends MetalshopComponent<void> {
 		return html`
 			<iron-loading .load=${load} class="cardplate formarea coolbuttonarea">
 				<div class=textfields>
-					${this.renderTextfield("nickname", profile.nickname, 21)}
-					${this.renderTextfield("tagline", profile.tagline, 32)}
+					${this.renderTextfield("nickname", profile.nickname, nicknameMax)}
+					${this.renderTextfield("tagline", profile.tagline, taglineMax)}
 				</div>
 				${this.renderClaimsList(user)}
 				<ul class="detail">

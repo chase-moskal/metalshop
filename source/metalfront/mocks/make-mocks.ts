@@ -2,46 +2,12 @@
 import {mockSignToken} from "redcrypto/dist/curries/mock-sign-token.js"
 import {mockVerifyToken} from "redcrypto/dist/curries/mock-verify-token.js"
 
-import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
-import {generateId} from "../../toolbox/generate-id.js"
-import {Logger} from "../../toolbox/logger/interfaces.js"
-import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
-import {makeDbbyStorage} from "../../toolbox/dbby/dbby-storage.js"
-
-import {mockLatency} from "../mocks/mock-latency.js"
-
-import {
-	ClaimsRow,
-	MetalUser,
-	MetalScope,
-	Authorizer,
-	AccountRow,
-	ProfileRow,
-	QuestionRow,
-	LiveshowRow,
-	SettingsRow,
-	AccessPayload,
-	PremiumGiftRow,
-	QuestionLikeRow,
-	ScheduleEventRow,
-	StripeBillingRow,
-	StripePremiumRow,
-	AuthAardvarkTopic,
-	UserUmbrellaTopic,
-	QuestionReportRow,
-	QuestionQuarryTopic,
-	PremiumPachydermTopic,
-} from "../../types.js"
-import {
-	MetalOptions,
-	DecodeAccessToken,
-	TriggerAccountPopup,
-	TriggerCheckoutPopup,
-} from "../types.js"
+import {ClaimsRow, MetalUser, MetalScope, Authorizer, AccountRow, ProfileRow, QuestionRow, LiveshowRow, SettingsRow, AccessPayload, PremiumGiftRow, QuestionLikeRow, ScheduleEventRow, StripeBillingRow, StripePremiumRow, AuthAardvarkTopic, UserUmbrellaTopic, QuestionReportRow, QuestionQuarryTopic, PremiumPachydermTopic} from "../../types.js"
 
 import {makeTokenStore} from "../../business/core/token-store.js"
 import {makeCoreSystems} from "../../business/core/core-systems.js"
 import * as evaluators from "../../business/core/user-evaluators.js"
+import {validateProfile} from "../../business/core/validate-profile.js"
 import {makeClaimsCardinal} from "../../business/core/claims-cardinal.js"
 import {makeLiveshowLizard} from "../../business/liveshow/liveshow-lizard.js"
 import {makeScheduleSentry} from "../../business/schedule/schedule-sentry.js"
@@ -52,7 +18,16 @@ import {MockStripeTables} from "../../business/paywall/mocks/mock-stripe-types.j
 import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circuit.js"
 import {mockVerifyGoogleToken, mockSignGoogleToken} from "../../business/core/mocks/mock-google-tokens.js"
 
+import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
+import {generateId} from "../../toolbox/generate-id.js"
+import {Logger} from "../../toolbox/logger/interfaces.js"
+import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
+import {makeDbbyStorage} from "../../toolbox/dbby/dbby-storage.js"
+
+import {mockLatency} from "../mocks/mock-latency.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
+
+import {MetalOptions, DecodeAccessToken, TriggerAccountPopup, TriggerCheckoutPopup} from "../types.js"
 
 export type PrepareMockData = (options: {
 		authAardvark: AuthAardvarkTopic,
@@ -120,12 +95,12 @@ export async function makeMocks({
 		claimsTable,
 		accountTable,
 		profileTable,
-		accessTokenLifespan: minute * 20,
 		refreshTokenLifespan: day * 90,
+		accessTokenLifespan: minute * 20,
 		signToken,
 		verifyToken,
+		validateProfile,
 		generateNickname,
-		validateProfile: () => true,
 		verifyGoogleToken: mockVerifyGoogleToken,
 	})
 

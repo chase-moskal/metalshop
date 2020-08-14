@@ -29,7 +29,7 @@ export function makeCoreSystems<U extends MetalUser>({
 		verifyToken: VerifyToken
 		generateNickname: () => string
 		verifyGoogleToken: VerifyGoogleToken
-		validateProfile?: (profile: U["profile"]) => boolean
+		validateProfile?: (profile: U["profile"]) => {problems: string[]}
 	}): {
 		authAardvark: AuthAardvarkTopic
 		userUmbrella: UserUmbrellaTopic<U>
@@ -164,7 +164,8 @@ export function makeCoreSystems<U extends MetalUser>({
 					|| askingUser.claims.admin
 					|| askingUser.userId === userId
 				if (!allowed) throw new Error("forbidden")
-				if (!validateProfile(profile)) throw new Error("invalid profile")
+				const {problems} = validateProfile(profile)
+				if (problems.length) throw new Error(`invalid profile: ${problems.join("; ")}`)
 				await profileTable.update({
 					conditions: {equal: {userId}},
 					write: profile,
