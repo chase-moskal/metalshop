@@ -48,10 +48,10 @@ export function dbbyMongo<Row extends DbbyRow>({collection}: {
 			}: DbbyUpdateAmbiguated<Row>) {
 			const query = prepareQuery(conditional)
 			if (write) {
-				await collection.updateMany(query, write, {upsert: false})
+				await collection.updateMany(query, {$set: write}, {upsert: false})
 			}
 			else if (upsert) {
-				await collection.updateOne(query, upsert, {upsert: true})
+				await collection.updateOne(query, {$set: upsert}, {upsert: true})
 			}
 			else if (whole) {
 				await collection.deleteMany(query)
