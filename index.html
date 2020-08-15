@@ -13,18 +13,41 @@
 		<script type="importmap-shim">{"imports": {"metalshop/": "./"}}</script>
 		<script async defer type="module-shim">
 			import {parseQuery} from "./dist/metalfront/toolbox/parse-query.js"
-			const {mock} = parseQuery()
-			const entry = mock === undefined ? "autostart.js" : "autostart-demo.js"
+			const {mock, dev} = parseQuery()
+
+			const configElement = document.querySelector("metal-config")
+			function config(key, value) {
+				configElement.setAttribute(key, value)
+			}
+
+			if (dev === "node") {
+				config("core-server", "http://metalshop.chasemoskal.com:8000")
+				config("liveshow-server", "http://metalshop.chasemoskal.com:8001")
+				config("paywall-server", "http://metalshop.chasemoskal.com:8002")
+				config("questions-server", "http://metalshop.chasemoskal.com:8003")
+				config("schedule-server", "http://metalshop.chasemoskal.com:8004")
+				config("settings-server", "http://metalshop.chasemoskal.com:8005")
+			}
+			else if (dev === "minikube") {
+				config("core-server", "http://auth.on.metalshop.chasemoskal.com")
+				config("liveshow-server", "http://liveshow.on.metalshop.chasemoskal.com")
+				config("paywall-server", "http://paywall.on.metalshop.chasemoskal.com")
+				config("questions-server", "http://questions.on.metalshop.chasemoskal.com")
+				config("schedule-server", "http://schedule.on.metalshop.chasemoskal.com")
+				config("settings-server", "http://settings.on.metalshop.chasemoskal.com")
+			}
+
+			const entry = mock === undefined ? "autostart.js" : "demo-autostart.js"
 			importShim(`./dist/metalfront/${entry}`)
 		</script>
 		<script async defer src="https://unpkg.com/es-module-shims@0.5.1/dist/es-module-shims.js"></script>
 		<metal-config
-			core-server="http://metaltest.chasemoskal.com:8000"
-			liveshow-server="http://metaltest.chasemoskal.com:8001"
-			paywall-server="http://metaltest.chasemoskal.com:8002"
-			questions-server="http://metaltest.chasemoskal.com:8003"
-			schedule-server="http://metaltest.chasemoskal.com:8004"
-			settings-server="http://metaltest.chasemoskal.com:8005"
+			core-server="https://auth.on.metalshop.dev"
+			liveshow-server="https://liveshow.on.metalshop.dev"
+			paywall-server="https://paywall.on.metalshop.dev"
+			questions-server="https://questions.on.metalshop.dev"
+			schedule-server="https://schedule.on.metalshop.dev"
+			settings-server="https://settings.on.metalshop.dev"
 		></metal-config>
 	</head>
 	<body>
@@ -57,11 +80,15 @@
 					<p>the database state is persisted in localstorage. you can clear it with the reset button below</p>
 				</section>
 				<section>
-					<h2>mix-and-match mock mode</h2>
-					<p>"mock" querystring generates new account on page load</p>
+					<h2>choose your microservices</h2>
 					<ul>
-						<li><a href="/">/</a> ← production mode (real)</li>
-						<li><a href="/?mock=loggedin">/?mock</a> ← mock mode</li>
+						<li><a href="/">/</a> ← production cluster</li>
+						<li><a href="/?dev=node">/?dev=node</a> ← local node microservices</li>
+						<li><a href="/?dev=minikube">/?dev=minikube</a> ← local kubernetes cluster</li>
+					</ul>
+					<h3>or mix-and-match mock mode</h3>
+					<ul>
+						<li><a href="/?mock">/?mock</a> ← mock mode</li>
 						<li><a href="/?mock=loggedin">/?mock=loggedin</a> ← start logged in</li>
 						<li><a href="/?mock=loggedin+open">/?mock=loggedin+open</a> ← with menu open</li>
 						<li><a href="/?mock=loggedin+banned">/?mock=loggedin+banned</a> ← be banned</li>
@@ -70,13 +97,6 @@
 						<li><a href="/?mock=loggedin+premium">/?mock=loggedin+premium</a> ← be a premium user</li>
 						<li><a href="/?mock=loggedin+premium+admin">/?mock=loggedin+premium+admin</a> ← god mode</li>
 					</ul>
-					<!-- <h3>choose your microservices</h3>
-					<ul>
-						<li><a href="/">/</a> ← mock mode by default for now</li>
-						<li><a href="/?dev=node">/?dev=node</a> ← local node microservices</li>
-						<li><a href="/?dev=minikube">/?dev=minikube</a> ← local kubernetes cluster</li>
-						<li><a href="/?dev=prod">/?dev=prod</a> ← production cluster</li>
-					</ul> -->
 				</section>
 			</section>
 			<iron-reset></iron-reset>

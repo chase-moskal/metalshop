@@ -1,7 +1,7 @@
 
 ingress:
-  domain: metaltest.chasemoskal.com
-  tls: null
+  domain: on.metalshop.chasemoskal.com
+  tls: ~
 
 microservices:
   auth:

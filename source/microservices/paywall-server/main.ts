@@ -29,8 +29,8 @@ import {PaywallServerConfig, PaywallApi, MetalUser, PremiumGiftRow, StripeBillin
 
 nodeProgram(async function main({logger}) {
 	const paths = {
-		config: "metalback/config/config.yaml",
-		authServerPublicKey: "metalback/config/auth-server.public.pem",
+		config: "config/config.yaml",
+		authServerPublicKey: "config/auth-server.public.pem",
 		templates: "source/microservices/paywall-server/clientside/templates",
 	}
 	const template = async(filename: string) => pug.compile(

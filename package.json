@@ -16,7 +16,6 @@
 		"compile": "tsc",
 		"watch": "tsc -w",
 		"start": "serve -l 8080",
-		"generate-keys": "./node_modules/redcrypto/generate-keys && mv private.pem metalback/config/auth-server.private.pem && mv public.pem metalback/config/auth-server.public.pem",
 		"test": "cynic node dist/tests.test.js"
 	},
 	"devDependencies": {

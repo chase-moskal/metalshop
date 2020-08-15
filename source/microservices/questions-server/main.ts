@@ -21,8 +21,8 @@ import {QuestionsServerConfig, QuestionRow, QuestionLikeRow, QuestionReportRow, 
 
 nodeProgram(async function main({logger}) {
 	const paths = {
-		config: "metalback/config/config.yaml",
-		authServerPublicKey: "metalback/config/auth-server.public.pem",
+		config: "config/config.yaml",
+		authServerPublicKey: "config/auth-server.public.pem",
 	}
 
 	const config: QuestionsServerConfig = await readYaml(paths.config)

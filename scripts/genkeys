@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+rm *.pem config/*.pem metalback/config/*.pem 2> /dev/null
+
+node_modules/redcrypto/generate-keys
+mv private.pem config/auth-server.private.pem
+mv public.pem config/auth-server.public.pem
+
+cp config/*.pem metalback/config/

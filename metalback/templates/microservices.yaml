@@ -26,7 +26,7 @@ spec:
         - containerPort: {{ $microservice.port }}
         volumeMounts:
         - name: {{ $rname }}-{{ $mname }}-config-volume
-          mountPath: /app/metalback/config
+          mountPath: /app/config
           readOnly: true
       volumes:
       - name: {{ $rname }}-{{ $mname }}-config-volume

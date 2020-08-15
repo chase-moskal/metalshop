@@ -19,8 +19,8 @@ import {ScheduleServerConfig, ScheduleEventRow, ScheduleApi} from "../../types.j
 
 nodeProgram(async function main({logger}) {
 	const paths = {
-		config: "metalback/config/config.yaml",
-		authServerPublicKey: "metalback/config/auth-server.public.pem",
+		config: "config/config.yaml",
+		authServerPublicKey: "config/auth-server.public.pem",
 	}
 
 	const config: ScheduleServerConfig = await readYaml(paths.config)

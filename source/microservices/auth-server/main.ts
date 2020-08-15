@@ -27,9 +27,9 @@ import {CoreSystemsApi, MetalUser, AuthServerConfig, ClaimsRow, AccountRow, Prof
 
 nodeProgram(async function main({logger}) {
 	const paths = {
-		config: "metalback/config/config.yaml",
-		publicKey: "metalback/config/auth-server.public.pem",
-		privateKey: "metalback/config/auth-server.private.pem",
+		config: `config/config.yaml`,
+		publicKey: `config/auth-server.public.pem`,
+		privateKey: `config/auth-server.private.pem`,
 		templates: "source/microservices/auth-server/clientside/templates",
 	}
 	const template = async(filename: string) => pug.compile(

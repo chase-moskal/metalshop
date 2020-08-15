@@ -18,8 +18,8 @@ import {makeSettingsSheriff} from "../../business/settings/settings-sheriff.js"
 
 nodeProgram(async function main({logger}) {
 	const paths = {
-		config: "metalback/config/config.yaml",
-		authServerPublicKey: "metalback/config/auth-server.public.pem",
+		config: "config/config.yaml",
+		authServerPublicKey: "config/auth-server.public.pem",
 	}
 
 	const config: SettingsServerConfig = await readYaml(paths.config)

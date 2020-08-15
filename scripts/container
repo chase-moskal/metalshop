@@ -36,6 +36,7 @@ dockerbuild() {
 	docker build \
 		-f ./source/microservices/$NAME/Dockerfile \
 		-t chasemoskal/$NAME \
+		--quiet \
 		.
 }
 
@@ -44,7 +45,7 @@ dockerrun() {
 	CMD=$2
 	docker run \
 		--name $NAME \
-		--mount type=bind,source="$(pwd)"/metalback/config,target=/app/metalback/config,readonly \
+		--mount type=bind,source="$(pwd)"/metalback/config,target=/app/config,readonly \
 		--network br0 \
 		--publish 8000:8000 \
 		--rm \

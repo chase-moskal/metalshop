@@ -11,7 +11,7 @@ cors:
     flags: i
   forbidden: null
 
-authServerOrigin: http://auth
+authServerOrigin: http://metalshop.chasemoskal.com:8000
 
 authServer:
   port: 8000
