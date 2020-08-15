@@ -1,7 +1,7 @@
 
 # 🤘 metalshop
 
-&nbsp; &nbsp; 🕹 live demo: https://metalshop.dev  
+&nbsp; &nbsp; 🕹 live demo: https://metalshop.dev/?mock  
 &nbsp; &nbsp; 🧪 [codepen demo](https://codepen.io/ChaseMoskal/pen/gOrbxRv?editors=1000) shows drop-in html usage  
 
 **open source web components, microservices, and infrastructure**  
