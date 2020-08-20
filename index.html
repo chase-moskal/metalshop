@@ -13,14 +13,14 @@
 		<script type="importmap-shim">{"imports": {"metalshop/": "./"}}</script>
 		<script async defer type="module-shim">
 			import {parseQuery} from "./dist/metalfront/toolbox/parse-query.js"
-			const {mock, dev} = parseQuery()
+			const {mock, env} = parseQuery()
 
 			const configElement = document.querySelector("metal-config")
 			function config(key, value) {
 				configElement.setAttribute(key, value)
 			}
 
-			if (dev === "node") {
+			if (env === "node") {
 				config("core-server", "http://metalnode.chasemoskal.com:8000")
 				config("liveshow-server", "http://metalnode.chasemoskal.com:8001")
 				config("paywall-server", "http://metalnode.chasemoskal.com:8002")
@@ -28,13 +28,21 @@
 				config("schedule-server", "http://metalnode.chasemoskal.com:8004")
 				config("settings-server", "http://metalnode.chasemoskal.com:8005")
 			}
-			else if (dev === "minikube") {
+			else if (env === "dev") {
 				config("core-server", "http://auth.metalshop.chasemoskal.com")
 				config("liveshow-server", "http://liveshow.metalshop.chasemoskal.com")
 				config("paywall-server", "http://paywall.metalshop.chasemoskal.com")
 				config("questions-server", "http://questions.metalshop.chasemoskal.com")
 				config("schedule-server", "http://schedule.metalshop.chasemoskal.com")
 				config("settings-server", "http://settings.metalshop.chasemoskal.com")
+			}
+			else if (env === "stage") {
+				config("core-server", "https://auth.stage.metalshop.dev")
+				config("liveshow-server", "https://liveshow.stage.metalshop.dev")
+				config("paywall-server", "https://paywall.stage.metalshop.dev")
+				config("questions-server", "https://questions.stage.metalshop.dev")
+				config("schedule-server", "https://schedule.stage.metalshop.dev")
+				config("settings-server", "https://settings.stage.metalshop.dev")
 			}
 
 			const entry = mock === undefined ? "autostart.js" : "demo-autostart.js"
@@ -80,11 +88,12 @@
 					<p>the database state is persisted in localstorage. you can clear it with the reset button below</p>
 				</section>
 				<section>
-					<h2>choose your microservices</h2>
+					<h2>select backend environment</h2>
 					<ul>
-						<li><a href="/">/</a> ← production cluster</li>
-						<li><a href="/?dev=node">/?dev=node</a> ← local node microservices</li>
-						<li><a href="/?dev=minikube">/?dev=minikube</a> ← local kubernetes cluster</li>
+						<li><a href="/">/</a> ← production kubernetes cluster</li>
+						<li><a href="/?env=dev">/?env=dev</a> ← local minikube cluster</li>
+						<li><a href="/?env=node">/?env=node</a> ← local node microservices</li>
+						<li><a href="/?env=stage">/?env=stage</a> ← staging kubernetes cluster</li>
 					</ul>
 					<h3>or mix-and-match mock mode</h3>
 					<ul>
