@@ -13,6 +13,8 @@ spec:
       labels:
         app: web-server
     spec:
+      imagePullSecrets:
+      - name: dockerconfigjson-github-com
       containers:
       - name: web-server
         image: "{{ .Values.web.image }}:{{ .Values.images.tag }}"

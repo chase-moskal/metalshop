@@ -19,6 +19,8 @@ spec:
       annotations:
         checksum: {{ $checksum }}
     spec:
+      imagePullSecrets:
+      - name: dockerconfigjson-github-com
       volumes:
       - name: {{ $rname }}-{{ $mname }}-config-volume
         secret:
