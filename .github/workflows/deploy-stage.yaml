@@ -35,7 +35,7 @@ jobs:
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/web
           tags: ${{ github.sha }}
-          dockerfile: ./source/microservices/web/Dockerfile
+          dockerfile: ./Dockerfile
 
       ##
       ## push images for microservices
