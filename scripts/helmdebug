@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+VALUES=${1:-"values"}
+
+helm template metaldev ./metalback -f ./metalback/$VALUES.yaml
