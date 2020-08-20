@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
+helm uninstall metaldev --wait
 helm upgrade metaldev ./metalback --install -f ./metalback/values-dev.yaml --wait
