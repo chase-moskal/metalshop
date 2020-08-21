@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# based on instructions from https://cert-manager.io/docs/installation/kubernetes/#installing-with-helm
+
+kubectl create namespace cert-manager
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --version v0.16.1 \
+  --set installCRDs=true

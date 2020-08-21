@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+# based on instructions from https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/cloudflare.md
+
+CLOUDFLARE_TOKEN=$1
+
+if [ -z "$CLOUDFLARE_TOKEN" ]; then
+  echo "cloudflare token must be provided as first arg"
+  exit 1
+fi
+
+kubectl create namespace external-dns
+
+kubectl apply --namespace=external-dns -f - <<END_OF_FILE
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: external-dns
+  namespace: external-dns
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: external-dns
+  namespace: external-dns
+rules:
+- apiGroups: [""]
+  resources: ["services","endpoints","pods"]
+  verbs: ["get","watch","list"]
+- apiGroups: ["extensions","networking.k8s.io"]
+  resources: ["ingresses"] 
+  verbs: ["get","watch","list"]
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: external-dns-viewer
+  namespace: external-dns
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: external-dns
+subjects:
+- kind: ServiceAccount
+  name: external-dns
+  namespace: external-dns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns
+  template:
+    metadata:
+      labels:
+        app: external-dns
+    spec:
+      serviceAccountName: external-dns
+      containers:
+      - name: external-dns
+        image: registry.opensource.zalan.do/teapot/external-dns:latest
+        args:
+        - --source=ingress
+        - --provider=cloudflare
+        - --cloudflare-proxied
+        env:
+        - name: CF_API_TOKEN
+          value: "$CLOUDFLARE_TOKEN"
+END_OF_FILE
