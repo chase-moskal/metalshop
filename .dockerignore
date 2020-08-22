@@ -1,6 +1,9 @@
 
+/.github
+/.vscode
+/node_modules
 /metalback
 /testing
 
-/.vscode
+/nginx.conf
 /npm-debug.log
