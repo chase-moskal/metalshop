@@ -1,0 +1,121 @@
+
+name: development build and deploy
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      ##
+      ## checkout and build
+      ##
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: npm install and build
+        shell: bash
+        run: |
+          npm install -s \
+            && npm run build -s
+
+      ##
+      ## deploy microservice docker images
+      ##
+
+      # - name: docker deploy - auth-server
+      #   uses: elgohr/Publish-Docker-Github-Action@master
+      #   with:
+      #     name: chasemoskal/auth-server
+      #     context: source/microservices/auth-server
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # - name: docker deploy - liveshow-server
+      #   uses: elgohr/Publish-Docker-Github-Action@master
+      #   with:
+      #     name: chasemoskal/liveshow-server
+      #     context: source/microservices/liveshow-server
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # - name: docker deploy - paywall-server
+      #   uses: elgohr/Publish-Docker-Github-Action@master
+      #   with:
+      #     name: chasemoskal/paywall-server
+      #     context: source/microservices/paywall-server
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # - name: docker deploy - questions-server
+      #   uses: elgohr/Publish-Docker-Github-Action@master
+      #   with:
+      #     name: chasemoskal/questions-server
+      #     context: source/microservices/questions-server
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # - name: docker deploy - schedule-server
+      #   uses: elgohr/Publish-Docker-Github-Action@master
+      #   with:
+      #     name: chasemoskal/schedule-server
+      #     context: source/microservices/schedule-server
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # - name: docker deploy - settings-server
+      #   uses: elgohr/Publish-Docker-Github-Action@master
+      #   with:
+      #     name: chasemoskal/settings-server
+      #     context: source/microservices/settings-server
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
+
+      ##
+      ## DEPLOY TO DEVELOPMENT CLUSTER: coming soon!?!?
+      ##
+
+      # - name: set azure kubectl context
+      #   uses: azure/aks-set-context@v1
+      #   with:
+      #       creds: '${{ secrets.AKS_CREDENTIALS }}'
+      #       resource-group: workgroup
+      #       cluster-name: workback
+      #   id: login
+      # - name: production deployment
+      #   shell: bash
+      #   env:
+      #     METALBACK_CONFIG: '${{ secrets.METALBACK_CONFIG }}'
+      #     AUTH_SERVER_PUBLIC_PEM: '${{ secrets.AUTH_SERVER_PUBLIC_PEM }}'
+      #     AUTH_SERVER_PRIVATE_PEM: '${{ secrets.AUTH_SERVER_PRIVATE_PEM }}'
+      #   run: |
+      #     cd metalback
+      #     rm -rf config && mkdir config
+      #     echo "$METALBACK_CONFIG" > config/config.yaml
+      #     echo "$AUTH_SERVER_PUBLIC_PEM" > config/auth-server.public.pem
+      #     echo "$AUTH_SERVER_PRIVATE_PEM" > config/auth-server.private.pem
+      #     ./proddeploy
+
+      ##
+      ## deploy frontend to github pages
+      ##
+
+      - name: gh-pages deploy
+        shell: bash
+        run: |
+          git config --global user.email "chasemoskal@gmail.com"
+          git config --global user.name "Robotic Chase (CI/CD)"
+          git config --global user.email
+          git config --global user.name
+          git fetch origin master \
+            && git fetch origin gh-pages \
+            && git checkout --track origin/gh-pages \
+            && git rebase --onto origin/master origin/gh-pages~3 gh-pages \
+            && npm install -s \
+            && npm run build -s \
+            && git add . \
+            && git commit --amend --no-edit --reset-author \
+            && git push -f
