@@ -23,32 +23,32 @@ import {
 // RENRAKU
 //
 
-export interface CoreSystemsApi<U extends User> extends RenrakuApi<CoreSystemsApi<U>> {
+export interface CoreSystemsApi<U extends User> extends RenrakuApi {
 	authAardvark: AuthAardvarkTopic
 	userUmbrella: UserUmbrellaTopic<U>
 }
 
-export interface CoreSecuredApi<U extends User> extends RenrakuApi<CoreSecuredApi<U>> {
+export interface CoreSecuredApi<U extends User> extends RenrakuApi {
 	claimsCardinal: ClaimsCardinalTopic<U>
 }
 
-export interface PaywallApi extends RenrakuApi<PaywallApi> {
+export interface PaywallApi extends RenrakuApi {
 	premiumPachyderm: PremiumPachydermTopic
 }
 
-export interface QuestionsApi extends RenrakuApi<QuestionsApi> {
+export interface QuestionsApi extends RenrakuApi {
 	questionQuarry: QuestionQuarryTopic
 }
 
-export interface LiveshowApi extends RenrakuApi<LiveshowApi> {
+export interface LiveshowApi extends RenrakuApi {
 	liveshowLizard: LiveshowLizardTopic
 }
 
-export interface ScheduleApi extends RenrakuApi<ScheduleApi> {
+export interface ScheduleApi extends RenrakuApi {
 	scheduleSentry: ScheduleSentryTopic
 }
 
-export interface SettingsApi extends RenrakuApi<SettingsApi> {
+export interface SettingsApi extends RenrakuApi {
 	settingsSheriff: SettingsSheriffTopic<MetalSettings>
 }
 
@@ -56,10 +56,10 @@ export interface SettingsApi extends RenrakuApi<SettingsApi> {
 // CROSSCALL
 //
 
-export interface VaultApi extends CrosscallApi<VaultApi> {
+export interface VaultApi extends CrosscallApi {
 	tokenStore: TokenStoreTopic
 }
 
-export interface AccountPopupApi extends CrosscallApi<AccountPopupApi> {
+export interface AccountPopupApi extends CrosscallApi {
 	accountPopup: AccountPopupTopic
 }

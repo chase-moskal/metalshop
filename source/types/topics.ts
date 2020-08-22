@@ -16,7 +16,7 @@ import {
 
 export {Topic}
 
-export interface AuthAardvarkTopic extends Topic<AuthAardvarkTopic> {
+export interface AuthAardvarkTopic extends Topic {
 	authorize<S extends Scope = Scope>(o: {
 			scope: S
 			refreshToken: RefreshToken
@@ -26,7 +26,7 @@ export interface AuthAardvarkTopic extends Topic<AuthAardvarkTopic> {
 		}): Promise<AuthTokens>
 }
 
-export interface UserUmbrellaTopic<U extends User> extends Topic<UserUmbrellaTopic<U>> {
+export interface UserUmbrellaTopic<U extends User> extends Topic {
 	getUser(o: {
 			userId: string
 		}): Promise<U>
@@ -37,14 +37,14 @@ export interface UserUmbrellaTopic<U extends User> extends Topic<UserUmbrellaTop
 		}): Promise<void>
 }
 
-export interface ClaimsCardinalTopic<U extends User> extends Topic<ClaimsCardinalTopic<U>> {
+export interface ClaimsCardinalTopic<U extends User> extends Topic {
 	writeClaims(o: {
 			userId: string
 			claims: Partial<U["claims"]>
 		}): Promise<void>
 }
 
-export interface PremiumPachydermTopic extends Topic<PremiumPachydermTopic> {
+export interface PremiumPachydermTopic extends Topic {
 	getPremiumDetails(o: {
 			accessToken: AccessToken
 		}): Promise<PremiumInfo>
@@ -61,7 +61,7 @@ export interface PremiumPachydermTopic extends Topic<PremiumPachydermTopic> {
 		}): Promise<void>
 }
 
-export interface QuestionQuarryTopic extends Topic<QuestionQuarryTopic> {
+export interface QuestionQuarryTopic extends Topic {
 	fetchQuestions(o: {
 			board: string
 			accessToken?: AccessToken
@@ -85,7 +85,7 @@ export interface QuestionQuarryTopic extends Topic<QuestionQuarryTopic> {
 		}): Promise<void>
 }
 
-export interface LiveshowLizardTopic extends Topic<LiveshowLizardTopic> {
+export interface LiveshowLizardTopic extends Topic {
 	getShow(o: {
 			accessToken: AccessToken
 			label: string
@@ -97,7 +97,7 @@ export interface LiveshowLizardTopic extends Topic<LiveshowLizardTopic> {
 		}): Promise<void>
 }
 
-export interface ScheduleSentryTopic extends Topic<ScheduleSentryTopic> {
+export interface ScheduleSentryTopic extends Topic {
 	getEvent(options: {
 			label: string
 		}): Promise<ScheduleEvent>
@@ -107,7 +107,7 @@ export interface ScheduleSentryTopic extends Topic<ScheduleSentryTopic> {
 		}): Promise<void>
 }
 
-export interface SettingsSheriffTopic<S extends MetalSettings> extends Topic<SettingsSheriffTopic<S>> {
+export interface SettingsSheriffTopic<S extends MetalSettings> extends Topic {
 	fetchSettings(options: {
 			accessToken: AccessToken
 		}): Promise<S>
@@ -121,13 +121,13 @@ export interface SettingsSheriffTopic<S extends MetalSettings> extends Topic<Set
 // CROSSCALL TOPICS
 //
 
-export interface TokenStoreTopic extends Topic<TokenStoreTopic> {
+export interface TokenStoreTopic extends Topic {
 	clearTokens(): Promise<void>
 	passiveCheck(): Promise<AccessToken>
 	writeTokens(token: AuthTokens): Promise<void>
 	writeAccessToken(accessToken: AccessToken): Promise<void>
 }
 
-export interface AccountPopupTopic extends Topic<AccountPopupTopic> {
+export interface AccountPopupTopic extends Topic {
 	login(): Promise<AuthTokens>
 }

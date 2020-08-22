@@ -8,7 +8,7 @@ export enum CheckoutPopupState {
 	Done,
 }
 
-export interface CheckoutPopupTopic extends Topic<CheckoutPopupTopic> {
+export interface CheckoutPopupTopic extends Topic {
 	subscribe(options: {userId: string}): Promise<User>
 }
 
