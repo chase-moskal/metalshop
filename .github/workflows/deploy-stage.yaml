@@ -9,115 +9,115 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      ##
-      ## checkout and build
-      ##
+    ##
+    ## checkout and build
+    ##
 
-      - name: checkout
-        uses: actions/checkout@v2
+    - name: checkout
+      uses: actions/checkout@v2
 
-      - name: npm install and build
-        shell: bash
-        run: |
-          npm install -s && \
-            npm run build -s && \
-            scripts/genkeys metalback/config-stage
+    - name: npm install and build
+      shell: bash
+      run: |
+        npm install -s && \
+          npm run build -s && \
+          scripts/genkeys metalback/config-stage
 
-      ##
-      ## push web image
-      ##
+    ##
+    ## push web image
+    ##
 
-      - name: push image - web
-        uses: docker/build-push-action@v1
-        with:
-          repository: chasemoskal/metalshop-web
-          dockerfile: ./Dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: ${{ github.sha }}
+    - name: push image - web
+      uses: docker/build-push-action@v1
+      with:
+        repository: chasemoskal/metalshop-web
+        dockerfile: ./Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: ${{ github.sha }}
 
-      ##
-      ## push images for microservices
-      ##
+    ##
+    ## push images for microservices
+    ##
 
-      - name: push image - auth-server
-        uses: docker/build-push-action@v1
-        with:
-          repository: chasemoskal/metalshop-auth-server
-          dockerfile: ./source/microservices/auth-server/Dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: ${{ github.sha }}
-
-
-      - name: push image - liveshow-server
-        uses: docker/build-push-action@v1
-        with:
-          repository: chasemoskal/metalshop-liveshow-server
-          dockerfile: ./source/microservices/liveshow-server/Dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: ${{ github.sha }}
+    - name: push image - auth-server
+      uses: docker/build-push-action@v1
+      with:
+        repository: chasemoskal/metalshop-auth-server
+        dockerfile: ./source/microservices/auth-server/Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: ${{ github.sha }}
 
 
-      - name: push image - paywall-server
-        uses: docker/build-push-action@v1
-        with:
-          repository: chasemoskal/metalshop-paywall-server
-          dockerfile: ./source/microservices/paywall-server/Dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: ${{ github.sha }}
-
-      - name: push image - questions-server
-        uses: docker/build-push-action@v1
-        with:
-          repository: chasemoskal/metalshop-questions-server
-          dockerfile: ./source/microservices/questions-server/Dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: ${{ github.sha }}
+    - name: push image - liveshow-server
+      uses: docker/build-push-action@v1
+      with:
+        repository: chasemoskal/metalshop-liveshow-server
+        dockerfile: ./source/microservices/liveshow-server/Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: ${{ github.sha }}
 
 
-      - name: push image - schedule-server
-        uses: docker/build-push-action@v1
-        with:
-          repository: chasemoskal/metalshop-schedule-server
-          dockerfile: ./source/microservices/schedule-server/Dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: ${{ github.sha }}
+    - name: push image - paywall-server
+      uses: docker/build-push-action@v1
+      with:
+        repository: chasemoskal/metalshop-paywall-server
+        dockerfile: ./source/microservices/paywall-server/Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: ${{ github.sha }}
+
+    - name: push image - questions-server
+      uses: docker/build-push-action@v1
+      with:
+        repository: chasemoskal/metalshop-questions-server
+        dockerfile: ./source/microservices/questions-server/Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: ${{ github.sha }}
 
 
-      - name: push image - settings-server
-        uses: docker/build-push-action@v1
-        with:
-          repository: chasemoskal/metalshop-settings-server
-          dockerfile: ./source/microservices/settings-server/Dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tags: ${{ github.sha }}
+    - name: push image - schedule-server
+      uses: docker/build-push-action@v1
+      with:
+        repository: chasemoskal/metalshop-schedule-server
+        dockerfile: ./source/microservices/schedule-server/Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: ${{ github.sha }}
 
-      ##
-      ## deploy to stage
-      ##
 
-      - name: set kubeconfig
-        uses: azure/k8s-set-context@v1
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.STAGE_KUBECONFIG }}
-        id: setcontext
+    - name: push image - settings-server
+      uses: docker/build-push-action@v1
+      with:
+        repository: chasemoskal/metalshop-settings-server
+        dockerfile: ./source/microservices/settings-server/Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        tags: ${{ github.sha }}
 
-      - name: helm deployment
-        shell: bash
-        env:
-          GITSHA: ${{ github.sha }}
-        run: |
-          helm upgrade metalstage ./metalback \
-            --wait \
-            --install \
-            --namespace metalshop \
-            --set images.tag=$GITSHA \
-            -f ./metalback/values-stage.yaml \
-          || helm rollback metalstage --wait
+    ##
+    ## deploy to stage
+    ##
+
+    - name: set kubeconfig
+      uses: azure/k8s-set-context@v1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.STAGE_KUBECONFIG }}
+      id: setcontext
+
+    - name: helm deployment
+      shell: bash
+      env:
+        GITSHA: ${{ github.sha }}
+      run: |
+        helm upgrade metalstage ./metalback \
+          --wait \
+          --install \
+          --namespace metalshop \
+          --set images.tag=$GITSHA \
+          -f ./metalback/values-stage.yaml \
+        || helm rollback metalstage --wait
