@@ -3,34 +3,23 @@ config: config-stage
 
 ingress:
   domain: stage.metalshop.dev
-  tls:
-    production: true
-    email: chasemoskal@gmail.com
 
 images:
   tag: stage # overwrite with git hash
-  pullPolicy: IfNotPresent
 
 web:
-  image: chasemoskal/metalshop-web
   replicas: 1
 
 microservices:
   auth:
-    image: chasemoskal/metalshop-auth-server
     replicas: 1
   liveshow:
-    image: chasemoskal/metalshop-liveshow-server
     replicas: 1
   paywall:
-    image: chasemoskal/metalshop-paywall-server
     replicas: 1
   questions:
-    image: chasemoskal/metalshop-questions-server
     replicas: 1
   schedule:
-    image: chasemoskal/metalshop-schedule-server
     replicas: 1
   settings:
-    image: chasemoskal/metalshop-settings-server
     replicas: 1

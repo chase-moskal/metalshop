@@ -8,7 +8,7 @@ COMMAND=$1
 MICROSERVICE=$2
 
 TAG="dev"
-PACKAGEBASE="metalshop"
+PACKAGEBASE="chasemoskal/metalshop"
 COMMANDLIST="'build', 'run', 'debug', or 'buildall'"
 
 declare -a microservices=(

@@ -6,7 +6,7 @@
 
 COMMAND=$1
 TAG="dev"
-IMAGE="metalshop-web"
+IMAGE="chasemoskal/metalshop-web"
 COMMANDLIST="'build', 'run', or 'debug'"
 
 # require command param

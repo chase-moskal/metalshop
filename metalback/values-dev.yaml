@@ -10,25 +10,18 @@ images:
   pullPolicy: Never
 
 web:
-  image: metalshop-web
   replicas: 1
 
 microservices:
   auth:
-    image: metalshop-auth-server
     replicas: 1
   liveshow:
-    image: metalshop-liveshow-server
     replicas: 1
   paywall:
-    image: metalshop-paywall-server
     replicas: 1
   questions:
-    image: metalshop-questions-server
     replicas: 1
   schedule:
-    image: metalshop-schedule-server
     replicas: 1
   settings:
-    image: metalshop-settings-server
     replicas: 1
