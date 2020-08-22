@@ -1,0 +1,119 @@
+
+name: deploy to stage
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      ##
+      ## checkout and build
+      ##
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: npm install and build
+        shell: bash
+        run: |
+          npm install -s \
+            && npm run build -s
+
+      ##
+      ## deploy microservice docker images
+      ##
+
+      - name: Build and Publish head Docker image
+        uses: VaultVulp/gp-docker-action@1.1.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: auth-server
+          image-tag: stage
+          build-context: source/microservices/auth-server
+
+      - name: Build and Publish head Docker image
+        uses: VaultVulp/gp-docker-action@1.1.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: liveshow-server
+          image-tag: stage
+          build-context: source/microservices/liveshow-server
+
+      - name: Build and Publish head Docker image
+        uses: VaultVulp/gp-docker-action@1.1.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: paywall-server
+          image-tag: stage
+          build-context: source/microservices/paywall-server
+
+      - name: Build and Publish head Docker image
+        uses: VaultVulp/gp-docker-action@1.1.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: questions-server
+          image-tag: stage
+          build-context: source/microservices/questions-server
+
+      - name: Build and Publish head Docker image
+        uses: VaultVulp/gp-docker-action@1.1.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: schedule-server
+          image-tag: stage
+          build-context: source/microservices/schedule-server
+
+      - name: Build and Publish head Docker image
+        uses: VaultVulp/gp-docker-action@1.1.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: settings-server
+          image-tag: stage
+          build-context: source/microservices/settings-server
+
+      ##
+      ## DEPLOY TO DEVELOPMENT CLUSTER: coming soon!?!?
+      ##
+
+      # - name: set azure kubectl context
+      #   uses: azure/aks-set-context@v1
+      #   with:
+      #       creds: '${{ secrets.AKS_CREDENTIALS }}'
+      #       resource-group: workgroup
+      #       cluster-name: workback
+      #   id: login
+      # - name: production deployment
+      #   shell: bash
+      #   env:
+      #     METALBACK_CONFIG: '${{ secrets.METALBACK_CONFIG }}'
+      #     AUTH_SERVER_PUBLIC_PEM: '${{ secrets.AUTH_SERVER_PUBLIC_PEM }}'
+      #     AUTH_SERVER_PRIVATE_PEM: '${{ secrets.AUTH_SERVER_PRIVATE_PEM }}'
+      #   run: |
+      #     cd metalback
+      #     rm -rf config && mkdir config
+      #     echo "$METALBACK_CONFIG" > config/config.yaml
+      #     echo "$AUTH_SERVER_PUBLIC_PEM" > config/auth-server.public.pem
+      #     echo "$AUTH_SERVER_PRIVATE_PEM" > config/auth-server.private.pem
+      #     ./proddeploy
+
+      ##
+      ## deploy frontend to github pages
+      ##
+
+      # - name: gh-pages deploy
+      #   shell: bash
+      #   run: |
+      #     git config --global user.email "chasemoskal@gmail.com"
+      #     git config --global user.name "Robotic Chase (CI/CD)"
+      #     git fetch origin master \
+      #       && git fetch origin gh-pages \
+      #       && git checkout --track origin/gh-pages \
+      #       && git rebase --onto origin/master origin/gh-pages~3 gh-pages \
+      #       && npm install -s \
+      #       && npm run build -s \
+      #       && git add . \
+      #       && git commit --amend --no-edit --reset-author \
+      #       && git push -f
