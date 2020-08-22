@@ -3,6 +3,9 @@ ingress:
   domain: metalshop.chasemoskal.com
   tls: ~
 
+images:
+  pullPolicy: Never
+
 web:
   image: metalshop-web:dev
   replicas: 1

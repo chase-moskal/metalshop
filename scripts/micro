@@ -5,7 +5,7 @@
 #
 
 COMMAND=$1
-CONTAINER=$2
+MICROSERVICE=$2
 
 TAG="dev"
 PACKAGEBASE="metalshop"
@@ -25,11 +25,11 @@ declare -a microservices=(
 #
 
 require_param_container() {
-	if [[ ! -z "$COMMAND" && -z "$CONTAINER" ]]; then
+	if [[ ! -z "$COMMAND" && -z "$MICROSERVICE" ]]; then
 		echo "ERR container param required, one of: ${microservices[*]}"
 		exit 1
-	elif [[ ! " ${microservices[@]} " =~ " $CONTAINER " ]]; then
-		echo "ERR unknown container param $CONTAINER, must be one of: ${microservices[*]}"
+	elif [[ ! " ${microservices[@]} " =~ " $MICROSERVICE " ]]; then
+		echo "ERR unknown container param $MICROSERVICE, must be one of: ${microservices[*]}"
 		exit 1
 	fi
 }
@@ -79,15 +79,15 @@ if [ "$COMMAND" == "buildall" ]; then
 
 elif [ "$COMMAND" == "build" ]; then
 	require_param_container
-	dockerbuild $CONTAINER
+	dockerbuild $MICROSERVICE
 
 elif [ "$COMMAND" == "run" ]; then
 	require_param_container
-	dockerrun $CONTAINER
+	dockerrun $MICROSERVICE
 
 elif [ "$COMMAND" == "debug" ]; then
 	require_param_container
-	dockerrun $CONTAINER bash
+	dockerrun $MICROSERVICE bash
 
 else
 	echo "ERR unknown command, must be $COMMANDLIST"

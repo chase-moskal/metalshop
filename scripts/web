@@ -5,7 +5,8 @@
 #
 
 COMMAND=$1
-TAG="metalshop-web"
+TAG="dev"
+IMAGE="metalshop-web"
 COMMANDLIST="'build', 'run', or 'debug'"
 
 # require command param
@@ -27,7 +28,7 @@ dockerrun() {
 		--publish 8000:8000 \
 		--rm \
 		-it \
-		$NAME \
+		$NAME:$TAG \
 		$CMD
 }
 
@@ -38,14 +39,14 @@ dockerrun() {
 if [ "$COMMAND" == "build" ]; then
 	docker build \
 		--quiet \
-		--tag $TAG \
+		--tag $IMAGE:$TAG \
 		.
 
 elif [ "$COMMAND" == "run" ]; then
-	dockerrun $TAG
+	dockerrun $IMAGE
 
 elif [ "$COMMAND" == "debug" ]; then
-	dockerrun $CONTAINER /bin/bash
+	dockerrun $IMAGE /bin/bash
 
 else
 	echo "ERR unknown command, must be $COMMANDLIST"

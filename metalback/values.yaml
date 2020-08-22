@@ -6,6 +6,9 @@ ingress:
     production: true
     email: chasemoskal@gmail.com
 
+images:
+  pullPolicy: Always
+
 web:
   image: docker.pkg.github.com/chase-moskal/metalshop/web:production
   replicas: 2

@@ -16,6 +16,7 @@ spec:
       containers:
       - name: web-server
         image: {{ .Values.web.image }}
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
         ports:
         - containerPort: 80
         env:
