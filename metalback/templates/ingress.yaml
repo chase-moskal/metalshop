@@ -30,7 +30,7 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: {{$rname}}-web
+          serviceName: {{$rname}}-web-service
           servicePort: 80
   {{- range $mname, $microservice := .Values.microservices }}
   - host: {{ $mname }}.{{ $domain }}

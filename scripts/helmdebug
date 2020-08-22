@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-VALUES=${1:-"values"}
+VALUES=${1:-"values.yaml"}
 
-helm template metaldev ./metalback -f ./metalback/$VALUES.yaml
+helm template metaldev ./metalback -f ./metalback/$VALUES
