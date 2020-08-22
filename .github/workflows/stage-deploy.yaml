@@ -18,12 +18,14 @@ jobs:
 
       - name: npm install and build
         shell: bash
-        run: |
-          npm install -s \
-            && npm run build -s
+        run: npm install -s && npm run build -s
 
       ##
-      ## deploy microservice docker images
+      ## web content docker image
+      ##
+
+      ##
+      ## microservice docker images
       ##
 
       - name: Push to GitHub Packages
@@ -36,53 +38,59 @@ jobs:
           tags: stage
           path: ./source/microservices/auth-server
 
-      # - name: Build and Publish head Docker image
-      #   uses: VaultVulp/gp-docker-action@1.1.6
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     image-name: auth-server
-      #     image-tag: stage
-      #     build-context: ./source/microservices/auth-server
 
-      # - name: Build and Publish head Docker image
-      #   uses: VaultVulp/gp-docker-action@1.1.6
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     image-name: liveshow-server
-      #     image-tag: stage
-      #     build-context: ./source/microservices/liveshow-server
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: chase-moskal/metalshop/liveshow-server
+          tags: stage
+          path: ./source/microservices/liveshow-server
 
-      # - name: Build and Publish head Docker image
-      #   uses: VaultVulp/gp-docker-action@1.1.6
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     image-name: paywall-server
-      #     image-tag: stage
-      #     build-context: ./source/microservices/paywall-server
 
-      # - name: Build and Publish head Docker image
-      #   uses: VaultVulp/gp-docker-action@1.1.6
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     image-name: questions-server
-      #     image-tag: stage
-      #     build-context: ./source/microservices/questions-server
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: chase-moskal/metalshop/paywall-server
+          tags: stage
+          path: ./source/microservices/paywall-server
 
-      # - name: Build and Publish head Docker image
-      #   uses: VaultVulp/gp-docker-action@1.1.6
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     image-name: schedule-server
-      #     image-tag: stage
-      #     build-context: ./source/microservices/schedule-server
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: chase-moskal/metalshop/questions-server
+          tags: stage
+          path: ./source/microservices/questions-server
 
-      # - name: Build and Publish head Docker image
-      #   uses: VaultVulp/gp-docker-action@1.1.6
-      #   with:
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     image-name: settings-server
-      #     image-tag: stage
-      #     build-context: ./source/microservices/settings-server
+
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: chase-moskal/metalshop/schedule-server
+          tags: stage
+          path: ./source/microservices/schedule-server
+
+
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: chase-moskal/metalshop/settings-server
+          tags: stage
+          path: ./source/microservices/settings-server
 
       ##
       ## DEPLOY TO DEVELOPMENT CLUSTER: coming soon!?!?
