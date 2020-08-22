@@ -49,7 +49,6 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         tags: ${{ github.sha }}
 
-
     - name: push image - liveshow-server
       uses: docker/build-push-action@v1
       with:
@@ -58,7 +57,6 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         tags: ${{ github.sha }}
-
 
     - name: push image - paywall-server
       uses: docker/build-push-action@v1
@@ -78,7 +76,6 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         tags: ${{ github.sha }}
 
-
     - name: push image - schedule-server
       uses: docker/build-push-action@v1
       with:
@@ -87,7 +84,6 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         tags: ${{ github.sha }}
-
 
     - name: push image - settings-server
       uses: docker/build-push-action@v1
