@@ -6,10 +6,11 @@ kind: Ingress
 metadata:
   name: {{ $rname }}-ingress
   annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
     {{- if .Values.ingress.tls }}
     cert-manager.io/issuer: {{ $rname }}-issuer
+    cert-manager.io/issue-temporary-certificate: "true"
     {{- end }}
-    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
     {{- if .Values.ingress.globalStaticIp }}
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.globalStaticIp }}
     {{- end }}
