@@ -21,80 +21,110 @@ jobs:
         run: npm install -s && npm run build -s
 
       ##
-      ## web content docker image
+      ## push web image
       ##
 
+      - name: push web image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          registry: docker.pkg.github.com
+          repository: chase-moskal/metalshop/auth-server
+          tags: ${{ github.sha }}
+          dockerfile: ./source/microservices/auth-server/Dockerfile
+
       ##
-      ## microservice docker images
+      ## push images for microservices
       ##
 
-      - name: Push to GitHub Packages
+      - name: push auth-server image
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/auth-server
-          tags: stage
+          tags: ${{ github.sha }}
           dockerfile: ./source/microservices/auth-server/Dockerfile
 
 
-      - name: Push to GitHub Packages
+      - name: push liveshow-server image
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/liveshow-server
-          tags: stage
+          tags: ${{ github.sha }}
           dockerfile: ./source/microservices/liveshow-server/Dockerfile
 
 
-      - name: Push to GitHub Packages
+      - name: push paywall-server image
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/paywall-server
-          tags: stage
+          tags: ${{ github.sha }}
           dockerfile: ./source/microservices/paywall-server/Dockerfile
 
-      - name: Push to GitHub Packages
+      - name: push questions-server image
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/questions-server
-          tags: stage
+          tags: ${{ github.sha }}
           dockerfile: ./source/microservices/questions-server/Dockerfile
 
 
-      - name: Push to GitHub Packages
+      - name: push schedule-server image
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/schedule-server
-          tags: stage
+          tags: ${{ github.sha }}
           dockerfile: ./source/microservices/schedule-server/Dockerfile
 
 
-      - name: Push to GitHub Packages
+      - name: push settings-server image
         uses: docker/build-push-action@v1
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/settings-server
-          tags: stage
+          tags: ${{ github.sha }}
           dockerfile: ./source/microservices/settings-server/Dockerfile
 
       ##
-      ## DEPLOY TO DEVELOPMENT CLUSTER: coming soon!?!?
+      ## deploy to stage
       ##
+
+      - name: set kubeconfig
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+        id: setcontext
+
+      - name: helm deployment
+        shell: bash
+        env:
+          GITSHA: ${{ github.sha }}
+        run: |
+          helm upgrade metalstage ./metalback \
+            --wait \
+            --install \
+            --namespace metalshop \
+            --set images.tag=$GITSHA \
+            -f ./metalback/values-stage.yaml \
+          || helm rollback metalstage
 
       # - name: set azure kubectl context
       #   uses: azure/aks-set-context@v1

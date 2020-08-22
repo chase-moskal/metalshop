@@ -7,11 +7,11 @@ mongo:
 
 cors:
   allowed:
-    pattern: ^https?://(|.+\.)metalnode\.chasemoskal\.com(|:8\d{3})$
+    pattern: ^https://(|.+\.)stage\.metalshop\.dev$
     flags: i
   forbidden: null
 
-authServerOrigin: http://metalnode.chasemoskal.com:8000
+authServerOrigin: http://auth
 
 authServer:
   port: 8000

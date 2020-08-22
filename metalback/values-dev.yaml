@@ -1,31 +1,34 @@
 
+config: config-dev
+
 ingress:
   domain: metalshop.chasemoskal.com
   tls: ~
 
 images:
+  tag: dev
   pullPolicy: Never
 
 web:
-  image: metalshop-web:dev
+  image: metalshop-web
   replicas: 1
 
 microservices:
   auth:
-    image: metalshop-auth-server:dev
+    image: metalshop-auth-server
     replicas: 1
   liveshow:
-    image: metalshop-liveshow-server:dev
+    image: metalshop-liveshow-server
     replicas: 1
   paywall:
-    image: metalshop-paywall-server:dev
+    image: metalshop-paywall-server
     replicas: 1
   questions:
-    image: metalshop-questions-server:dev
+    image: metalshop-questions-server
     replicas: 1
   schedule:
-    image: metalshop-schedule-server:dev
+    image: metalshop-schedule-server
     replicas: 1
   settings:
-    image: metalshop-settings-server:dev
+    image: metalshop-settings-server
     replicas: 1

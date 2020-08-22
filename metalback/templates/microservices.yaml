@@ -1,5 +1,5 @@
 
-{{- $imagePullPolicy := .Values.images.pullPolicy -}}
+{{- $images := .Values.images -}}
 {{- $checksum := include (print $.Template.BasePath "/secret-config.yaml") . | sha256sum -}}
 {{- $rname := include "metalback.fullname" . -}}
 {{- range $mname, $microservice := .Values.microservices -}}
@@ -19,9 +19,13 @@ spec:
       annotations:
         checksum: {{ $checksum }}
     spec:
+      volumes:
+      - name: {{ $rname }}-{{ $mname }}-config-volume
+        secret:
+          secretName: {{ $rname }}-secret-config
       containers:
-      - image: {{ $microservice.image }}
-        imagePullPolicy: {{ $imagePullPolicy }}
+      - image: "{{ $microservice.image }}:{{ $images.tag }}"
+        imagePullPolicy: {{ $images.pullPolicy }}
         name: {{ $mname }}
         ports:
         - containerPort: {{ $microservice.port }}
@@ -29,10 +33,7 @@ spec:
         - name: {{ $rname }}-{{ $mname }}-config-volume
           mountPath: /app/config
           readOnly: true
-      volumes:
-      - name: {{ $rname }}-{{ $mname }}-config-volume
-        secret:
-          secretName: {{ $rname }}-secret-config
+
 ---
 apiVersion: v1
 kind: Service

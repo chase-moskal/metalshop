@@ -1,4 +1,6 @@
 
+config: config-production
+
 ingress:
   class: nginx
   domain: metalshop.dev
@@ -7,34 +9,35 @@ ingress:
     email: chasemoskal@gmail.com
 
 images:
-  pullPolicy: Always
+  tag: latest
+  pullPolicy: IfNotPresent
 
 web:
-  image: docker.pkg.github.com/chase-moskal/metalshop/web:production
+  image: docker.pkg.github.com/chase-moskal/metalshop/web
   replicas: 2
 
 microservices:
   auth:
-    image: docker.pkg.github.com/chase-moskal/metalshop/auth-server:production
+    image: docker.pkg.github.com/chase-moskal/metalshop/auth-server
     replicas: 2
     port: 8000
   liveshow:
-    image: docker.pkg.github.com/chase-moskal/metalshop/liveshow-server:production
+    image: docker.pkg.github.com/chase-moskal/metalshop/liveshow-server
     replicas: 2
     port: 8001
   paywall:
-    image: docker.pkg.github.com/chase-moskal/metalshop/paywall-server:production
+    image: docker.pkg.github.com/chase-moskal/metalshop/paywall-server
     replicas: 2
     port: 8002
   questions:
-    image: docker.pkg.github.com/chase-moskal/metalshop/questions-server:production
+    image: docker.pkg.github.com/chase-moskal/metalshop/questions-server
     replicas: 2
     port: 8003
   schedule:
-    image: docker.pkg.github.com/chase-moskal/metalshop/schedule-server:production
+    image: docker.pkg.github.com/chase-moskal/metalshop/schedule-server
     replicas: 2
     port: 8004
   settings:
-    image: docker.pkg.github.com/chase-moskal/metalshop/settings-server:production
+    image: docker.pkg.github.com/chase-moskal/metalshop/settings-server
     replicas: 2
     port: 8005
