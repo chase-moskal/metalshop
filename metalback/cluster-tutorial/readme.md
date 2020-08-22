@@ -1,5 +1,5 @@
 
-## how to continously deploy your web app to kubernetes like a boss
+# how to continously deploy your web app to kubernetes like a boss
 
 preamble: assumptions
 - you are hosting your app on github
@@ -8,21 +8,31 @@ preamble: assumptions
 - you choose digitalocean as your kubernetes provider, because it's easy and cheap and magic
 - you choose cloudflare for dns because it's easy and magic, and cdn, and ddos-protection
 
+# prepare a kubernetes cluster
+
 ## (a) prerequisites: create fresh cluster, install local tools
 1. sign up on digitalocean
-1. create kubernetes cluster. defaults look good, feels good man
+1. create kubernetes cluster. name it something cool. defaults look good, feels good man
 1. create a directory on your computer to save super sneaky-beaky secrets, passwords, tokens, etc
 1. follow instructions to install `doctl` and `kubectl` and `helm`
-    - authenticate doctl with a token, and connect kubectl to your new cluster context
+    - authenticate `doctl` by logging in or whatever you do
+    - set your kubectl context by running `doctl kubernetes cluster kubeconfig save CLUSTERNAME`
+      - replace `CLUSTERNAME` with your cool cluster name
     - verify connection via `kubectl get namespace` to see standard kubernetes namespaces
     - *high five*
 1. use digitalocean's prefabricated 1-click installs!
-    - kubernetes monitoring stack
-      - follow instructons to port forward and visit grafana ui, set new password and save it to your sneaky-beaky dir
-      - profile settings, set default dashboard to something cool like cluster cpu
-      - remember how to do this port-forward thing, maybe write it down in sneaky-beaky
-      - *neato!*
-    - ingress-nginx controller
+    - kubernetes monitoring stack - click to install
+      - log into grafana and set it up
+        - run `kubectl -n prometheus-operator get pods | grep prometheus-operator-grafana`
+        - copy the pod name
+        - run `kubectl port-forward POD_NAME_HERE -n prometheus-operator 9080:3000`
+          - replace POD_NAME_HERE with the pod name
+        - visit http://localhost:9080/ and login as `admin` / `prom-operator`
+        - update password, write down in your sneaky-beaky dir
+        - dashboards, manage, select compute resources cluster, star it
+        - profile settings, set ui dark mode, and default dashboard to the one you starred
+        - *neato!*
+    - ingress-nginx controller - click to install
       - *boom done, fantastic!*
 
 ## (b) install standard web app infrastructure onto cluster
@@ -37,6 +47,11 @@ preamble: assumptions
 1. create a namespace for your app: `kubectl create namespace APPNAME`
     - replace `APPNAME` with the lowercase name of your app, eg `metalshop`
 
+## prepare your application for continuous deployment
+
+coming soon
+
+<!--
 **(c) allow your app to pull your images from github packages**
 1. ***if*** you are using the github packages docker registry
     - github packages requires your cluster to authorize to pull images
@@ -61,5 +76,4 @@ preamble: assumptions
         - name: your-container-name
           image: docker.pkg.github.com/<ORG>/<REPO>/<PKG>:<TAG>
       ```
-
-ok, now you're ready to let the github actions perform continuous deployments!
+-->
