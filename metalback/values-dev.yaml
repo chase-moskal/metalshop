@@ -4,24 +4,25 @@ ingress:
   tls: ~
 
 web:
+  image: metalshop-web:dev
   replicas: 1
 
 microservices:
   auth:
-    image: chasemoskal/auth-server:latest
+    image: metalshop-auth-server:dev
     replicas: 1
   liveshow:
-    image: chasemoskal/liveshow-server:latest
+    image: metalshop-liveshow-server:dev
     replicas: 1
   paywall:
-    image: chasemoskal/paywall-server:latest
+    image: metalshop-paywall-server:dev
     replicas: 1
   questions:
-    image: chasemoskal/questions-server:latest
+    image: metalshop-questions-server:dev
     replicas: 1
   schedule:
-    image: chasemoskal/schedule-server:latest
+    image: metalshop-schedule-server:dev
     replicas: 1
   settings:
-    image: chasemoskal/settings-server:latest
+    image: metalshop-settings-server:dev
     replicas: 1

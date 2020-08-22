@@ -6,6 +6,8 @@
 
 COMMAND=$1
 CONTAINER=$2
+
+TAG="dev"
 PACKAGEBASE="metalshop"
 COMMANDLIST="'build', 'run', 'debug', or 'buildall'"
 
@@ -36,7 +38,7 @@ dockerbuild() {
 	NAME=$1
 	docker build \
 		--file ./source/microservices/$NAME/Dockerfile \
-		--tag $PACKAGEBASE-$NAME \
+		--tag $PACKAGEBASE-$NAME:$TAG \
 		--quiet \
 		.
 }
@@ -52,7 +54,7 @@ dockerrun() {
 		--rm \
 		--interactive \
 		--tty \
-		$PACKAGEBASE-$NAME \
+		$PACKAGEBASE-$NAME:$TAG \
 		$CMD
 }
 

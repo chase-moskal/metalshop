@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 
 helm upgrade metaltest ./metalback --install -f ./metalback/values-dev.yaml --wait
-metalback/copyweb

@@ -7,30 +7,31 @@ ingress:
     email: chasemoskal@gmail.com
 
 web:
+  image: docker.pkg.github.com/chase-moskal/metalshop/web:production
   replicas: 2
 
 microservices:
   auth:
-    image: chasemoskal/auth-server:latest
+    image: docker.pkg.github.com/chase-moskal/metalshop/auth-server:production
     replicas: 2
     port: 8000
   liveshow:
-    image: chasemoskal/liveshow-server:latest
+    image: docker.pkg.github.com/chase-moskal/metalshop/liveshow-server:production
     replicas: 2
     port: 8001
   paywall:
-    image: chasemoskal/paywall-server:latest
+    image: docker.pkg.github.com/chase-moskal/metalshop/paywall-server:production
     replicas: 2
     port: 8002
   questions:
-    image: chasemoskal/questions-server:latest
+    image: docker.pkg.github.com/chase-moskal/metalshop/questions-server:production
     replicas: 2
     port: 8003
   schedule:
-    image: chasemoskal/schedule-server:latest
+    image: docker.pkg.github.com/chase-moskal/metalshop/schedule-server:production
     replicas: 2
     port: 8004
   settings:
-    image: chasemoskal/settings-server:latest
+    image: docker.pkg.github.com/chase-moskal/metalshop/settings-server:production
     replicas: 2
     port: 8005
