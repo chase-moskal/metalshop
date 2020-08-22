@@ -45,15 +45,15 @@ preamble: assumptions
     - run `./install-external-dns-cloudflare XXXXXX proxy`
       - replace `XXXXXX` with the cloudflare token
       - remove `proxy` at the end to disable cloudflare proxy
-1. create a namespace for your app: `kubectl create namespace APPNAME`
-    - replace `APPNAME` with the lowercase name of your app, eg `metalshop`
 
 ## (c) prepare your application for continuous deployment
 
+1. create a namespace for your app: `kubectl create namespace APPNAME`
+    - replace `APPNAME` with the lowercase name of your app, eg `metalshop`
 1. download your cluster's kubeconfig file from digitalocean, and paste the contents as github secret `STAGE_KUBECONFIG`
 1. sign up for dockerhub, and set `DOCKER_USERNAME` and `DOCKER_PASSWORD` as secrets on your git repo
 
-coming soon
+more coming soon..?
 
 <!--
 **(c) allow your app to pull your images from github packages**
