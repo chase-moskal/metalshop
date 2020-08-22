@@ -6,7 +6,7 @@ kind: Ingress
 metadata:
   name: {{ $rname }}-ingress
   annotations:
-    cert-manager.io/cluster-issuer: issuer
+    cert-manager.io/issuer: {{ $rname }}-issuer
     kubernetes.io/ingress.class: {{ .Values.ingress.class }}
     {{- if .Values.ingress.globalStaticIp }}
     kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.globalStaticIp }}
@@ -47,7 +47,7 @@ spec:
 apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
 metadata:
-  name: issuer
+  name: {{ $rname }}-issuer
 spec:
   acme:
     email: {{ .Values.ingress.tls.email }}
