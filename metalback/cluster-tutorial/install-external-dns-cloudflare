@@ -3,8 +3,9 @@
 # based on instructions from https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/cloudflare.md
 
 CLOUDFLARE_TOKEN=$1
+PROXY=$2
 
-if [ -z "$CLOUDFLARE_TOKEN" ]; then
+if [[ -z "$CLOUDFLARE_TOKEN" ]]; then
   echo "cloudflare token must be provided as first arg"
   exit 1
 fi
@@ -68,11 +69,11 @@ spec:
       containers:
       - name: external-dns
         image: registry.opensource.zalan.do/teapot/external-dns:latest
-        args:
-        - --source=ingress
-        - --provider=cloudflare
-        - --cloudflare-proxied
         env:
         - name: CF_API_TOKEN
           value: "$CLOUDFLARE_TOKEN"
+        args:
+        - --source=ingress
+        - --provider=cloudflare
+        $(if [[ $PROXY == "proxy" ]]; then echo "- --cloudflare-proxied"; else echo ""; fi)
 END_OF_FILE

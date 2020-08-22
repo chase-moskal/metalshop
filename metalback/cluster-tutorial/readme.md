@@ -42,8 +42,9 @@ preamble: assumptions
 1. install external-dns
     - sign up for cloudflare and set your domain's nameservers to cloudflare
     - generate a cloudflare api token, zone=read, dns=edit, save to your sneaky dir
-    - run `./install-external-dns-cloudflare XXXXXX`
+    - run `./install-external-dns-cloudflare XXXXXX proxy`
       - replace `XXXXXX` with the cloudflare token
+      - remove `proxy` at the end to disable cloudflare proxy
 1. create a namespace for your app: `kubectl create namespace APPNAME`
     - replace `APPNAME` with the lowercase name of your app, eg `metalshop`
 
