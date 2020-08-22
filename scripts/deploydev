@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
 
-helm uninstall metaldev
-helm upgrade metaldev ./metalback --install -f ./metalback/values-dev.yaml --wait
+time ( \
+	scripts/superbuild && \
+		helm upgrade metaldev ./metalback \
+			--install \
+			--wait \
+			-f ./metalback/values-dev.yaml \
+)
