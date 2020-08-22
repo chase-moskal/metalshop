@@ -2,5 +2,6 @@
 
 npm install -s \
 	&& npm run build -s \
-	&& scripts/container buildall \
+	&& scripts/micro buildall \
+	&& scripts/web build \
 	&& echo "done"

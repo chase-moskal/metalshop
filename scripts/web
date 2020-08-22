@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+#
+# parameters and handy variables
+#
+
+COMMAND=$1
+TAG="metalshop-web"
+COMMANDLIST="'build', 'run', or 'debug'"
+
+# require command param
+if [ -z "$COMMAND" ]; then
+	echo "ERR command param required, eg $COMMANDLIST"
+	exit 1
+fi
+
+#
+# functions
+#
+
+dockerrun() {
+	NAME=$1
+	CMD=$2
+	docker run \
+		--name $NAME \
+		--network br0 \
+		--publish 8000:8000 \
+		--rm \
+		-it \
+		$NAME \
+		$CMD
+}
+
+#
+# command implementations
+#
+
+if [ "$COMMAND" == "build" ]; then
+	docker build \
+		--quiet \
+		--tag $TAG \
+		.
+
+elif [ "$COMMAND" == "run" ]; then
+	dockerrun $TAG
+
+elif [ "$COMMAND" == "debug" ]; then
+	dockerrun $CONTAINER /bin/bash
+
+else
+	echo "ERR unknown command, must be $COMMANDLIST"
+
+fi

@@ -1,9 +1,11 @@
 
 /.github
 /.vscode
-/node_modules
+/config
 /metalback
+/scripts
 /testing
-
-/nginx.conf
+/coverage
 /npm-debug.log
+/*.tgz
+/*.pem
