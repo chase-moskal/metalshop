@@ -30,19 +30,20 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: web-server
+          serviceName: {{$rname}}-web
           servicePort: 80
   {{- range $mname, $microservice := .Values.microservices }}
   - host: {{ $mname }}.{{ $domain }}
     http:
       paths:
       - backend:
-          serviceName: {{ $mname }}
+          serviceName: {{ $rname }}-{{ $mname }}-service
           servicePort: {{ $microservice.port }}
   {{- end }}
 
 {{ if .Values.ingress.tls }}
 ---
+
 apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
 metadata:
@@ -52,15 +53,13 @@ spec:
     email: {{ .Values.ingress.tls.email }}
     {{- if .Values.ingress.tls.production }}
     server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: tls-secret-production
     {{- else }}
     server: https://acme-staging-v02.api.letsencrypt.org/directory
-    {{ end }}
     privateKeySecretRef:
-      {{- if .Values.ingress.tls.production }}
-      name: tls-secret-production
-      {{- else }}
       name: tls-secret-staging
-      {{ end }}
+    {{ end }}
     solvers:
     - http01:
         ingress:

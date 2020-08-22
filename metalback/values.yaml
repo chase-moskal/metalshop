@@ -1,5 +1,5 @@
 
-config: config-production
+config: config-prod
 
 ingress:
   class: nginx
@@ -9,35 +9,35 @@ ingress:
     email: chasemoskal@gmail.com
 
 images:
-  tag: latest
+  tag: latest # overwrite with git hash
   pullPolicy: IfNotPresent
 
 web:
-  image: docker.pkg.github.com/chase-moskal/metalshop/web
+  image: chasemoskal/metalshop-web
   replicas: 2
 
 microservices:
   auth:
-    image: docker.pkg.github.com/chase-moskal/metalshop/auth-server
+    image: chasemoskal/metalshop-auth-server
     replicas: 2
     port: 8000
   liveshow:
-    image: docker.pkg.github.com/chase-moskal/metalshop/liveshow-server
+    image: chasemoskal/metalshop-liveshow-server
     replicas: 2
     port: 8001
   paywall:
-    image: docker.pkg.github.com/chase-moskal/metalshop/paywall-server
+    image: chasemoskal/metalshop-paywall-server
     replicas: 2
     port: 8002
   questions:
-    image: docker.pkg.github.com/chase-moskal/metalshop/questions-server
+    image: chasemoskal/metalshop-questions-server
     replicas: 2
     port: 8003
   schedule:
-    image: docker.pkg.github.com/chase-moskal/metalshop/schedule-server
+    image: chasemoskal/metalshop-schedule-server
     replicas: 2
     port: 8004
   settings:
-    image: docker.pkg.github.com/chase-moskal/metalshop/settings-server
+    image: chasemoskal/metalshop-settings-server
     replicas: 2
     port: 8005

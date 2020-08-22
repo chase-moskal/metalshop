@@ -2,21 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-server
+  name: web
 spec:
   selector:
     matchLabels:
-      app: web-server
+      app: web
   replicas: {{ .Values.web.replicas }}
   template:
     metadata:
       labels:
-        app: web-server
+        app: web
     spec:
-      imagePullSecrets:
-      - name: dockerconfigjson-github-com
+      # imagePullSecrets:
+      # - name: dockerconfigjson-github-com
       containers:
-      - name: web-server
+      - name: metalshop-web
         image: "{{ .Values.web.image }}:{{ .Values.images.tag }}"
         imagePullPolicy: {{ .Values.images.pullPolicy }}
         ports:
@@ -30,10 +30,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: web-server
+  name: web-service
 spec:
   selector:
-    app: web-server
+    app: web
   ports:
   - protocol: TCP
     port: 80

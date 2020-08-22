@@ -1,4 +1,0 @@
-
-ingress:
-  domain: metalback2.chasemoskal.com
-  globalStaticIp: metaladdress
