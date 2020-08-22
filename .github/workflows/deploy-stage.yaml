@@ -112,12 +112,12 @@ jobs:
     - name: helm deployment
       shell: bash
       env:
-        GITSHA: ${{ github.sha }}
+        GITHASH: ${{ github.sha }}
       run: |
         helm upgrade metalstage ./metalback \
           --wait \
           --install \
           --namespace metalshop \
-          --set images.tag=$GITSHA \
+          --set images.tag=$GITHASH \
           -f ./metalback/values-stage.yaml \
         || helm rollback metalstage --wait
