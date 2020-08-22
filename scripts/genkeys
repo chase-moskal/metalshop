@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
-rm *.pem config/*.pem metalback/config/*.pem 2> /dev/null
+declare -a METALKEYS=(
+	auth-server
+)
 
-node_modules/redcrypto/generate-keys
-mv private.pem config/auth-server.private.pem
-mv public.pem config/auth-server.public.pem
-
-cp config/*.pem metalback/config/
+for CONFIG in "$@"; do
+	rm $CONFIG/*.pem
+	for KEY in "${METALKEYS[@]}"; do
+		node_modules/redcrypto/generate-keys 2> /dev/null
+		mv private.pem $CONFIG/$KEY.private.pem
+		mv public.pem $CONFIG/$KEY.public.pem
+	done
+done

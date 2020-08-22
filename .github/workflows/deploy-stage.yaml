@@ -18,7 +18,10 @@ jobs:
 
       - name: npm install and build
         shell: bash
-        run: npm install -s && npm run build -s
+        run: |
+          npm install -s && \
+            npm run build -s && \
+            scripts/genkeys metalback/config-stage
 
       ##
       ## push web image
