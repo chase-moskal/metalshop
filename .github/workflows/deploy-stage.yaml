@@ -119,5 +119,4 @@ jobs:
           --install \
           --namespace metalshop \
           --set images.tag=$GITHASH \
-          -f ./metalback/values-stage.yaml \
-        || helm rollback metalstage --wait
+          -f ./metalback/values-stage.yaml
