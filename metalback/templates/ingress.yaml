@@ -26,6 +26,12 @@ spec:
     {{- end -}}
   {{- end }}
   rules:
+  - host: {{ .Values.ingress.domain }}
+    http:
+      paths:
+      - backend:
+          serviceName: web-server
+          servicePort: 80
   {{- range $mname, $microservice := .Values.microservices }}
   - host: {{ $mname }}.{{ $domain }}
     http:
@@ -38,7 +44,7 @@ spec:
 {{ if .Values.ingress.tls }}
 ---
 apiVersion: cert-manager.io/v1alpha2
-kind: ClusterIssuer
+kind: Issuer
 metadata:
   name: issuer
 spec:

@@ -1,7 +1,10 @@
 
 ingress:
-  domain: on.metalshop.chasemoskal.com
+  domain: metalshop.chasemoskal.com
   tls: ~
+
+web:
+  replicas: 1
 
 microservices:
   auth:

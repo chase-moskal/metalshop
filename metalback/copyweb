@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+podlist=$(kubectl get pod -l app=web-server -o jsonpath="{.items[*].metadata.name}")
+webroot="/usr/share/nginx/html"
+
+declare -a copyable=(
+	dist
+	source
+	index.html
+	404.html
+	50x.html
+	style.css
+	package.json
+)
+
+for podname in $podlist; do
+	printf "copyweb: $podname\n"
+	for target in "${copyable[@]}"; do
+		kubectl cp $target $podname:$webroot/$target &
+	done
+	wait
+done
