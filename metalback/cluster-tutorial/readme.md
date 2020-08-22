@@ -53,7 +53,7 @@ preamble: assumptions
 1. download your cluster's kubeconfig file from digitalocean, and paste the contents as github secret `STAGE_KUBECONFIG`
 1. sign up for dockerhub, and set `DOCKER_USERNAME` and `DOCKER_PASSWORD` as secrets on your git repo
 
-more coming soon..?
+more coming soon...?
 
 <!--
 **(c) allow your app to pull your images from github packages**
