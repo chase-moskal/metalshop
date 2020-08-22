@@ -4,7 +4,7 @@ config: config-stage
 ingress:
   domain: stage.metalshop.dev
   tls:
-    production: false
+    production: true
     email: chasemoskal@gmail.com
 
 images:
