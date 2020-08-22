@@ -26,53 +26,63 @@ jobs:
       ## deploy microservice docker images
       ##
 
-      - name: Build and Publish head Docker image
-        uses: VaultVulp/gp-docker-action@1.1.6
+      - name: Push to GitHub Packages
+        uses: docker/build-push-action@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          image-name: auth-server
-          image-tag: stage
-          build-context: source/microservices/auth-server
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: chase-moskal/metalshop/auth-server
+          tags: stage
+          path: ./source/microservices/auth-server
 
-      - name: Build and Publish head Docker image
-        uses: VaultVulp/gp-docker-action@1.1.6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          image-name: liveshow-server
-          image-tag: stage
-          build-context: source/microservices/liveshow-server
+      # - name: Build and Publish head Docker image
+      #   uses: VaultVulp/gp-docker-action@1.1.6
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     image-name: auth-server
+      #     image-tag: stage
+      #     build-context: ./source/microservices/auth-server
 
-      - name: Build and Publish head Docker image
-        uses: VaultVulp/gp-docker-action@1.1.6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          image-name: paywall-server
-          image-tag: stage
-          build-context: source/microservices/paywall-server
+      # - name: Build and Publish head Docker image
+      #   uses: VaultVulp/gp-docker-action@1.1.6
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     image-name: liveshow-server
+      #     image-tag: stage
+      #     build-context: ./source/microservices/liveshow-server
 
-      - name: Build and Publish head Docker image
-        uses: VaultVulp/gp-docker-action@1.1.6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          image-name: questions-server
-          image-tag: stage
-          build-context: source/microservices/questions-server
+      # - name: Build and Publish head Docker image
+      #   uses: VaultVulp/gp-docker-action@1.1.6
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     image-name: paywall-server
+      #     image-tag: stage
+      #     build-context: ./source/microservices/paywall-server
 
-      - name: Build and Publish head Docker image
-        uses: VaultVulp/gp-docker-action@1.1.6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          image-name: schedule-server
-          image-tag: stage
-          build-context: source/microservices/schedule-server
+      # - name: Build and Publish head Docker image
+      #   uses: VaultVulp/gp-docker-action@1.1.6
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     image-name: questions-server
+      #     image-tag: stage
+      #     build-context: ./source/microservices/questions-server
 
-      - name: Build and Publish head Docker image
-        uses: VaultVulp/gp-docker-action@1.1.6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          image-name: settings-server
-          image-tag: stage
-          build-context: source/microservices/settings-server
+      # - name: Build and Publish head Docker image
+      #   uses: VaultVulp/gp-docker-action@1.1.6
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     image-name: schedule-server
+      #     image-tag: stage
+      #     build-context: ./source/microservices/schedule-server
+
+      # - name: Build and Publish head Docker image
+      #   uses: VaultVulp/gp-docker-action@1.1.6
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     image-name: settings-server
+      #     image-tag: stage
+      #     build-context: ./source/microservices/settings-server
 
       ##
       ## DEPLOY TO DEVELOPMENT CLUSTER: coming soon!?!?
