@@ -36,7 +36,7 @@ jobs:
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/auth-server
           tags: stage
-          path: ./source/microservices/auth-server
+          dockerfile: ./source/microservices/auth-server/Dockerfile
 
 
       - name: Push to GitHub Packages
@@ -47,7 +47,7 @@ jobs:
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/liveshow-server
           tags: stage
-          path: ./source/microservices/liveshow-server
+          dockerfile: ./source/microservices/liveshow-server/Dockerfile
 
 
       - name: Push to GitHub Packages
@@ -58,7 +58,7 @@ jobs:
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/paywall-server
           tags: stage
-          path: ./source/microservices/paywall-server
+          dockerfile: ./source/microservices/paywall-server/Dockerfile
 
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v1
@@ -68,7 +68,7 @@ jobs:
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/questions-server
           tags: stage
-          path: ./source/microservices/questions-server
+          dockerfile: ./source/microservices/questions-server/Dockerfile
 
 
       - name: Push to GitHub Packages
@@ -79,7 +79,7 @@ jobs:
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/schedule-server
           tags: stage
-          path: ./source/microservices/schedule-server
+          dockerfile: ./source/microservices/schedule-server/Dockerfile
 
 
       - name: Push to GitHub Packages
@@ -90,7 +90,7 @@ jobs:
           registry: docker.pkg.github.com
           repository: chase-moskal/metalshop/settings-server
           tags: stage
-          path: ./source/microservices/settings-server
+          dockerfile: ./source/microservices/settings-server/Dockerfile
 
       ##
       ## DEPLOY TO DEVELOPMENT CLUSTER: coming soon!?!?
