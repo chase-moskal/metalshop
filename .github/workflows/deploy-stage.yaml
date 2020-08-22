@@ -27,83 +27,76 @@ jobs:
       ## push web image
       ##
 
-      - name: push web image
+      - name: push image - web
         uses: docker/build-push-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          registry: docker.pkg.github.com
-          repository: chase-moskal/metalshop/web
-          tags: ${{ github.sha }}
+          repository: chasemoskal/metalshop-web
           dockerfile: ./Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: ${{ github.sha }}
 
       ##
       ## push images for microservices
       ##
 
-      - name: push auth-server image
+      - name: push image - auth-server
         uses: docker/build-push-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          registry: docker.pkg.github.com
-          repository: chase-moskal/metalshop/auth-server
-          tags: ${{ github.sha }}
+          repository: chasemoskal/metalshop-auth-server
           dockerfile: ./source/microservices/auth-server/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: ${{ github.sha }}
 
 
-      - name: push liveshow-server image
+      - name: push image - liveshow-server
         uses: docker/build-push-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          registry: docker.pkg.github.com
-          repository: chase-moskal/metalshop/liveshow-server
-          tags: ${{ github.sha }}
+          repository: chasemoskal/metalshop-liveshow-server
           dockerfile: ./source/microservices/liveshow-server/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: ${{ github.sha }}
 
 
-      - name: push paywall-server image
+      - name: push image - paywall-server
         uses: docker/build-push-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          registry: docker.pkg.github.com
-          repository: chase-moskal/metalshop/paywall-server
-          tags: ${{ github.sha }}
+          repository: chasemoskal/metalshop-paywall-server
           dockerfile: ./source/microservices/paywall-server/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: ${{ github.sha }}
 
-      - name: push questions-server image
+      - name: push image - questions-server
         uses: docker/build-push-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          registry: docker.pkg.github.com
-          repository: chase-moskal/metalshop/questions-server
-          tags: ${{ github.sha }}
+          repository: chasemoskal/metalshop-questions-server
           dockerfile: ./source/microservices/questions-server/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: ${{ github.sha }}
 
 
-      - name: push schedule-server image
+      - name: push image - schedule-server
         uses: docker/build-push-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          registry: docker.pkg.github.com
-          repository: chase-moskal/metalshop/schedule-server
-          tags: ${{ github.sha }}
+          repository: chasemoskal/metalshop-schedule-server
           dockerfile: ./source/microservices/schedule-server/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: ${{ github.sha }}
 
 
-      - name: push settings-server image
+      - name: push image - settings-server
         uses: docker/build-push-action@v1
         with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          registry: docker.pkg.github.com
-          repository: chase-moskal/metalshop/settings-server
-          tags: ${{ github.sha }}
+          repository: chasemoskal/metalshop-settings-server
           dockerfile: ./source/microservices/settings-server/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tags: ${{ github.sha }}
 
       ##
       ## deploy to stage
