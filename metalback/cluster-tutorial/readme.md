@@ -48,7 +48,10 @@ preamble: assumptions
 1. create a namespace for your app: `kubectl create namespace APPNAME`
     - replace `APPNAME` with the lowercase name of your app, eg `metalshop`
 
-## prepare your application for continuous deployment
+## (c) prepare your application for continuous deployment
+
+1. download your cluster's kubeconfig file from digitalocean, and paste the contents as github secret `STAGE_KUBECONFIG`
+1. sign up for dockerhub, and set `DOCKER_USERNAME` and `DOCKER_PASSWORD` as secrets on your git repo
 
 coming soon
 
