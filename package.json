@@ -10,7 +10,7 @@
 		"source"
 	],
 	"scripts": {
-		"build": "run-s clean && run-p importmap compile && run-s test",
+		"prepare": "run-s clean && run-p importmap compile && run-s test",
 		"clean": "rimraf dist *.pem && mkdirp dist",
 		"importmap": "importly < package.json > dist/importmap.json",
 		"compile": "tsc",
