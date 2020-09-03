@@ -55,7 +55,7 @@ preamble: assumptions
 
 more coming soon...?
 
-<!--
+
 **(c) allow your app to pull your images from github packages**
 1. ***if*** you are using the github packages docker registry
     - github packages requires your cluster to authorize to pull images
@@ -80,4 +80,4 @@ more coming soon...?
         - name: your-container-name
           image: docker.pkg.github.com/<ORG>/<REPO>/<PKG>:<TAG>
       ```
--->
+
