@@ -109,6 +109,7 @@ jobs:
         GITHASH: ${{ github.sha }}
       run: |
         helm upgrade metalstage ./metalback \
+          --atomic \
           --wait \
           --install \
           --namespace metalshop \
