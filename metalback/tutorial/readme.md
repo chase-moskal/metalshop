@@ -30,20 +30,21 @@ prerequisite steps
       - replace `CLUSTERNAME` with your cool cluster name
     - verify connection via `kubectl get namespace` to see standard kubernetes namespaces
     - *high five*
-1. use digitalocean's prefabricated 1-click installs!
-    - kubernetes monitoring stack - click to install
-      - log into grafana and set it up
-        - run `kubectl -n prometheus-operator get pods | grep prometheus-operator-grafana`
-        - copy the pod name
-        - run `kubectl port-forward POD_NAME_HERE -n prometheus-operator 9080:3000`
-          - replace POD_NAME_HERE with the pod name
-        - visit http://localhost:9080/ and login as `admin` / `prom-operator`
-        - update password, write down in your sneaky-beaky dir
-        - dashboards, manage, select compute resources cluster, star it
-        - profile settings, set ui dark mode, and default dashboard to the one you starred
-        - *neato!*
-    - ingress-nginx controller - click to install
-      - *boom done, fantastic!*
+
+### (c) use digitalocean's prefabricated 1-click installs!
+1. kubernetes monitoring stack - click to install
+    - log into grafana and set it up
+    - run `kubectl -n prometheus-operator get pods | grep prometheus-operator-grafana`
+    - copy the pod name
+    - run `kubectl port-forward POD_NAME_HERE -n prometheus-operator 9080:3000`
+      - replace POD_NAME_HERE with the pod name
+    - visit http://localhost:9080/ and login as `admin` / `prom-operator`
+    - update password, write down in your sneaky-beaky dir
+    - dashboards, manage, select compute resources cluster, star it
+    - profile settings, set ui dark mode, and default dashboard to the one you starred
+    - *neato!*
+1. ingress-nginx controller - click to install
+    - *boom done, fantastic!*
 
 ### (c) install standard web app infrastructure onto cluster
 
@@ -59,6 +60,10 @@ prerequisite steps
 
 1. create a namespace for your app: `kubectl create namespace APPNAME`
     - replace `APPNAME` with the lowercase name of your app, eg `metalshop`
+
+1. if you need source ips for whitelisting to work
+    - go into digitalocean web ui and find your load balancer
+    - set loadbalancer "proxy protocol" to "true"
 
 1. give build agent permission to perform the helm upgrade
     - download your cluster's kubeconfig file from digitalocean, and paste the contents as github secret `STAGE_KUBECONFIG`
