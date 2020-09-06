@@ -1,5 +1,5 @@
 
-import * as evaluators from "../../business/core/user-evaluators.js"
+import * as evaluators from "../../business/auth/user-evaluators.js"
 
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {MetalshopComponent, html, property, css} from "../framework/metalshop-component.js"
@@ -11,7 +11,7 @@ import {makeDebouncer} from "../toolbox/debouncer.js"
 import {deepClone, deepEqual} from "../toolbox/deep.js"
 
 import {MetalUser, MetalProfile} from "../../types.js"
-import {nicknameMax, taglineMax} from "../../business/core/validate-profile.js"
+import {nicknameMax, taglineMax} from "../../business/auth/validate-profile.js"
 
 const styles = css`
 

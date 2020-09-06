@@ -2,11 +2,11 @@
 import {MetalUser} from "../../types.js"
 import {MetalConfig, MetalOptions} from "../types.js"
 
-import {openVaultIframe} from "../../business/core/vault-popup/open-vault-iframe.js"
-import {openAccountPopup} from "../../business/core/account-popup/open-account-popup.js"
+import {openVaultIframe} from "../../business/auth/vault-popup/open-vault-iframe.js"
+import {openAccountPopup} from "../../business/auth/account-popup/open-account-popup.js"
 import {openCheckoutPopup} from "../../business/paywall/checkout-popup/open-checkout-popup.js"
 
-import {makeCoreSystemsClients} from "../../business/core/core-clients.js"
+import {makeCoreSystemsClients} from "../../business/auth/core-clients.js"
 import {makePaywallClients} from "../../business/paywall/paywall-clients.js"
 import {makeScheduleClients} from "../../business/schedule/schedule-clients.js"
 import {makeSettingsClients} from "../../business/settings/settings-clients.js"

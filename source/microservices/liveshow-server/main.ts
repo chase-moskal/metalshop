@@ -12,7 +12,7 @@ import {nodeProgram} from "../../toolbox/node-program.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 
-import * as evaluators from "../../business/core/user-evaluators.js"
+import * as evaluators from "../../business/auth/user-evaluators.js"
 import {makeLiveshowLizard} from "../../business/liveshow/liveshow-lizard.js"
 import {LiveshowServerConfig, LiveshowRow, LiveshowApi} from "../../types.js"
 

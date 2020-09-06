@@ -5,7 +5,7 @@ import {silhouette} from "../system/icons.js"
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {MetalshopComponent, html, property, css, TemplateResult} from "../framework/metalshop-component.js"
 
-import * as evaluators from "../../business/core/user-evaluators.js"
+import * as evaluators from "../../business/auth/user-evaluators.js"
 
 const styles = css`
 

@@ -5,7 +5,7 @@ import {QuestionsShare, PrepareHandleLikeClick} from "../../types.js"
 import * as loading from "../../toolbox/loading.js"
 import {styles} from "../styles/metal-questions-styles.js"
 import {mixinStyles} from "../../framework/mixin-styles.js"
-import {isPremium} from "../../../business/core/user-evaluators.js"
+import {isPremium} from "../../../business/auth/user-evaluators.js"
 import {MetalshopComponent, property, html, PropertyValues} from "../../framework/metalshop-component.js"
 
 import {sortQuestions} from "./helpers.js"

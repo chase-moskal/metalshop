@@ -2,7 +2,7 @@
 import {VerifyToken} from "redcrypto/dist/types.js"
 
 import {generateId} from "../../toolbox/generate-id.js"
-import {mockSignGoogleToken} from "../../business/core/mocks/mock-google-tokens.js"
+import {mockSignGoogleToken} from "../../business/auth/mocks/mock-google-tokens.js"
 
 import {AuthAardvarkTopic, AccessPayload, MetalScope, MetalUser} from "../../types.js"
 

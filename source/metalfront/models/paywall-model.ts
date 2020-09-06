@@ -4,7 +4,7 @@ import {MetalUser, PremiumPachydermTopic, CardClues, PremiumInfo, TriggerCheckou
 
 import {AuthModel} from "./auth-model.js"
 import * as loading from "../toolbox/loading.js"
-import {isPremium} from "../../business/core/user-evaluators.js"
+import {isPremium} from "../../business/auth/user-evaluators.js"
 import {makeOperationsCenter} from "../toolbox/operations-center.js"
 
 export class PaywallModel {

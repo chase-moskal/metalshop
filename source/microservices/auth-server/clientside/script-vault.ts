@@ -1,9 +1,9 @@
 
 import {MetalUser} from "../../../types.js"
-import {makeTokenStore} from "../../../business/core/token-store.js"
+import {makeTokenStore} from "../../../business/auth/token-store.js"
 import {unpackCorsConfig} from "../../../toolbox/unpack-cors-config.js"
-import {makeCoreSystemsClients} from "../../../business/core/core-clients.js"
-import {setupVaultHost} from "../../../business/core/vault-popup/setup-vault-host.js"
+import {makeCoreSystemsClients} from "../../../business/auth/core-clients.js"
+import {setupVaultHost} from "../../../business/auth/vault-popup/setup-vault-host.js"
 
 import {VaultSettings} from "./types.js"
 

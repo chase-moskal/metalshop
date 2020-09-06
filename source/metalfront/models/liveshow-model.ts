@@ -1,7 +1,7 @@
 
 import {observable, action, runInAction} from "mobx"
 
-import * as evaluators from "../../business/core/user-evaluators.js"
+import * as evaluators from "../../business/auth/user-evaluators.js"
 
 import {pubsub} from "../../toolbox/pubsub.js"
 import * as loading from "../toolbox/loading.js"

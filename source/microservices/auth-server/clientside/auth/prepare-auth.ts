@@ -1,7 +1,7 @@
 
 import {GoogleAuthDetails} from "../types.js"
 import {GoogleAuthClient} from "./google-auth-client.js"
-import {makeCoreSystemsClients} from "../../../../business/core/core-clients.js"
+import {makeCoreSystemsClients} from "../../../../business/auth/core-clients.js"
 
 export function prepareAuth(googleAuthDetails: GoogleAuthDetails) {
 	return async function auth() {

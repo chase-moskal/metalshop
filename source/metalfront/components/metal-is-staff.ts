@@ -1,5 +1,5 @@
 
-import {isStaff} from "../../business/core/user-evaluators.js"
+import {isStaff} from "../../business/auth/user-evaluators.js"
 
 import {mixinStyles} from "../framework/mixin-styles.js"
 import {property, html, css, LitElement} from "../framework/metalshop-component.js"
