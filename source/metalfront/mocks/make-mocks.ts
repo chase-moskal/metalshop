@@ -5,7 +5,7 @@ import {mockVerifyToken} from "redcrypto/dist/curries/mock-verify-token.js"
 import {ClaimsRow, MetalUser, MetalScope, Authorizer, AccountRow, ProfileRow, QuestionRow, LiveshowRow, SettingsRow, AccessPayload, PremiumGiftRow, QuestionLikeRow, ScheduleEventRow, StripeBillingRow, StripePremiumRow, AuthAardvarkTopic, UserUmbrellaTopic, QuestionReportRow, QuestionQuarryTopic, PremiumPachydermTopic} from "../../types.js"
 
 import {makeTokenStore} from "../../business/auth/token-store.js"
-import {makeCoreSystems} from "../../business/auth/core-systems.js"
+import {makeAuthSystems} from "../../business/auth/auth-systems.js"
 import * as evaluators from "../../business/auth/user-evaluators.js"
 import {validateProfile} from "../../business/auth/validate-profile.js"
 import {makeClaimsCardinal} from "../../business/auth/claims-cardinal.js"
@@ -91,7 +91,7 @@ export async function makeMocks({
 	}
 
 	const claimsCardinal = makeClaimsCardinal<MetalUser>({claimsTable})
-	const {authAardvark, userUmbrella} = makeCoreSystems({
+	const {authAardvark, userUmbrella} = makeAuthSystems({
 		claimsTable,
 		accountTable,
 		profileTable,

@@ -8,7 +8,7 @@ import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {VerifyGoogleToken} from "./types.js"
 import {validateProfile as defaultValidateProfile} from "./validate-profile.js"
 
-export function makeCoreSystems<U extends MetalUser>({
+export function makeAuthSystems<U extends MetalUser>({
 		claimsTable,
 		accountTable,
 		profileTable,

@@ -8,22 +8,22 @@ import {vaultShape} from "../../../types/shapes.js"
 import {namespace} from "./types.js"
 
 export async function openVaultIframe({
-		coreServerOrigin,
+		authServerOrigin,
 		iframePath = "/vault"
 	}: {
 		iframePath?: string
-		coreServerOrigin: string
+		authServerOrigin: string
 	}) {
 
 	if (iframePath.startsWith("/")) iframePath = iframePath.slice(1)
-	const url = `${coreServerOrigin}/${iframePath}`
+	const url = `${authServerOrigin}/${iframePath}`
 
 	const {postMessage} = await createIframe({url})
 	const {callable} = crosscallClient<VaultApi>({
 		namespace,
 		postMessage,
 		shape: vaultShape,
-		hostOrigin: coreServerOrigin,
+		hostOrigin: authServerOrigin,
 	})
 
 	return (await callable)

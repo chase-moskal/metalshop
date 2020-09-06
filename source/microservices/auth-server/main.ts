@@ -16,14 +16,14 @@ import {nodeProgram} from "../../toolbox/node-program.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 
-import {makeCoreSystems} from "../../business/auth/core-systems.js"
+import {makeAuthSystems} from "../../business/auth/auth-systems.js"
 import {validateProfile} from "../../business/auth/validate-profile.js"
 import {makeClaimsCardinal} from "../../business/auth/claims-cardinal.js"
 import {curryGenerateNickname} from "../../business/auth/generate-nickname.js"
 import {curryVerifyGoogleToken} from "../../business/auth/verify-google-token.js"
 
 import {VaultSettings, AccountSettings} from "./clientside/types.js"
-import {CoreSystemsApi, MetalUser, AuthServerConfig, ClaimsRow, AccountRow, ProfileRow} from "../../types.js"
+import {AuthSystemsApi, MetalUser, AuthServerConfig, ClaimsRow, AccountRow, ProfileRow} from "../../types.js"
 
 nodeProgram(async function main({logger}) {
 	const paths = {
@@ -63,7 +63,7 @@ nodeProgram(async function main({logger}) {
 	const profileTable = dbbyTable<ProfileRow>("profiles")
 
 	const claimsCardinal = makeClaimsCardinal({claimsTable})
-	const {authAardvark, userUmbrella} = makeCoreSystems({
+	const {authAardvark, userUmbrella} = makeAuthSystems({
 		claimsTable,
 		accountTable,
 		profileTable,
@@ -107,7 +107,7 @@ nodeProgram(async function main({logger}) {
 	// json rpc api
 	//
 
-	const {koa: apiKoa} = await apiServer<CoreSystemsApi<MetalUser>>({
+	const {koa: apiKoa} = await apiServer<AuthSystemsApi<MetalUser>>({
 		debug,
 		logger,
 		exposures: {

@@ -6,7 +6,7 @@ import {openVaultIframe} from "../../business/auth/vault-popup/open-vault-iframe
 import {openAccountPopup} from "../../business/auth/account-popup/open-account-popup.js"
 import {openCheckoutPopup} from "../../business/paywall/checkout-popup/open-checkout-popup.js"
 
-import {makeCoreSystemsClients} from "../../business/auth/core-clients.js"
+import {makeAuthClients} from "../../business/auth/auth-clients.js"
 import {makePaywallClients} from "../../business/paywall/paywall-clients.js"
 import {makeScheduleClients} from "../../business/schedule/schedule-clients.js"
 import {makeSettingsClients} from "../../business/settings/settings-clients.js"
@@ -24,7 +24,7 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 
 	async function triggerAccountPopup() {
 		const {promisedPayload} = openAccountPopup({
-			authServerOrigin: config["core-server"]
+			authServerOrigin: config["auth-server"]
 		})
 		return promisedPayload
 	}
@@ -48,13 +48,13 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 		} = await concurrent({
 			tokenStore: (async function() {
 				const {tokenStore} = await openVaultIframe({
-					coreServerOrigin: config["core-server"],
+					authServerOrigin: config["auth-server"],
 				})
 				return tokenStore
 			})(),
 			userUmbrella: (async function() {
-				const {userUmbrella} = await makeCoreSystemsClients<MetalUser>({
-					coreServerOrigin: config["core-server"],
+				const {userUmbrella} = await makeAuthClients<MetalUser>({
+					authServerOrigin: config["auth-server"],
 				})
 				return userUmbrella
 			})(),

@@ -41,7 +41,7 @@ export interface Personal {
 }
 
 export interface MetalConfig {
-	["core-server"]: string
+	["auth-server"]: string
 	["liveshow-server"]: string
 	["paywall-server"]: string
 	["questions-server"]: string

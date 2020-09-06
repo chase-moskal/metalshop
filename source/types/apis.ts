@@ -23,12 +23,12 @@ import {
 // RENRAKU
 //
 
-export interface CoreSystemsApi<U extends User> extends RenrakuApi {
+export interface AuthSystemsApi<U extends User> extends RenrakuApi {
 	authAardvark: AuthAardvarkTopic
 	userUmbrella: UserUmbrellaTopic<U>
 }
 
-export interface CoreSecuredApi<U extends User> extends RenrakuApi {
+export interface AuthSecuredApi<U extends User> extends RenrakuApi {
 	claimsCardinal: ClaimsCardinalTopic<U>
 }
 

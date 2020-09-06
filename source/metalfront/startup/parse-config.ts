@@ -20,7 +20,7 @@ export function parseConfig(element: HTMLElement): MetalConfig {
 	//
 
 	const requiredAttributes = [
-		"core-server",
+		"auth-server",
 		"liveshow-server",
 		"paywall-server",
 		"questions-server",

@@ -21,7 +21,7 @@
 			}
 
 			if (env === "node") {
-				config("core-server", "http://metalnode.chasemoskal.com:8000")
+				config("auth-server", "http://metalnode.chasemoskal.com:8000")
 				config("liveshow-server", "http://metalnode.chasemoskal.com:8001")
 				config("paywall-server", "http://metalnode.chasemoskal.com:8002")
 				config("questions-server", "http://metalnode.chasemoskal.com:8003")
@@ -29,7 +29,7 @@
 				config("settings-server", "http://metalnode.chasemoskal.com:8005")
 			}
 			else if (env === "dev") {
-				config("core-server", "http://auth.metalshop.chasemoskal.com")
+				config("auth-server", "http://auth.metalshop.chasemoskal.com")
 				config("liveshow-server", "http://liveshow.metalshop.chasemoskal.com")
 				config("paywall-server", "http://paywall.metalshop.chasemoskal.com")
 				config("questions-server", "http://questions.metalshop.chasemoskal.com")
@@ -37,7 +37,7 @@
 				config("settings-server", "http://settings.metalshop.chasemoskal.com")
 			}
 			else if (env === "stage") {
-				config("core-server", "https://auth.stage.metalshop.dev")
+				config("auth-server", "https://auth.stage.metalshop.dev")
 				config("liveshow-server", "https://liveshow.stage.metalshop.dev")
 				config("paywall-server", "https://paywall.stage.metalshop.dev")
 				config("questions-server", "https://questions.stage.metalshop.dev")
@@ -50,7 +50,7 @@
 		</script>
 		<script async defer src="https://unpkg.com/es-module-shims@0.5.1/dist/es-module-shims.js"></script>
 		<metal-config
-			core-server="https://auth.metalshop.dev"
+			auth-server="https://auth.metalshop.dev"
 			liveshow-server="https://liveshow.metalshop.dev"
 			paywall-server="https://paywall.metalshop.dev"
 			questions-server="https://questions.metalshop.dev"

@@ -19,7 +19,7 @@ import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 
 import {makeClaimsCardinal} from "../../business/auth/claims-cardinal.js"
 import {makeStripeLiaison} from "../../business/paywall/stripe-liaison.js"
-import {makeCoreSystemsClients} from "../../business/auth/core-clients.js"
+import {makeAuthClients} from "../../business/auth/auth-clients.js"
 import {makeStripeWebhooks} from "../../business/paywall/stripe-webhooks.js"
 import {makePremiumPachyderm} from "../../business/paywall/premium-pachyderm.js"
 import {makePremiumDatalayer} from "../../business/paywall/premium-datalayer.js"
@@ -63,8 +63,8 @@ nodeProgram(async function main({logger}) {
 	const stripe = new Stripe(stripeSecret, {apiVersion: "2020-03-02"})
 	const stripeLiaison = makeStripeLiaison({stripe})
 
-	const {userUmbrella} = await makeCoreSystemsClients<MetalUser>({
-		coreServerOrigin: authServerOrigin
+	const {userUmbrella} = await makeAuthClients<MetalUser>({
+		authServerOrigin: authServerOrigin
 	})
 
 	const claimsCardinal = makeClaimsCardinal({claimsTable})

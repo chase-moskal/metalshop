@@ -14,7 +14,7 @@ import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 
 import * as evaluators from "../../business/auth/user-evaluators.js"
-import {makeCoreSystemsClients} from "../../business/auth/core-clients.js"
+import {makeAuthClients} from "../../business/auth/auth-clients.js"
 import {makeQuestionQuarry} from "../../business/questions/question-quarry.js"
 
 import {QuestionsServerConfig, QuestionRow, QuestionLikeRow, QuestionReportRow, QuestionsApi, MetalUser} from "../../types.js"
@@ -33,8 +33,8 @@ nodeProgram(async function main({logger}) {
 	const authServerPublicKey = await read(paths.authServerPublicKey)
 	const verifyToken = curryVerifyToken(authServerPublicKey)
 
-	const {userUmbrella} = await makeCoreSystemsClients<MetalUser>({
-		coreServerOrigin: authServerOrigin
+	const {userUmbrella} = await makeAuthClients<MetalUser>({
+		authServerOrigin: authServerOrigin
 	})
 
 	const {dbbyTable} = await connectMongo(config.mongo)

@@ -10,15 +10,15 @@ import {
 	SettingsApi,
 	ScheduleApi,
 	QuestionsApi,
-	CoreSecuredApi,
-	CoreSystemsApi,
+	AuthSecuredApi,
+	AuthSystemsApi,
 } from "../types.js"
 
 //
 // renraku api's
 //
 
-export const coreSystemsShape: RenrakuApiShape<CoreSystemsApi<User>> = {
+export const authSystemsShape: RenrakuApiShape<AuthSystemsApi<User>> = {
 	authAardvark: {
 		authorize: "method",
 		authenticateViaGoogle: "method",
@@ -29,7 +29,7 @@ export const coreSystemsShape: RenrakuApiShape<CoreSystemsApi<User>> = {
 	},
 }
 
-export const coreSecuredShape: RenrakuApiShape<CoreSecuredApi<User>> = {
+export const authSecuredShape: RenrakuApiShape<AuthSecuredApi<User>> = {
 	claimsCardinal: {
 		writeClaims: "method",
 	},

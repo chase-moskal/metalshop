@@ -1,13 +1,13 @@
 
 import {GoogleAuthDetails} from "../types.js"
 import {GoogleAuthClient} from "./google-auth-client.js"
-import {makeCoreSystemsClients} from "../../../../business/auth/core-clients.js"
+import {makeAuthClients} from "../../../../business/auth/auth-clients.js"
 
 export function prepareAuth(googleAuthDetails: GoogleAuthDetails) {
 	return async function auth() {
 		const googleAuthClient = new GoogleAuthClient(googleAuthDetails)
-		const {authAardvark} = await makeCoreSystemsClients({
-			coreServerOrigin: window.location.origin
+		const {authAardvark} = await makeAuthClients({
+			authServerOrigin: window.location.origin
 		})
 		await googleAuthClient.initGoogleAuth()
 		googleAuthClient.prepareGoogleSignOutButton({
