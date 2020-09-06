@@ -1,5 +1,5 @@
 
-/cluster-tutorial
+/tutorial
 
 # Patterns to ignore when building packages.
 # This supports shell glob matching, relative path matching, and
