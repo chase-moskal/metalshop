@@ -60,7 +60,7 @@ nodeProgram(async function main({logger}) {
 	const stripeBillingTable = dbbyTable<StripeBillingRow>("stripeBilling")
 	const stripePremiumTable = dbbyTable<StripePremiumRow>("stripePremium")
 
-	const stripe = new Stripe(stripeSecret, {apiVersion: "2020-03-02"})
+	const stripe = new Stripe(stripeSecret, {apiVersion: "2020-08-27"})
 	const stripeLiaison = makeStripeLiaison({stripe})
 
 	const {userUmbrella} = await makeAuthClients<MetalUser>({
