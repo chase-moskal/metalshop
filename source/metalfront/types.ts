@@ -253,3 +253,19 @@ export interface LiveshowShare {
 // 	resultsLoad: loading.Load<Persona[]>
 // 	query: (needle: string) => Promise<void>
 // }
+
+export interface AppInfo {
+	appId: string
+	userId: string
+	label: string
+	created: number
+	tokens: {
+		token: string
+		label: string
+		origins: string
+	}[]
+}
+
+export interface AppListShare {
+	apps: AppInfo[]
+}
