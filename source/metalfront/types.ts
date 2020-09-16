@@ -267,5 +267,5 @@ export interface AppInfo {
 }
 
 export interface AppListShare {
-	apps: AppInfo[]
+	appsLoad: loading.Load<AppInfo[]>
 }

@@ -1,6 +1,6 @@
 
 import {share} from "../framework/share.js"
-import {ButtonPremiumShare, PersonalShare, MyAvatarShare, AdminModeShare, QuestionsShare, Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare} from "../types.js"
+import {ButtonPremiumShare, PersonalShare, MyAvatarShare, AdminModeShare, QuestionsShare, Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare, AppListShare} from "../types.js"
 
 import {IronReset} from "../components/iron-reset.js"
 import {IronLoading} from "../components/iron-loading.js"
@@ -22,6 +22,8 @@ import {MetalButtonAuth} from "../components/metal-button-auth.js"
 import {MetalIsLoggedin} from "../components/metal-is-loggedin.js"
 import {MetalButtonPremium} from "../components/metal-button-premium.js"
 import {MetalQuestions} from "../components/questions/metal-questions.js"
+
+import {MetalAppList} from "../components/app/metal-app-list.js"
 
 export const wireComponentShares = (supermodel: Supermodel) => {
 	const accountShare = (): AccountShare => ({
