@@ -1,7 +1,7 @@
 
 import {evaluateConditional} from "./dbby-common.js"
 
-import {DbbyTable, DbbyRow, DbbyConditions, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage} from "./dbby-types.js"
+import {DbbyTable, DbbyRow, DbbyCond, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage} from "./dbby-types.js"
 
 export function dbbyMemory<Row extends DbbyRow>({
 		dbbyStorage,
@@ -157,7 +157,7 @@ function rowVersusConditional<Row extends {}>(
 
 function rowVersusConditions<Row extends {}>(
 		row: Row,
-		conditions: DbbyConditions<Row>
+		conditions: DbbyCond<Row>
 	): boolean {
 
 	if (!Object.keys(conditions).length) return true

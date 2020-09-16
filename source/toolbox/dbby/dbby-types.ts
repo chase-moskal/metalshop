@@ -6,11 +6,11 @@ export type DbbyValue =
 	| string
 	| bigint
 
-export type DbbyRow<T extends {} = {}> = {
+export type DbbyRow<T extends {[key: string]: DbbyValue} = {}> = {
 	[P in keyof T]: DbbyValue
 }
 
-export interface DbbyConditions<Row extends DbbyRow> {
+export interface DbbyCond<Row extends DbbyRow> {
 	set?: Partial<{[P in keyof Row]: true}>
 	equal?: Partial<Row>
 	less?: Partial<Row>
@@ -30,17 +30,12 @@ export interface DbbyConditions<Row extends DbbyRow> {
 	notSearch?: Partial<{[P in keyof Row]: string | RegExp}>
 }
 
-export interface DbbyNonConditional {
-	conditions: false | null
-}
+export type DbbyConditionTree<Row extends DbbyRow> =
+	["and", ...(DbbyCond<Row> | DbbyConditionTree<Row>)[]]
+	| ["or", ...(DbbyCond<Row> | DbbyConditionTree<Row>)[]]
 
-export interface DbbySingleConditional<Row extends DbbyRow> {
-	conditions: DbbyConditions<Row>
-}
-
-export interface DbbyMultiConditional<Row extends DbbyRow> {
-	multi: "and" | "or"
-	conditions: DbbyConditions<Row>[]
+export interface DbbyConditional<Row extends DbbyRow> {
+	conditions: DbbyConditionTree<Row>
 }
 
 export type DbbyUpsert<Row extends DbbyRow> = DbbyConditional<Row> & {upsert: Row}
@@ -48,11 +43,6 @@ export type DbbyWrite<Row extends DbbyRow> = DbbyConditional<Row> & {write: Part
 export type DbbyWhole<Row extends DbbyRow> = DbbyConditional<Row> & {whole: Row}
 export type DbbyUpdate<Row extends DbbyRow> = DbbyWrite<Row> | DbbyWhole<Row> | DbbyUpsert<Row>
 export type DbbyUpdateAmbiguated<Row extends DbbyRow> = DbbyWrite<Row> & DbbyWhole<Row> & DbbyUpsert<Row>
-
-export type DbbyConditional<Row extends DbbyRow> =
-	| DbbySingleConditional<Row>
-	| DbbyMultiConditional<Row>
-	| DbbyNonConditional
 
 export type DbbyOrder<Row extends DbbyRow> = Partial<{
 	[P in keyof Row]: "ascend" | "descend" | undefined
