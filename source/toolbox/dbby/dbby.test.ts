@@ -1,5 +1,6 @@
 
 import {Suite, expect} from "cynic"
+import {and, or} from "./dbby-helpers.js"
 import {dbbyMemory} from "./dbby-memory.js"
 
 interface DemoUser {
@@ -22,14 +23,20 @@ export default <Suite>{
 	"dbby-memory": {
 		"create rows and read 'em back unconditionally": async() => {
 			const dbby = await setupThreeUserDemo()
-			const users = await dbby.read({conditions: false})
+			const users = await dbby.read({conditions: and()})
 			return expect(users.length).equals(3)
 		},
 		"read one": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true
 				&& expect(
-						await dbby.one({conditions: {equal: {userId: "u123"}}})
+						// TODO figure out what to do
+						await dbby.one({conditions: and({equal: {userId: "u123"}})})
+						// await dbby.one({
+						// 	conditions: and({equal: {userId: 123}})
+						// })
+						// await dbby.one({conditions: ["and", {equal: {userId: "u123"}}]})
+						// await dbby.one({conditions})
 					).ok()
 				&& expect(
 						await dbby.one({conditions: false})

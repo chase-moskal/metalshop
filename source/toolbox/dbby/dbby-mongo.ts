@@ -5,7 +5,7 @@ import {objectMap} from "../object-map.js"
 import {escapeRegex} from "../escape-regex.js"
 
 import {evaluateConditional} from "./dbby-common.js"
-import {DbbyTable, DbbyRow, DbbyCond, DbbyConditional, DbbyUpdateAmbiguated, DbbyOrder} from "./dbby-types.js"
+import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyOrder} from "./dbby-types.js"
 
 function skimMongoId<Row extends DbbyRow>(row: Row): Row {
 	if (row) {
@@ -138,7 +138,7 @@ const mongoloids: {[key: string]: (value: any) => any} = {
 }
 
 function conditionsToMongoQuery<Row extends DbbyRow>(
-		conditions: DbbyCond<Row>
+		conditions: DbbyCondition<Row>
 	): FilterQuery<Row> {
 	return <any>{
 		$and: [

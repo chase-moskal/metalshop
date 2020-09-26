@@ -1,7 +1,6 @@
 
-import {evaluateConditional} from "./dbby-common.js"
-
-import {DbbyTable, DbbyRow, DbbyCond, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage} from "./dbby-types.js"
+// import {evaluateConditional} from "./dbby-common.js"
+import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree} from "./dbby-types.js"
 
 export function dbbyMemory<Row extends DbbyRow>({
 		dbbyStorage,
@@ -129,38 +128,35 @@ function rowVersusConditional<Row extends {}>(
 		row: Row,
 		conditional: DbbyConditional<Row>,
 	): boolean {
-	const {
-		nonConditional,
-		multiConditional,
-		singleConditional,
-	} = evaluateConditional(conditional)
 
-	if (nonConditional) {
-		return true
-	}
-	else if (singleConditional) {
-		return rowVersusConditions<Row>(row, singleConditional.conditions)
-	}
-	else if (multiConditional) {
-		const and = multiConditional.multi === "and"
-		let finalResult = and
-		for (const conditions of multiConditional.conditions) {
-			const result = rowVersusConditions<Row>(row, conditions)
-			finalResult = and
-				? finalResult && result
-				: finalResult || result
+	function crawl([operation, ...conditions] = conditional.conditions) {
+		const and = operation === "and"
+		let valid = and
+		const applyResult = (result: boolean) =>
+			valid = and
+				? valid && result
+				: valid || result
+		for (const condition of conditions) {
+			if (Array.isArray(condition)) {
+				applyResult(crawl(<DbbyConditionTree<Row>>condition))
+			}
+			else {
+				const result = rowVersusCondition(row, condition)
+				applyResult(result)
+			}
 		}
-		return finalResult
+		return valid
 	}
-	else throw new Error("failed conditional evaluation")
+
+	return crawl()
 }
 
-function rowVersusConditions<Row extends {}>(
+function rowVersusCondition<Row extends {}>(
 		row: Row,
-		conditions: DbbyCond<Row>
+		condition: DbbyCondition<Row>
 	): boolean {
 
-	if (!Object.keys(conditions).length) return true
+	if (!Object.keys(condition).length) return true
 
 	let failures = 0
 
@@ -189,23 +185,23 @@ function rowVersusConditions<Row extends {}>(
 		return (a, b) => !evaluator(a, b)
 	}
 
-	check(conditions.set, checks.set)
-	check(conditions.equal, checks.equal)
-	check(conditions.greater, checks.greater)
-	check(conditions.greatery, checks.greatery)
-	check(conditions.less, checks.less)
-	check(conditions.lessy, checks.lessy)
-	check(conditions.listed, checks.listed)
-	check(conditions.search, checks.search)
+	check(condition.set, checks.set)
+	check(condition.equal, checks.equal)
+	check(condition.greater, checks.greater)
+	check(condition.greatery, checks.greatery)
+	check(condition.less, checks.less)
+	check(condition.lessy, checks.lessy)
+	check(condition.listed, checks.listed)
+	check(condition.search, checks.search)
 	
-	check(conditions.notSet, not(checks.set))
-	check(conditions.notEqual, not(checks.equal))
-	check(conditions.notGreater, not(checks.greater))
-	check(conditions.notGreatery, not(checks.greatery))
-	check(conditions.notLess, not(checks.less))
-	check(conditions.notLessy, not(checks.lessy))
-	check(conditions.notListed, not(checks.listed))
-	check(conditions.notSearch, not(checks.search))
+	check(condition.notSet, not(checks.set))
+	check(condition.notEqual, not(checks.equal))
+	check(condition.notGreater, not(checks.greater))
+	check(condition.notGreatery, not(checks.greatery))
+	check(condition.notLess, not(checks.less))
+	check(condition.notLessy, not(checks.lessy))
+	check(condition.notListed, not(checks.listed))
+	check(condition.notSearch, not(checks.search))
 
 	return !failures
 }

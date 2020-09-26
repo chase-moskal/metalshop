@@ -10,7 +10,11 @@ export type DbbyRow<T extends {[key: string]: DbbyValue} = {}> = {
 	[P in keyof T]: DbbyValue
 }
 
-export interface DbbyCond<Row extends DbbyRow> {
+//
+//
+//
+
+export interface DbbyCondition<Row extends DbbyRow> {
 	set?: Partial<{[P in keyof Row]: true}>
 	equal?: Partial<Row>
 	less?: Partial<Row>
@@ -31,18 +35,16 @@ export interface DbbyCond<Row extends DbbyRow> {
 }
 
 export type DbbyConditionTree<Row extends DbbyRow> =
-	["and", ...(DbbyCond<Row> | DbbyConditionTree<Row>)[]]
-	| ["or", ...(DbbyCond<Row> | DbbyConditionTree<Row>)[]]
+	["and", ...(DbbyCondition<Row> | DbbyConditionTree<Row>)[]]
+	| ["or", ...(DbbyCondition<Row> | DbbyConditionTree<Row>)[]]
+
+//
+//
+//
 
 export interface DbbyConditional<Row extends DbbyRow> {
 	conditions: DbbyConditionTree<Row>
 }
-
-export type DbbyUpsert<Row extends DbbyRow> = DbbyConditional<Row> & {upsert: Row}
-export type DbbyWrite<Row extends DbbyRow> = DbbyConditional<Row> & {write: Partial<Row>}
-export type DbbyWhole<Row extends DbbyRow> = DbbyConditional<Row> & {whole: Row}
-export type DbbyUpdate<Row extends DbbyRow> = DbbyWrite<Row> | DbbyWhole<Row> | DbbyUpsert<Row>
-export type DbbyUpdateAmbiguated<Row extends DbbyRow> = DbbyWrite<Row> & DbbyWhole<Row> & DbbyUpsert<Row>
 
 export type DbbyOrder<Row extends DbbyRow> = Partial<{
 	[P in keyof Row]: "ascend" | "descend" | undefined
@@ -51,21 +53,29 @@ export type DbbyOrder<Row extends DbbyRow> = Partial<{
 export type DbbyPaginated<Row extends DbbyRow> = DbbyConditional<Row> & {
 	limit?: number
 	offset?: number
-	order?: Partial<{[P in keyof Row]: "ascend" | "descend" | undefined}>
+	order?: DbbyOrder<Row>
 }
-
+export type DbbyUpsert<Row extends DbbyRow> = DbbyConditional<Row> & {upsert: Row}
+export type DbbyWrite<Row extends DbbyRow> = DbbyConditional<Row> & {write: Partial<Row>}
+export type DbbyWhole<Row extends DbbyRow> = DbbyConditional<Row> & {whole: Row}
+export type DbbyUpdate<Row extends DbbyRow> = DbbyWrite<Row> | DbbyWhole<Row> | DbbyUpsert<Row>
+export type DbbyUpdateAmbiguated<Row extends DbbyRow> = DbbyWrite<Row> & DbbyWhole<Row> & DbbyUpsert<Row>
 export type DbbyAssertion<Row extends DbbyRow> = DbbyConditional<Row> & {
 	make: () => Promise<Row>
 }
 
+//
+//
+//
+
 export interface DbbyTable<Row extends DbbyRow> {
-	create(row: Row, ...args: Row[]): Promise<void>
-	read(options: DbbyPaginated<Row>): Promise<Row[]>
-	one(options: DbbyConditional<Row>): Promise<Row>
-	assert(options: DbbyAssertion<Row>): Promise<Row>
-	update(options: DbbyUpdate<Row>): Promise<void>
-	delete(options: DbbyConditional<Row>): Promise<void>
-	count(options: DbbyConditional<Row>): Promise<number>
+	create(row: Row, ...args: DbbyRow<Row>[]): Promise<void>
+	read(options: DbbyPaginated<DbbyRow<Row>>): Promise<DbbyRow<Row>[]>
+	one(options: DbbyConditional<DbbyRow<Row>>): Promise<DbbyRow<Row>>
+	assert(options: DbbyAssertion<DbbyRow<Row>>): Promise<DbbyRow<Row>>
+	update(options: DbbyUpdate<DbbyRow<Row>>): Promise<void>
+	delete(options: DbbyConditional<DbbyRow<Row>>): Promise<void>
+	count(options: DbbyConditional<DbbyRow<Row>>): Promise<number>
 }
 
 export interface DbbyStorage<Row extends DbbyRow> {
