@@ -32,9 +32,14 @@ export interface DbbyCondition<Row extends DbbyRow> {
 	notSearch?: Partial<{[P in keyof Row]: string | RegExp}>
 }
 
+export type DbbyConditionOperation = "and" | "or"
+export type DbbyConditionLeaf<Row extends DbbyRow> = DbbyCondition<Row> | DbbyConditionTree<Row>
+export type DbbyConditionBranch<Op extends DbbyConditionOperation, Row extends DbbyRow> =
+	[Op, ...DbbyConditionLeaf<Row>[]]
+
 export type DbbyConditionTree<Row extends DbbyRow> =
-	["and", ...(DbbyCondition<Row> | DbbyConditionTree<Row>)[]]
-	| ["or", ...(DbbyCondition<Row> | DbbyConditionTree<Row>)[]]
+	DbbyConditionBranch<"and", Row>
+	| DbbyConditionBranch<"or", Row>
 
 //
 //
@@ -66,9 +71,13 @@ export type DbbyAssertion<Row extends DbbyRow> = DbbyConditional<Row> & {
 //
 //
 
-export type DbbyConditionHelper<Row extends DbbyRow> = (
-	...conditions: DbbyCondition<Row>[]
-) => DbbyConditionTree<Row>
+export type DbbyConditionHelper<
+	Op extends DbbyConditionOperation,
+	Row extends DbbyRow,
+	C extends DbbyConditionLeaf<Row>[] = DbbyConditionLeaf<Row>[],
+> = (
+	...conditions: C
+) => DbbyConditionBranch<Op, Row>
 
 export interface DbbyTable<Row extends DbbyRow> {
 	create(row: Row, ...args: DbbyRow<Row>[]): Promise<void>
@@ -78,8 +87,8 @@ export interface DbbyTable<Row extends DbbyRow> {
 	update(options: DbbyUpdate<DbbyRow<Row>>): Promise<void>
 	delete(options: DbbyConditional<DbbyRow<Row>>): Promise<void>
 	count(options: DbbyConditional<DbbyRow<Row>>): Promise<number>
-	and: DbbyConditionHelper<Row>
-	or: DbbyConditionHelper<Row>
+	and: DbbyConditionHelper<"and", Row>
+	or: DbbyConditionHelper<"or", Row>
 }
 
 export interface DbbyStorage<Row extends DbbyRow> {

@@ -1,6 +1,7 @@
 
 import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree} from "./dbby-types.js"
 
+export {and, or} from "./dbby-helpers.js"
 import {curryDbbyHelpers} from "./dbby-helpers.js"
 
 export function dbbyMemory<Row extends DbbyRow>({

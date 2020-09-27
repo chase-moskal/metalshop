@@ -4,8 +4,10 @@ import {Collection, FilterQuery} from "../../commonjs/mongodb.js"
 import {objectMap} from "../object-map.js"
 import {escapeRegex} from "../escape-regex.js"
 
-import {curryDbbyHelpers} from "./dbby-helpers.js"
 import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyConditionTree, DbbyUpdateAmbiguated, DbbyOrder} from "./dbby-types.js"
+
+export {and, or} from "./dbby-helpers.js"
+import {curryDbbyHelpers} from "./dbby-helpers.js"
 
 function skimMongoId<Row extends DbbyRow>(row: Row): Row {
 	if (row) {
