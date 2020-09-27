@@ -1,4 +1,5 @@
 
+import {and} from "../../toolbox/dbby/dbby-helpers.js"
 import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {PremiumDatalayer, StripeLiaison} from "./types.js"
 import {StripeBillingRow, StripePremiumRow, PremiumGiftRow} from "../../types.js"
@@ -18,7 +19,7 @@ export function makePremiumDatalayer({
 
 		async assertStripeBillingRow(userId) {
 			return stripeBillingTable.assert({
-				conditions: {equal: {userId}},
+				conditions: and({equal: {userId}}),
 				make: async() => {
 					const {stripeCustomerId} = await stripeLiaison.createCustomer()
 					return {
@@ -31,31 +32,31 @@ export function makePremiumDatalayer({
 
 		async getStripeBillingRowByStripeCustomerId(stripeCustomerId) {
 			return stripeBillingTable.one({
-				conditions: {equal: {stripeCustomerId}}
+				conditions: and({equal: {stripeCustomerId}})
 			})
 		},
 
 		async getStripePremiumRow(userId) {
 			return stripePremiumTable.one({
-				conditions: {equal: {userId}}
+				conditions: and({equal: {userId}})
 			})
 		},
 
 		async deleteStripePremiumRow(userId) {
 			await stripePremiumTable.delete({
-				conditions: {equal: {userId}}
+				conditions: and({equal: {userId}})
 			})
 		},
 
 		async getPremiumGiftRow(userId) {
 			return premiumGiftTable.one({
-				conditions: {equal: {userId}}
+				conditions: and({equal: {userId}})
 			})
 		},
 
 		async upsertStripePremiumRow(userId, row) {
 			return stripePremiumTable.update({
-				conditions: {equal: {userId}},
+				conditions: and({equal: {userId}}),
 				upsert: row,
 			})
 		},

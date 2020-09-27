@@ -2,6 +2,7 @@
 import {MetalUser, AccessToken, ClaimsRow, SignToken, AccountRow, ProfileRow, VerifyToken, AccessPayload, UserUmbrellaTopic, RefreshPayload, AuthAardvarkTopic} from "../../types.js"
 
 import {concurrent} from "../../toolbox/concurrent.js"
+import {and} from "../../toolbox/dbby/dbby-helpers.js"
 import {generateId} from "../../toolbox/generate-id.js"
 import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 
@@ -57,7 +58,7 @@ export function makeAuthSystems<U extends MetalUser>({
 	}
 
 	async function fetchUser(userId: string): Promise<U> {
-		const userIdConditions = {conditions: {equal: {userId}}}
+		const userIdConditions = {conditions: and({equal: {userId}})}
 		const accountRow = await accountTable.one(userIdConditions)
 		return assembleUser({
 			accountRow,
@@ -73,7 +74,7 @@ export function makeAuthSystems<U extends MetalUser>({
 			accountRow: AccountRow
 		}) {
 		const {userId} = accountRow
-		const userIdConditions = {conditions: {equal: {userId}}}
+		const userIdConditions = {conditions: and({equal: {userId}})}
 		return assembleUser({
 			accountRow,
 			...await concurrent({
@@ -107,7 +108,7 @@ export function makeAuthSystems<U extends MetalUser>({
 			claims: Partial<U["claims"]>
 		) {
 		await claimsTable.update({
-			conditions: {equal: {userId}},
+			conditions: and({equal: {userId}}),
 			write: claims,
 		})
 	}
@@ -125,7 +126,7 @@ export function makeAuthSystems<U extends MetalUser>({
 			async authenticateViaGoogle({googleToken}) {
 				const {googleId, avatar, name} = await verifyGoogleToken(googleToken)
 				const accountRow = await accountTable.assert({
-					conditions: {equal: {googleId}},
+					conditions: and({equal: {googleId}}),
 					make: async() => ({
 						userId: generateId(),
 						googleId,
@@ -167,7 +168,7 @@ export function makeAuthSystems<U extends MetalUser>({
 				const {problems} = validateProfile(profile)
 				if (problems.length) throw new Error(`invalid profile: ${problems.join("; ")}`)
 				await profileTable.update({
-					conditions: {equal: {userId}},
+					conditions: and({equal: {userId}}),
 					write: profile,
 				})
 			},

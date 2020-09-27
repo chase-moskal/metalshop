@@ -1,4 +1,5 @@
 
+import {and} from "../../toolbox/dbby/dbby-helpers.js"
 import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {User, Authorizer, LiveshowRow, LiveshowLizardTopic} from "../../types.js"
 
@@ -21,7 +22,7 @@ export function makeLiveshowLizard({
 			if (!allowed) throw new Error("not allowed")
 
 			const record = await liveshowTable.one({
-				conditions: {equal: {label}}
+				conditions: and({equal: {label}}),
 			})
 			return record ? {vimeoId: record.vimeoId} : undefined
 		},
@@ -32,7 +33,7 @@ export function makeLiveshowLizard({
 			if (!allowed) throw new Error("not allowed")
 
 			await liveshowTable.update({
-				conditions: {equal: {label}},
+				conditions: and({equal: {label}}),
 				upsert: {label, vimeoId},
 			})
 		},

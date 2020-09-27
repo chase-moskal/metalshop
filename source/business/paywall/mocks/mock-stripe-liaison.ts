@@ -1,6 +1,7 @@
 
 import {Stripe} from "../../../commonjs/stripe.js"
 
+import {and} from "../../../toolbox/dbby/dbby-helpers.js"
 import {generateId} from "../../../toolbox/generate-id.js"
 import {randomSequence, numbers} from "../../../toolbox/random8.js"
 
@@ -40,19 +41,19 @@ export function mockStripeLiaison({
 	}
 
 	async function fetchCustomer(id: string) {
-		return tables.customers.one({conditions: {equal: {id}}})
+		return tables.customers.one({conditions: and({equal: {id}})})
 	}
 
 	async function fetchSubscription(id: string) {
-		return tables.subscriptions.one({conditions: {equal: {id}}})
+		return tables.subscriptions.one({conditions: and({equal: {id}})})
 	}
 
 	async function fetchPaymentMethod(id: string) {
-		return tables.paymentMethods.one({conditions: {equal: {id}}})
+		return tables.paymentMethods.one({conditions: and({equal: {id}})})
 	}
 
 	async function fetchSetupIntent(id: string) {
-		return tables.setupIntents.one({conditions: {equal: {id}}})
+		return tables.setupIntents.one({conditions: and({equal: {id}})})
 	}
 
 	//
