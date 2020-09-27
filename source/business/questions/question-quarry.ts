@@ -1,7 +1,9 @@
 
-import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
-import {concurrent} from "../../toolbox/concurrent.js"
 import {QuestionQuarryTopic, QuestionRow, QuestionLikeRow, QuestionReportRow, MetalUser, UserUmbrellaTopic, Question, Authorizer} from "../../types.js"
+
+import {and} from "../../toolbox/dbby/dbby-helpers.js"
+import {concurrent} from "../../toolbox/concurrent.js"
+import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 
 export function makeQuestionQuarry({
 		authorize,
@@ -55,19 +57,19 @@ export function makeQuestionQuarry({
 		} = await concurrent({
 			author: fetchUser(row.authorUserId),
 			likeCount: questionLikeTable.count({
-				conditions: {equal: {questionId}}
+				conditions: and({equal: {questionId}})
 			}),
 			myLikeCount: loggedIn
 				? questionLikeTable.count({
-					conditions: {equal: {questionId, userId}}
+					conditions: and({equal: {questionId, userId}})
 				})
 				: 0,
 			reportCount: questionReportTable.count({
-				conditions: {equal: {questionId}}
+				conditions: and({equal: {questionId}})
 			}),
 			myReportCount: loggedIn
 				? questionReportTable.count({
-					conditions: {equal: {questionId, userId}}
+					conditions: and({equal: {questionId, userId}})
 				})
 				: 0,
 		})
@@ -93,7 +95,7 @@ export function makeQuestionQuarry({
 			if (accessToken) userId = (await authorize(accessToken)).userId
 
 			const rows = await questionTable.read({
-				conditions: {equal: {board, archive: false}},
+				conditions: and({equal: {board, archive: false}}),
 			})
 
 			const questions = await Promise.all(
@@ -126,14 +128,14 @@ export function makeQuestionQuarry({
 		async archiveQuestion({questionId, accessToken}) {
 			const user = await authorize(accessToken)
 			const row = await questionTable.one({
-				conditions: {equal: {questionId}}
+				conditions: and({equal: {questionId}})
 			})
 
 			const allowed = userCanArchiveQuestion(user, row.authorUserId)
 			if (!allowed) throw new Error("not allowed")
 
 			await questionTable.update({
-				conditions: {equal: {questionId}},
+				conditions: and({equal: {questionId}}),
 				write: {archive: true},
 			})
 		},
@@ -143,7 +145,7 @@ export function makeQuestionQuarry({
 			const {userId} = user
 
 			const myLikeCount = await questionLikeTable.count({
-				conditions: {equal: {questionId, userId}}
+				conditions: and({equal: {questionId, userId}})
 			})
 			const alreadyLike = myLikeCount > 0
 
@@ -155,7 +157,7 @@ export function makeQuestionQuarry({
 			// remove the like
 			else if (!like && alreadyLike) {
 				await questionLikeTable.delete({
-					conditions: {equal: {questionId, userId}}
+					conditions: and({equal: {questionId, userId}})
 				})
 			}
 
@@ -163,7 +165,7 @@ export function makeQuestionQuarry({
 				userId,
 				fetchUser: async() => user,
 				row: await questionTable.one({
-					conditions: {equal: {questionId}}
+					conditions: and({equal: {questionId}})
 				}),
 			})
 		},
@@ -175,7 +177,7 @@ export function makeQuestionQuarry({
 			if (!allowed) throw new Error("not allowed")
 
 			await questionTable.update({
-				conditions: {equal: {board}},
+				conditions: and({equal: {board}}),
 				write: {archive: true},
 			})
 		},

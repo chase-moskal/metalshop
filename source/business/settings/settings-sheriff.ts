@@ -6,10 +6,11 @@ export function makeSettingsSheriff<S extends MetalSettings>({settingsTable, aut
 		authorize: Authorizer
 		settingsTable: DbbyTable<SettingsRow>
 	}): SettingsSheriffTopic<S> {
+	const {and} = settingsTable
 
 	async function assertSettings(userId: string): Promise<S> {
 		const row = await settingsTable.assert({
-			conditions: {equal: {userId}},
+			conditions: and({equal: {userId}}),
 			make: async() => ({
 				userId,
 				actAsAdmin: true,
@@ -30,7 +31,7 @@ export function makeSettingsSheriff<S extends MetalSettings>({settingsTable, aut
 			const {userId} = await authorize(accessToken)
 			const settings = await assertSettings(userId)
 			await settingsTable.update({
-				conditions: {equal: {userId}},
+				conditions: and({equal: {userId}}),
 				write: {actAsAdmin},
 			})
 			return {...settings, actAsAdmin}

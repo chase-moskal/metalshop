@@ -11,12 +11,13 @@ export function makeScheduleSentry({
 		userCanChangeSchedule: (user: User) => boolean
 		scheduleEventTable: DbbyTable<ScheduleEventRow>
 	}): ScheduleSentryTopic {
+	const {and} = scheduleEventTable
 
 	return {
 
 		async getEvent({label}) {
 			const row = await scheduleEventTable.one({
-				conditions: {equal: {label}}
+				conditions: and({equal: {label}})
 			})
 			return row && {
 				label,
@@ -29,7 +30,7 @@ export function makeScheduleSentry({
 			const allowed = userCanChangeSchedule(user)
 			if (!allowed) throw new Error("not allowed")
 			await scheduleEventTable.update({
-				conditions: {equal: {label: event.label}},
+				conditions: and({equal: {label: event.label}}),
 				upsert: {
 					label: event.label,
 					time: event.time,
