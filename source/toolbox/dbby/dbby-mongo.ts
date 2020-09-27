@@ -5,7 +5,7 @@ import {objectMap} from "../object-map.js"
 import {escapeRegex} from "../escape-regex.js"
 
 import {curryDbbyHelpers} from "./dbby-helpers.js"
-import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyOrder} from "./dbby-types.js"
+import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyConditionTree, DbbyUpdateAmbiguated, DbbyOrder} from "./dbby-types.js"
 
 function skimMongoId<Row extends DbbyRow>(row: Row): Row {
 	if (row) {
@@ -84,21 +84,22 @@ export function dbbyMongo<Row extends DbbyRow>({collection}: {
 	}
 }
 
-// TODO REWRITE
-function prepareQuery<Row extends DbbyRow>(conditional: DbbyConditional<Row>): FilterQuery<{}> {
-	return
-	// const {
-	// 	nonConditional,
-	// 	multiConditional,
-	// 	singleConditional,
-	// } = evaluateConditional(conditional)
-	// if (nonConditional) return undefined
-	// else if (singleConditional)
-	// 	return conditionsToMongoQuery(singleConditional.conditions)
-	// else if (multiConditional) return multiConditional.multi === "and"
-	// 	? {$and: multiConditional.conditions.map(conditionsToMongoQuery)}
-	// 	: {$or: multiConditional.conditions.map(conditionsToMongoQuery)}
-	// else throw Error("failed conditional evaluation")
+function prepareQuery<Row extends DbbyRow>({conditions}: DbbyConditional<Row>): FilterQuery<{}> {
+	if (!conditions) return {}
+
+	function recurse(tree: DbbyConditionTree<Row>): FilterQuery<{}> {
+		const [operator, ...conds] = tree
+		const query = conds.map(cond =>
+			Array.isArray(cond)
+				? recurse(cond)
+				: conditionsToMongoQuery(cond)
+		)
+		return operator === "and"
+			? {$and: query}
+			: {$or: query}
+	}
+
+	return recurse(conditions)
 }
 
 function orderToSort<Row extends DbbyRow>(
