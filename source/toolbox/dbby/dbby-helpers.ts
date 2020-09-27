@@ -1,12 +1,26 @@
 
-import {DbbyConditionTree, DbbyCondition, DbbyRow} from "./dbby-types.js"
+import {DbbyConditionTree, DbbyCondition, DbbyRow, DbbyConditionHelper} from "./dbby-types.js"
 
-export function and<C extends any[]>(...conditions: C): ["and", ...C[]] {
-	return ["and", ...conditions]
-}
+// export function and<Row extends DbbyRow>(
+// 		...conditions: DbbyCondition<Row>[]
+// 	): DbbyConditionTree<Row> {
+// 	return ["and", ...conditions]
+// }
 
-export function or<Row extends DbbyRow>(...conditions: DbbyCondition<Row>[]) {
-	return ["or", ...conditions]
+// export function or<Row extends DbbyRow>(
+// 		...conditions: DbbyCondition<Row>[]
+// 	): ["or", ...DbbyCondition<Row>[]] {
+// 	return ["or", ...conditions]
+// }
+
+export function curryDbbyHelpers<Row extends DbbyRow>(): {
+		and: DbbyConditionHelper<Row>
+		or: DbbyConditionHelper<Row>
+	} {
+	return {
+		and: (...conditions) => ["and", ...conditions],
+		or: (...conditions) => ["or", ...conditions],
+	}
 }
 
 // export type CondOp<Row extends DbbyRow> = (...conditions: DbbyCondition<Row>[]) => DbbyConditionTree<Row>

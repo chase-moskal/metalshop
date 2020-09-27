@@ -4,7 +4,7 @@ import {Collection, FilterQuery} from "../../commonjs/mongodb.js"
 import {objectMap} from "../object-map.js"
 import {escapeRegex} from "../escape-regex.js"
 
-import {evaluateConditional} from "./dbby-common.js"
+import {curryDbbyHelpers} from "./dbby-helpers.js"
 import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyOrder} from "./dbby-types.js"
 
 function skimMongoId<Row extends DbbyRow>(row: Row): Row {
@@ -79,22 +79,26 @@ export function dbbyMongo<Row extends DbbyRow>({collection}: {
 			const query = prepareQuery(conditional)
 			return collection.count(query)
 		},
+
+		...curryDbbyHelpers<Row>()
 	}
 }
 
-function prepareQuery<Row extends DbbyRow>(conditional: DbbyConditional<Row>) {
-	const {
-		nonConditional,
-		multiConditional,
-		singleConditional,
-	} = evaluateConditional(conditional)
-	if (nonConditional) return undefined
-	else if (singleConditional)
-		return conditionsToMongoQuery(singleConditional.conditions)
-	else if (multiConditional) return multiConditional.multi === "and"
-		? {$and: multiConditional.conditions.map(conditionsToMongoQuery)}
-		: {$or: multiConditional.conditions.map(conditionsToMongoQuery)}
-	else throw Error("failed conditional evaluation")
+// TODO REWRITE
+function prepareQuery<Row extends DbbyRow>(conditional: DbbyConditional<Row>): FilterQuery<{}> {
+	return
+	// const {
+	// 	nonConditional,
+	// 	multiConditional,
+	// 	singleConditional,
+	// } = evaluateConditional(conditional)
+	// if (nonConditional) return undefined
+	// else if (singleConditional)
+	// 	return conditionsToMongoQuery(singleConditional.conditions)
+	// else if (multiConditional) return multiConditional.multi === "and"
+	// 	? {$and: multiConditional.conditions.map(conditionsToMongoQuery)}
+	// 	: {$or: multiConditional.conditions.map(conditionsToMongoQuery)}
+	// else throw Error("failed conditional evaluation")
 }
 
 function orderToSort<Row extends DbbyRow>(

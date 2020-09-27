@@ -1,6 +1,7 @@
 
-// import {evaluateConditional} from "./dbby-common.js"
 import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree} from "./dbby-types.js"
+
+import {curryDbbyHelpers} from "./dbby-helpers.js"
 
 export function dbbyMemory<Row extends DbbyRow>({
 		dbbyStorage,
@@ -35,7 +36,10 @@ export function dbbyMemory<Row extends DbbyRow>({
 	}
 
 	function eliminateRow(conditional: DbbyConditional<Row>) {
-		const flippedFilterRow = (row: Row) => !rowVersusConditional(row, conditional)
+		const flippedFilterRow = (row: Row) => !rowVersusConditional(
+			row,
+			conditional
+		)
 		table = table.filter(flippedFilterRow)
 	}
 
@@ -75,7 +79,12 @@ export function dbbyMemory<Row extends DbbyRow>({
 			return row
 		},
 
-		async update({write, whole, upsert, ...conditional}: DbbyUpdateAmbiguated<Row>) {
+		async update({
+				write,
+				whole,
+				upsert,
+				...conditional
+			}: DbbyUpdateAmbiguated<Row>) {
 			const rows = select(conditional)
 			if (write && rows.length) {
 				updateRow(rows, write)
@@ -99,7 +108,9 @@ export function dbbyMemory<Row extends DbbyRow>({
 
 		async count(conditional) {
 			return select(conditional).length
-		}
+		},
+
+		...curryDbbyHelpers<Row>(),
 	}
 }
 
@@ -129,7 +140,13 @@ function rowVersusConditional<Row extends {}>(
 		conditional: DbbyConditional<Row>,
 	): boolean {
 
-	function crawl([operation, ...conditions] = conditional.conditions) {
+	function crawl(
+			[
+				operation,
+				...conditions
+			] = <["and" | "or", ...(DbbyCondition<Row> | DbbyConditionTree<Row>)[]]>
+				conditional.conditions
+		) {
 		const and = operation === "and"
 		let valid = and
 		const applyResult = (result: boolean) =>

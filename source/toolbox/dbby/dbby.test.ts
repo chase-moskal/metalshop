@@ -1,6 +1,5 @@
 
 import {Suite, expect} from "cynic"
-import {and, or} from "./dbby-helpers.js"
 import {dbbyMemory} from "./dbby-memory.js"
 
 interface DemoUser {
@@ -23,33 +22,28 @@ export default <Suite>{
 	"dbby-memory": {
 		"create rows and read 'em back unconditionally": async() => {
 			const dbby = await setupThreeUserDemo()
-			const users = await dbby.read({conditions: and()})
-			return expect(users.length).equals(3)
+			const allUsersByFalse = await dbby.read({conditions: false})
+			const allUsersByEmptyAnd = await dbby.read({conditions: dbby.and()})
+			const allUsersByEmptyOr = await dbby.read({conditions: dbby.or()})
+			return expect(allUsersByFalse.length).equals(3)
+				&& expect(allUsersByEmptyAnd.length).equals(3)
+				&& expect(allUsersByEmptyOr.length).equals(3)
 		},
 		"read one": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true
 				&& expect(
-						// TODO figure out what to do
-						await dbby.one({conditions: and({equal: {userId: "u123"}})})
-						// await dbby.one({
-						// 	conditions: and({equal: {userId: 123}})
-						// })
-						// await dbby.one({conditions: ["and", {equal: {userId: "u123"}}]})
-						// await dbby.one({conditions})
-					).ok()
-				&& expect(
-						await dbby.one({conditions: false})
+						await dbby.one({conditions: dbby.and({equal: {userId: "u123"}})})
 					).ok()
 			)
 		},
-		"read one with by property not set": async() => {
+		"read one with not set condition": async() => {
 			const dbby = await setupThreeUserDemo()
 			await dbby.create({userId: "u999", balance: 1, location: undefined})
 			return expect(
-				(
-					await dbby.one({conditions: {notSet: {location: true}}})
-				).userId
+				(await dbby.one({
+					conditions: dbby.and({notSet: {location: true}})
+				})).userId
 			).equals("u999")
 		},
 		"assert one": async() => {
@@ -62,13 +56,13 @@ export default <Suite>{
 			return (true
 				&& expect(
 						(await dbby.assert({
-							conditions: {equal: {userId: "u123"}},
+							conditions: dbby.and({equal: {userId: "u123"}}),
 							make: async() => fallback,
 						})).location
 					).equals("america")
 				&& expect(
 						(await dbby.assert({
-							conditions: {equal: {userId: "u000"}},
+							conditions: dbby.and({equal: {userId: "u000"}}),
 							make: async() => fallback,
 						})).location
 					).equals("russia")
@@ -90,70 +84,69 @@ export default <Suite>{
 		},
 		"read with single conditions": async() => {
 			const dbby = await setupThreeUserDemo()
+			const {and} = dbby
 			return (true
 				&& expect([
-						...await dbby.read({conditions: {equal: {userId: "u123"}}}),
-						...await dbby.read({conditions: {equal: {userId: "u124"}}}),
-						...await dbby.read({conditions: {equal: {userId: "u125"}}}),
+						...await dbby.read({conditions: and({equal: {userId: "u123"}})}),
+						...await dbby.read({conditions: and({equal: {userId: "u124"}})}),
+						...await dbby.read({conditions: and({equal: {userId: "u125"}})}),
 					].length).equals(3)
 				&& expect((
-						await dbby.read({conditions: {
+						await dbby.read({conditions: and({
 							greater: {balance: 50},
-							equal: {location: "america"}
-						}})
+							equal: {location: "america"},
+						})})
 					).length).equals(1)
 				&& expect((
-						await dbby.read({conditions: {
+						await dbby.read({conditions: and({
 							notEqual: {location: "america"}
-						}})
+						})})
 					).length).equals(2)
 				&& expect((
-						await dbby.read({conditions: {less: {balance: 50}}})
+						await dbby.read({conditions: and({less: {balance: 50}})})
 					).length).equals(2)
 				&& expect((
-						await dbby.read({conditions: {search: {location: "can"}}})
+						await dbby.read({conditions: and({search: {location: "can"}})})
 					).length).equals(2)
 				&& expect((
-						await dbby.read({conditions: {search: {location: /can/}}})
+						await dbby.read({conditions: and({search: {location: /can/}})})
 					).length).equals(2)
 			)
 		},
 		"read with multiple conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			return (true
-				&& expect((
-						await dbby.read({
-							multi: "and",
-							conditions: [
-								{less: {balance: 200}},
-								{equal: {location: "canada"}},
-							]
-						})
-					).length).equals(2)
-				&& expect((
-						await dbby.read({
-							multi: "or",
-							conditions: [
-								{less: {balance: 50}},
-								{equal: {location: "america"}},
-							]
-						})
-					).length).equals(3)
+				&& expect(
+					(await dbby.read({
+						conditions: dbby.and(
+							{less: {balance: 200}},
+							{equal: {location: "canada"}},
+						)
+					})).length
+				).equals(2)
+				&& expect(
+					(await dbby.read({
+						conditions: dbby.or(
+							{less: {balance: 50}},
+							{equal: {location: "america"}},
+						)
+					})).length
+				).equals(3)
 			)
 		},
 		"delete a row and it's gone": async() => {
 			const dbby = await setupThreeUserDemo()
-			await dbby.delete({conditions: {equal: {userId: "u123"}}})
+			await dbby.delete({conditions: dbby.and({equal: {userId: "u123"}})})
 			const users = await dbby.read({conditions: false})
 			return expect(users.length).equals(2)
 		},
 		"update write to a row": async() => {
 			const dbby = await setupThreeUserDemo()
 			await dbby.update({
-				conditions: {equal: {userId: "u123"}},
+				conditions: dbby.and({equal: {userId: "u123"}}),
 				write: {location: "argentina"},
 			})
-			const user = await dbby.one({conditions: {equal: {userId: "u123"}}})
+			const user = await dbby.one({conditions: dbby.and({equal: {userId: "u123"}})})
 			return (true
 				&& expect(user.location).equals("argentina")
 				&& expect(user.balance).equals(100)
@@ -163,10 +156,10 @@ export default <Suite>{
 			const dbby = await setupThreeUserDemo()
 			const userId = "u123"
 			await dbby.update({
-				conditions: {equal: {userId}},
+				conditions: dbby.and({equal: {userId}}),
 				whole: {userId, balance: 50, location: "argentina"},
 			})
-			const user = await dbby.one({conditions: {equal: {userId}}})
+			const user = await dbby.one({conditions: dbby.and({equal: {userId}})})
 			return (true
 				&& expect(user.location).equals("argentina")
 				&& expect(user.balance).equals(50)
@@ -176,7 +169,7 @@ export default <Suite>{
 			const dbby = await setupThreeUserDemo()
 			await Promise.all([
 				dbby.update({
-					conditions: {equal: {userId: "u123"}},
+					conditions: dbby.and({equal: {userId: "u123"}}),
 					upsert: {
 						userId: "u123",
 						balance: 500,
@@ -184,7 +177,7 @@ export default <Suite>{
 					},
 				}),
 				dbby.update({
-					conditions: {equal: {userId: "u126"}},
+					conditions: dbby.and({equal: {userId: "u126"}}),
 					upsert: {
 						userId: "u126",
 						balance: 1000,
@@ -192,8 +185,8 @@ export default <Suite>{
 					},
 				}),
 			])
-			const america = await dbby.one({conditions: {equal: {userId: "u123"}}})
-			const argentina = await dbby.one({conditions: {equal: {userId: "u126"}}})
+			const america = await dbby.one({conditions: dbby.and({equal: {userId: "u123"}})})
+			const argentina = await dbby.one({conditions: dbby.and({equal: {userId: "u126"}})})
 			return (true
 				&& expect(america.balance).equals(500)
 				&& expect(argentina.balance).equals(1000)
@@ -202,7 +195,7 @@ export default <Suite>{
 		"count rows with conditions": async() => {
 			const dbby = await setupThreeUserDemo()
 			const countAll = await dbby.count({conditions: false})
-			const countCanadians = await dbby.count({conditions: {equal: {location: "canada"}}})
+			const countCanadians = await dbby.count({conditions: dbby.and({equal: {location: "canada"}})})
 			return (true
 				&& expect(countAll).equals(3)
 				&& expect(countCanadians).equals(2)

@@ -6,9 +6,7 @@ export type DbbyValue =
 	| string
 	| bigint
 
-export type DbbyRow<T extends {[key: string]: DbbyValue} = {}> = {
-	[P in keyof T]: DbbyValue
-}
+export type DbbyRow<T extends {[key: string]: DbbyValue} = {}> = T
 
 //
 //
@@ -43,7 +41,7 @@ export type DbbyConditionTree<Row extends DbbyRow> =
 //
 
 export interface DbbyConditional<Row extends DbbyRow> {
-	conditions: DbbyConditionTree<Row>
+	conditions: false | DbbyConditionTree<Row>
 }
 
 export type DbbyOrder<Row extends DbbyRow> = Partial<{
@@ -68,6 +66,10 @@ export type DbbyAssertion<Row extends DbbyRow> = DbbyConditional<Row> & {
 //
 //
 
+export type DbbyConditionHelper<Row extends DbbyRow> = (
+	...conditions: DbbyCondition<Row>[]
+) => DbbyConditionTree<Row>
+
 export interface DbbyTable<Row extends DbbyRow> {
 	create(row: Row, ...args: DbbyRow<Row>[]): Promise<void>
 	read(options: DbbyPaginated<DbbyRow<Row>>): Promise<DbbyRow<Row>[]>
@@ -76,6 +78,8 @@ export interface DbbyTable<Row extends DbbyRow> {
 	update(options: DbbyUpdate<DbbyRow<Row>>): Promise<void>
 	delete(options: DbbyConditional<DbbyRow<Row>>): Promise<void>
 	count(options: DbbyConditional<DbbyRow<Row>>): Promise<number>
+	and: DbbyConditionHelper<Row>
+	or: DbbyConditionHelper<Row>
 }
 
 export interface DbbyStorage<Row extends DbbyRow> {
