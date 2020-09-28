@@ -2,14 +2,9 @@
 import {isNode} from "./is-node.js"
 import {encodeHex} from "./bytes.js"
 
-export const getRandomBytes: (bytes: number) => ArrayBuffer = await (async() =>
+export const getRandomBytes: (bytes: number) => ArrayBuffer = (() =>
 	isNode
-
-		? await (async() => {
-			const {randomBytes} = await import("crypto")
-			return (bytes: number) => randomBytes(bytes).buffer
-		})()
-
+		? (bytes: number) => require("crypto").randomBytes(bytes).buffer
 		: (bytes: number) => crypto.getRandomValues(new Uint8Array(bytes)).buffer
 )()
 
