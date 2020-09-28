@@ -1,5 +1,5 @@
 
-import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree} from "./dbby-types.js"
+import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree, DbbyConditions} from "./dbby-types.js"
 
 export {and, or} from "./dbby-helpers.js"
 import {curryDbbyHelpers} from "./dbby-helpers.js"
@@ -141,21 +141,17 @@ function rowVersusConditional<Row extends {}>(
 		conditional: DbbyConditional<Row>,
 	): boolean {
 
-	function crawl(
-			[
-				operation,
-				...conditions
-			] = <["and" | "or", ...(DbbyCondition<Row> | DbbyConditionTree<Row>)[]]>
-				conditional.conditions
-		) {
+	function crawl(conditions: DbbyConditions<Row>) {
+		if (conditions === false) return true
+		const [operation, ...conds] = conditions
 		const and = operation === "and"
 		let valid = and
 		const applyResult = (result: boolean) =>
 			valid = and
 				? valid && result
 				: valid || result
-		for (const condition of conditions) {
-			if (Array.isArray(condition)) {
+		for (const condition of conds) {
+			if (condition === false || Array.isArray(condition)) {
 				applyResult(crawl(<DbbyConditionTree<Row>>condition))
 			}
 			else {
@@ -166,7 +162,7 @@ function rowVersusConditional<Row extends {}>(
 		return valid
 	}
 
-	return crawl()
+	return crawl(conditional.conditions)
 }
 
 function rowVersusCondition<Row extends {}>(

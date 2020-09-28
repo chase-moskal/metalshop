@@ -22,12 +22,12 @@ export default <Suite>{
 	"dbby-memory": {
 		"create rows and read 'em back unconditionally": async() => {
 			const dbby = await setupThreeUserDemo()
-			const allUsersByFalse = await dbby.read({conditions: false})
-			const allUsersByEmptyAnd = await dbby.read({conditions: dbby.and()})
-			const allUsersByEmptyOr = await dbby.read({conditions: dbby.or()})
-			return expect(allUsersByFalse.length).equals(3)
-				&& expect(allUsersByEmptyAnd.length).equals(3)
-				&& expect(allUsersByEmptyOr.length).equals(3)
+			const falseResults = await dbby.read({conditions: false})
+			const emptyAndResults = await dbby.read({conditions: dbby.and()})
+			const emptyOrResults = await dbby.read({conditions: dbby.or()})
+			return expect(falseResults.length).equals(3)
+				&& expect(emptyAndResults.length).equals(3)
+				&& expect(emptyOrResults.length).equals(0)
 		},
 		"read one": async() => {
 			const dbby = await setupThreeUserDemo()

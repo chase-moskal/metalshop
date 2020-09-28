@@ -45,8 +45,10 @@ export type DbbyConditionTree<Row extends DbbyRow> =
 //
 //
 
+export type DbbyConditions<Row extends DbbyRow> = false | DbbyConditionTree<Row>
+
 export interface DbbyConditional<Row extends DbbyRow> {
-	conditions: false | DbbyConditionTree<Row>
+	conditions: DbbyConditions<Row>
 }
 
 export type DbbyOrder<Row extends DbbyRow> = Partial<{
