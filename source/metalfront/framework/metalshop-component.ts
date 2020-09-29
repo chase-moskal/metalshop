@@ -7,6 +7,7 @@ import {mixinInitiallyHidden} from "./mixin-initially-hidden.js"
 
 export * from "lit-element"
 export {Share, MobxLitElement}
+export {mixinStyles} from "./mixin-styles.js"
 
 @mixinAutorun
 @mixinInitiallyHidden

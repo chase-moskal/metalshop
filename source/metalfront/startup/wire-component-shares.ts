@@ -2,6 +2,9 @@
 import {share} from "../framework/share.js"
 import {ButtonPremiumShare, PersonalShare, MyAvatarShare, AdminModeShare, QuestionsShare, Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare, AppListShare} from "../types.js"
 
+import {AdminShare} from "../../features/admin/admin-types.js"
+import {MetalPermissions} from "../../features/admin/metal-admin-permissions.js"
+
 import {IronReset} from "../components/iron-reset.js"
 import {IronLoading} from "../components/iron-loading.js"
 import {IronTextInput} from "../components/iron-text-input.js"
@@ -88,6 +91,10 @@ export const wireComponentShares = (supermodel: Supermodel) => {
 			user: supermodel.auth.user,
 			uiBureau: supermodel.questions.questionQuarryUi,
 			fetchCachedQuestions: supermodel.questions.fetchCachedQuestions,
+		})),
+
+		MetalPermissions: share(MetalPermissions, (): AdminShare => ({
+			personalLoad: supermodel.personal.personalLoad,
 		})),
 	}
 }
