@@ -24,7 +24,7 @@ import {Logger} from "../../toolbox/logger/interfaces.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
 import {makeDbbyStorage} from "../../toolbox/dbby/dbby-storage.js"
 
-import {mockLatency} from "../mocks/mock-latency.js"
+import {mockLatency, mockLatencyDbby} from "../mocks/mock-latency.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
 
 import {MetalOptions, DecodeAccessToken, TriggerAccountPopup, TriggerCheckoutPopup} from "../types.js"
@@ -166,22 +166,22 @@ export async function makeMocks({
 
 	function applyMockLatency() {
 		const lag1 = 100
-		mockLatency(lag1, claimsTable)
-		mockLatency(lag1, accountTable)
-		mockLatency(lag1, profileTable)
-		mockLatency(lag1, questionTable)
-		mockLatency(lag1, liveshowTable)
-		mockLatency(lag1, settingsTable)
-		mockLatency(lag1, premiumGiftTable)
-		mockLatency(lag1, questionLikeTable)
-		mockLatency(lag1, stripeBillingTable)
-		mockLatency(lag1, stripePremiumTable)
-		mockLatency(lag1, scheduleEventTable)
-		mockLatency(lag1, questionReportTable)
-		mockLatency(lag1, mockStripeTables.customers)
-		mockLatency(lag1, mockStripeTables.setupIntents)
-		mockLatency(lag1, mockStripeTables.subscriptions)
-		mockLatency(lag1, mockStripeTables.paymentMethods)
+		mockLatencyDbby(lag1, claimsTable)
+		mockLatencyDbby(lag1, accountTable)
+		mockLatencyDbby(lag1, profileTable)
+		mockLatencyDbby(lag1, questionTable)
+		mockLatencyDbby(lag1, liveshowTable)
+		mockLatencyDbby(lag1, settingsTable)
+		mockLatencyDbby(lag1, premiumGiftTable)
+		mockLatencyDbby(lag1, questionLikeTable)
+		mockLatencyDbby(lag1, stripeBillingTable)
+		mockLatencyDbby(lag1, stripePremiumTable)
+		mockLatencyDbby(lag1, scheduleEventTable)
+		mockLatencyDbby(lag1, questionReportTable)
+		mockLatencyDbby(lag1, mockStripeTables.customers)
+		mockLatencyDbby(lag1, mockStripeTables.setupIntents)
+		mockLatencyDbby(lag1, mockStripeTables.subscriptions)
+		mockLatencyDbby(lag1, mockStripeTables.paymentMethods)
 	
 		const lag2 = 200
 		mockLatency(lag2, tokenStore)
