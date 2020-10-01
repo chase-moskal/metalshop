@@ -12,7 +12,7 @@
 	"scripts": {
 		"prepare": "run-s clean && run-p importmap compile && run-s test",
 		"clean": "rimraf dist *.pem && mkdirp dist",
-		"importmap": "importly < package.json > dist/importmap.json",
+		"importmap": "importly --host=node_modules < package.json > dist/importmap.json",
 		"compile": "tsc",
 		"watch": "tsc -w",
 		"start": "serve -l 8080",

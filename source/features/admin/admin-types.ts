@@ -1,12 +1,37 @@
 
-import {Api, Topic} from "renraku/dist/interfaces.js"
-
 import {AccessToken} from "../../types.js"
-import {Personal} from "../../metalfront/types.js"
 import {DbbyRow} from "../../toolbox/dbby/dbby-types.js"
 import * as loading from "../../metalfront/toolbox/loading.js"
+import {AccessPayload, Personal} from "../../metalfront/types.js"
 
 import {makeAdminApi} from "./admin-api.js"
+
+//
+// universal
+//
+
+export interface AppPayload {
+	appId: string
+	origins: string[]
+	created: number
+	expiry: number
+}
+
+export interface AuthMeta {
+	appToken: string
+	accessToken: AccessToken
+}
+
+export interface AuthData {
+	app: AppPayload
+	access: AccessPayload
+}
+
+export type Authorizer = (meta: AuthMeta) => Promise<AuthData>
+
+//
+// admin-specific
+//
 
 export type AdminApi = ReturnType<typeof makeAdminApi>
 
