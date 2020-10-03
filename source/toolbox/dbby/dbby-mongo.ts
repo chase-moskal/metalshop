@@ -7,9 +7,9 @@ import {escapeRegex} from "../escape-regex.js"
 import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyConditionTree, DbbyUpdateAmbiguated, DbbyOrder} from "./dbby-types.js"
 
 export {and, or} from "./dbby-helpers.js"
-import {curryDbbyHelpers} from "./dbby-helpers.js"
+import {dbbyHelpers} from "./dbby-helpers.js"
 
-function skimMongoId<Row extends {}>(row: Row): Row {
+function skimMongoId<Row extends DbbyRow>(row: Row): Row {
 	if (row) {
 		const {_id: noop, ...skimmed} = <any>row
 		return skimmed
@@ -82,7 +82,7 @@ export function dbbyMongo<Row extends {}>({collection}: {
 			return collection.count(query)
 		},
 
-		...curryDbbyHelpers<Row>()
+		...dbbyHelpers<Row>()
 	}
 }
 

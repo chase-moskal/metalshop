@@ -1,8 +1,8 @@
 
-import {DbbyTable, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree, DbbyConditions} from "./dbby-types.js"
+import {DbbyRow, DbbyTable, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree, DbbyConditions} from "./dbby-types.js"
 
 export {and, or} from "./dbby-helpers.js"
-import {curryDbbyHelpers} from "./dbby-helpers.js"
+import {dbbyHelpers} from "./dbby-helpers.js"
 
 export function dbbyMemory<Row extends {}>({
 		dbbyStorage,
@@ -113,7 +113,7 @@ export function dbbyMemory<Row extends {}>({
 			return select(conditional).length
 		},
 
-		...curryDbbyHelpers<Row>(),
+		...dbbyHelpers<Row>(),
 	}
 }
 
@@ -167,7 +167,7 @@ function rowVersusConditional<Row extends {}>(
 	return crawl(conditional.conditions)
 }
 
-function rowVersusCondition<Row extends {}>(
+function rowVersusCondition<Row extends DbbyRow>(
 		row: Row,
 		condition: DbbyCondition<Row>
 	): boolean {
