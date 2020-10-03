@@ -133,6 +133,17 @@ export default <Suite>{
 						)
 					})).length
 				).equals(3)
+				&& expect(
+					(await dbby.read({
+						conditions: dbby.or(
+							dbby.and(
+								{less: {balance: 50}},
+								{equal: {location: "canada"}},
+							),
+							{equal: {location: "greenland"}},
+						)
+					})).length
+				).equals(2)
 			)
 		},
 		"delete a row and it's gone": async() => {
