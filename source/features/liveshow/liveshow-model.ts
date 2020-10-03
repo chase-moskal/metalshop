@@ -40,10 +40,10 @@ export class LiveshowModel {
 			dispose: () => void,
 			viewModel: LiveshowViewModel,
 		} => {
-		const {liveshowTopic: liveshowLizard} = this
+		const {liveshowTopic} = this
 		const viewModel = new LiveshowViewModel({
 			label,
-			liveshowLizard,
+			liveshowTopic,
 		})
 		const dispose = this.authLoadPubsub.subscribe(viewModel.handleAuthLoad)
 		return {

@@ -1,7 +1,8 @@
 
 import {observable, action, runInAction} from "mobx"
+import {curryTopicMeta, CurryTopicMeta} from "renraku/dist/curries.js"
 
-import {MetalUser, AccessToken} from "../../types.js"
+import {MetalUser} from "../../types.js"
 import * as loading from "../../metalfront/toolbox/loading.js"
 import * as evaluators from "../../business/auth/user-evaluators.js"
 import {AuthPayload, GetAuthContext, VideoPayload} from "../../metalfront/types.js"
@@ -27,13 +28,17 @@ export class LiveshowViewModel {
 
 	private label: string
 	private getAuthContext: GetAuthContext<MetalUser>
-	private liveshowTopic: LiveshowTopic
+	private liveshowTopic: CurryTopicMeta<LiveshowTopic>
 
 	constructor(options: {
 			label: string
-			liveshowLizard: LiveshowTopic
+			liveshowTopic: LiveshowTopic
 		}) {
-		Object.assign(this, options)
+		this.label = options.label
+		this.liveshowTopic = curryTopicMeta(options.liveshowTopic, async() => {
+			const {accessToken} = await this.getAuthContext()
+			return {accessToken, appToken: undefined}
+		})
 	}
 
 	//
@@ -64,7 +69,7 @@ export class LiveshowViewModel {
 		if (authIsReady) {
 			if (userIsLoggedIn) {
 				this.getAuthContext = getAuthContext
-				const {user, accessToken} = await getAuthContext()
+				const {user} = await getAuthContext()
 
 				// set privilege level
 				const privilege = this.ascertainPrivilege(user)
@@ -73,7 +78,7 @@ export class LiveshowViewModel {
 				// load video
 				if (privilege === LiveshowPrivilegeLevel.Privileged) {
 					runInAction(() => this.videoLoad = loading.loading())
-					const {vimeoId} = (await this.loadVideo(accessToken)) || {}
+					const {vimeoId} = (await this.loadVideo()) || {}
 					runInAction(() => this.videoLoad = loading.ready({
 						vimeoId
 					}))
@@ -101,12 +106,8 @@ export class LiveshowViewModel {
 		}
 
 		if (vimeoId || vimeostring === "") {
-			const {label, getAuthContext} = this
-			const {accessToken} = await getAuthContext()
+			const {label} = this
 			await this.liveshowTopic.setShow({
-				accessToken,
-				appToken: undefined,
-			}, {
 				vimeoId,
 				label,
 			})
@@ -121,11 +122,8 @@ export class LiveshowViewModel {
 	//
 
 	 @action.bound
-	private async loadVideo(accessToken: AccessToken) {
+	private async loadVideo() {
 		return await this.liveshowTopic.getShow({
-			accessToken,
-			appToken: undefined,
-		}, {
 			label: this.label,
 		})
 	}
