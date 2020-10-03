@@ -6,7 +6,19 @@ export type DbbyValue =
 	| string
 	| bigint
 
-export type DbbyRow<T extends {[key: string]: DbbyValue} = {}> = T
+export type DbbyRow = {[key: string]: DbbyValue}
+export type AsDbbyRow<T extends DbbyRow> = T
+
+export const asDbbyValue = <Value extends DbbyValue>(value: Value) => value
+export const asDbbyRow = <Row extends DbbyRow>(row: Row) => row
+
+// export type CoolRow<T extends DbbyRow> = {
+// 	[P in keyof T]:
+// 		T[P] extends DbbyValue
+// 			? T[P]
+// 			: never
+// }
+// export const asCoolRow = <Row extends {}>(row: CoolRow<Row>) => row
 
 //
 //
@@ -82,13 +94,13 @@ export type DbbyConditionHelper<
 ) => DbbyConditionBranch<Op, Row>
 
 export interface DbbyTable<Row extends DbbyRow> {
-	create(row: Row, ...args: DbbyRow<Row>[]): Promise<void>
-	read(options: DbbyPaginated<DbbyRow<Row>>): Promise<DbbyRow<Row>[]>
-	one(options: DbbyConditional<DbbyRow<Row>>): Promise<DbbyRow<Row>>
-	assert(options: DbbyAssertion<DbbyRow<Row>>): Promise<DbbyRow<Row>>
-	update(options: DbbyUpdate<DbbyRow<Row>>): Promise<void>
-	delete(options: DbbyConditional<DbbyRow<Row>>): Promise<void>
-	count(options: DbbyConditional<DbbyRow<Row>>): Promise<number>
+	create(row: Row, ...args: Row[]): Promise<void>
+	read(options: DbbyPaginated<Row>): Promise<Row[]>
+	one(options: DbbyConditional<Row>): Promise<Row>
+	assert(options: DbbyAssertion<Row>): Promise<Row>
+	update(options: DbbyUpdate<Row>): Promise<void>
+	delete(options: DbbyConditional<Row>): Promise<void>
+	count(options: DbbyConditional<Row>): Promise<number>
 	and: DbbyConditionHelper<"and", Row>
 	or: DbbyConditionHelper<"or", Row>
 }

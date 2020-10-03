@@ -27,9 +27,11 @@ export function dbbyMemory<Row extends DbbyRow>({
 	}
 
 	function updateRow(rows: Row[], update: Partial<Row>) {
-		for (const row of rows)
-			for (const [key, value] of Object.entries(update))
-				row[key] = value
+		for (const row of rows) {
+			for (const [key, value] of Object.entries(update)) {
+				;(<DbbyRow>row)[key] = value
+			}
+		}
 	}
 
 	function insertCopy(row: Row) {
