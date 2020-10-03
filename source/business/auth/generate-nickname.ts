@@ -1,9 +1,9 @@
 
 import {NicknameStructure} from "../../types.js"
-import {randomSample} from "../../toolbox/random8.js"
+import {randomSample} from "../../toolbox/random9.js"
 import * as dictionaries from "../../toolbox/nickname-dictionaries.js"
 
-const pick = (names: string[]) => randomSample(Math.random(), names)
+const pick = (names: string[]) => randomSample(names)
 
 export function curryGenerateNickname({nicknameStructure, delimiter}: {
 		delimiter: string,

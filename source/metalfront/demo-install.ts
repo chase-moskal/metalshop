@@ -7,7 +7,7 @@ import {assembleSupermodel} from "./startup/assemble-supermodel.js"
 import {wireComponentShares } from "./startup/wire-component-shares.js"
 
 import {hatPuller} from "../toolbox/hat-puller.js"
-import {randomSample} from "../toolbox/random8.js"
+import {randomSample} from "../toolbox/random9.js"
 import {parseQuery} from "./toolbox/parse-query.js"
 import {generateId} from "../toolbox/generate-id.js"
 
@@ -42,7 +42,7 @@ export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 
 	function generateNickname() {
 		return nicknameData
-			.map(names => randomSample(Math.random(), names))
+			.map(names => randomSample(names))
 			.join(" ")
 	}
 
