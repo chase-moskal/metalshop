@@ -4,7 +4,7 @@ import {DbbyRow, DbbyTable, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated
 export {and, or} from "./dbby-helpers.js"
 import {dbbyHelpers} from "./dbby-helpers.js"
 
-export function dbbyMemory<Row extends {}>({
+export function dbbyMemory<Row extends DbbyRow>({
 		dbbyStorage,
 	}: {
 		dbbyStorage?: DbbyStorage<Row>

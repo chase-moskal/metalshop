@@ -17,7 +17,7 @@ function skimMongoId<Row extends DbbyRow>(row: Row): Row {
 	return undefined
 }
 
-export function dbbyMongo<Row extends {}>({collection}: {
+export function dbbyMongo<Row extends DbbyRow>({collection}: {
 		collection: Collection
 	}): DbbyTable<Row> {
 	return {

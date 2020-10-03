@@ -2,7 +2,7 @@
 import {AccessToken} from "../../types.js"
 import * as loading from "../../metalfront/toolbox/loading.js"
 import {AccessPayload, Personal} from "../../metalfront/types.js"
-import {DbbyRow, DbbyTable} from "../../toolbox/dbby/dbby-types.js"
+import {DbbyRow, DbbyTable, AsDbbyRow} from "../../toolbox/dbby/dbby-types.js"
 
 import {makeAdminApi} from "./admin-api.js"
 
@@ -49,10 +49,10 @@ export type AdminApi = ReturnType<typeof makeAdminApi>
 // 	permissions: AdminPermissionsTopic
 // }
 
-export interface RoleRow extends DbbyRow {
+export type RoleRow = AsDbbyRow<{
 	label: string
 	permissions: string
-}
+}>
 
 export interface Role {
 	label: string
