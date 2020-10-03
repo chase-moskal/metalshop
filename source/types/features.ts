@@ -7,6 +7,7 @@ export interface AppPayload {
 	origins: string[]
 	created: number
 	expiry: number
+	root: boolean
 }
 
 export interface AuthMeta {

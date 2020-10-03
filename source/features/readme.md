@@ -6,7 +6,8 @@
 `features/todo/`
 - "readme.md" — notes about a particular feature, please list dependencies
 - "todo-types.ts" — all typescript types 'owned' by the feature
-- "todo-business.ts" — microservice business logic topic implementation
+- "todo-api.ts" — microservice business logic topic implementation
+- "todo-clients.ts" — renraku api client
 - "todo-model.ts" — frontend state and actions
 - "todo.css.ts" — frontend styles for the components
 - "metal-todo.ts" — frontend web component

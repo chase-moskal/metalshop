@@ -132,7 +132,7 @@ export async function makeMocks({
 	const {liveshowTopic} = makeLiveshowApi({
 		auth: async({appToken, accessToken}) => ({
 			// TODO app token
-			app: {appId: "app123", origins: [], created: Date.now(), expiry: Date.now() + 99999999}, // await verifyToken<AppPayload>(appToken),
+			app: {appId: "app123", origins: [], created: Date.now(), expiry: Date.now() + 99999999, root: false}, // await verifyToken<AppPayload>(appToken),
 			access: await verifyToken<AccessPayload>(accessToken),
 		}),
 		getDbbyTable: memoryTable,
