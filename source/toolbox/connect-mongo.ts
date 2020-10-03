@@ -15,7 +15,7 @@ export async function connectMongo(mongo: MongoConfig) {
 
 	return {
 		database,
-		dbbyTable<Row extends DbbyRow>(collectionName: string) {
+		dbbyTable<Row extends {}>(collectionName: string) {
 			return dbbyMongo<Row>({
 				collection: database.collection(collectionName)
 			})

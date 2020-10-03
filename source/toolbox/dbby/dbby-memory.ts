@@ -1,10 +1,10 @@
 
-import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree, DbbyConditions} from "./dbby-types.js"
+import {DbbyTable, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree, DbbyConditions} from "./dbby-types.js"
 
 export {and, or} from "./dbby-helpers.js"
 import {curryDbbyHelpers} from "./dbby-helpers.js"
 
-export function dbbyMemory<Row extends DbbyRow>({
+export function dbbyMemory<Row extends {}>({
 		dbbyStorage,
 	}: {
 		dbbyStorage?: DbbyStorage<Row>
@@ -29,7 +29,7 @@ export function dbbyMemory<Row extends DbbyRow>({
 	function updateRow(rows: Row[], update: Partial<Row>) {
 		for (const row of rows) {
 			for (const [key, value] of Object.entries(update)) {
-				;(<DbbyRow>row)[key] = value
+				;(<any>row)[key] = value
 			}
 		}
 	}

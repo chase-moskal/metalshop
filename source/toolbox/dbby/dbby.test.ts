@@ -1,13 +1,12 @@
 
 import {Suite, expect} from "cynic"
 import {dbbyMemory} from "./dbby-memory.js"
-import {AsDbbyRow} from "./dbby-types.js"
 
-type DemoUser = AsDbbyRow<{
+interface DemoUser {
 	userId: string
 	balance: number
 	location: string
-}>
+}
 
 async function setupThreeUserDemo() {
 	const dbby = dbbyMemory<DemoUser>()

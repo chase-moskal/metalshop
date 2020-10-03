@@ -9,7 +9,7 @@ import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditional, DbbyConditionTree, D
 export {and, or} from "./dbby-helpers.js"
 import {curryDbbyHelpers} from "./dbby-helpers.js"
 
-function skimMongoId<Row extends DbbyRow>(row: Row): Row {
+function skimMongoId<Row extends {}>(row: Row): Row {
 	if (row) {
 		const {_id: noop, ...skimmed} = <any>row
 		return skimmed
@@ -17,7 +17,7 @@ function skimMongoId<Row extends DbbyRow>(row: Row): Row {
 	return undefined
 }
 
-export function dbbyMongo<Row extends DbbyRow>({collection}: {
+export function dbbyMongo<Row extends {}>({collection}: {
 		collection: Collection
 	}): DbbyTable<Row> {
 	return {

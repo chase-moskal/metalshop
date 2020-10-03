@@ -8,17 +8,8 @@ export type DbbyValue =
 
 export type DbbyRow = {[key: string]: DbbyValue}
 export type AsDbbyRow<T extends DbbyRow> = T
-
 export const asDbbyValue = <Value extends DbbyValue>(value: Value) => value
 export const asDbbyRow = <Row extends DbbyRow>(row: Row) => row
-
-// export type CoolRow<T extends DbbyRow> = {
-// 	[P in keyof T]:
-// 		T[P] extends DbbyValue
-// 			? T[P]
-// 			: never
-// }
-// export const asCoolRow = <Row extends {}>(row: CoolRow<Row>) => row
 
 //
 //
@@ -93,7 +84,7 @@ export type DbbyConditionHelper<
 	...conditions: C
 ) => DbbyConditionBranch<Op, Row>
 
-export interface DbbyTable<Row extends DbbyRow> {
+export interface DbbyTable<Row extends {}> {
 	create(row: Row, ...args: Row[]): Promise<void>
 	read(options: DbbyPaginated<Row>): Promise<Row[]>
 	one(options: DbbyConditional<Row>): Promise<Row>
@@ -105,7 +96,7 @@ export interface DbbyTable<Row extends DbbyRow> {
 	or: DbbyConditionHelper<"or", Row>
 }
 
-export interface DbbyStorage<Row extends DbbyRow> {
+export interface DbbyStorage<Row extends {}> {
 	save(table: Row[]): void
 	load(): Row[]
 }

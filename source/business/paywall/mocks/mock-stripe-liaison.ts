@@ -3,6 +3,7 @@ import {Stripe} from "../../../commonjs/stripe.js"
 
 import {and} from "../../../toolbox/dbby/dbby-helpers.js"
 import {generateId} from "../../../toolbox/generate-id.js"
+import {DbbyRow} from "../../../toolbox/dbby/dbby-types.js"
 import {randomSequence, numbers} from "../../../toolbox/random8.js"
 
 import {toPaymentDetails, toSubscriptionDetails} from "../helpers.js"
@@ -108,7 +109,7 @@ export function mockStripeLiaison({
 	}
 
 	async function mockPaymentMethod(): Promise<MockPaymentMethod> {
-		const paymentMethod = {
+		const paymentMethod = <MockPaymentMethod>{
 			id: generateId(),
 			card: {
 				brand: "FAKEVISA",
@@ -133,7 +134,7 @@ export function mockStripeLiaison({
 			subscription: MockSubscription
 			paymentMethod: MockPaymentMethod
 		}): Promise<MockSetupIntent> {
-		const setupIntent: MockSetupIntent = {
+		const setupIntent = <MockSetupIntent>{
 			id: generateId(),
 			customer: customer.id,
 			payment_method: paymentMethod.id,
@@ -150,7 +151,7 @@ export function mockStripeLiaison({
 			customer: MockCustomer
 			paymentMethod: MockPaymentMethod
 		}): Promise<MockSubscription> {
-		const subscription: MockSubscription = {
+		const subscription = <MockSubscription>{
 			id: generateId(),
 			status: "active",
 			plan: {id: planId},

@@ -1,12 +1,12 @@
 
 import {Stripe} from "../../../commonjs/stripe.js"
-import {DbbyTable} from "../../../toolbox/dbby/dbby-types.js"
+import {DbbyTable, DbbyRow} from "../../../toolbox/dbby/dbby-types.js"
 
-export interface MockCustomer extends Partial<Stripe.Customer> {
+export type MockCustomer = DbbyRow & Partial<Stripe.Customer> & {
 	id: string
 }
 
-export interface MockSubscription extends Partial<Stripe.Subscription> {
+export type MockSubscription = DbbyRow & Partial<Stripe.Subscription> & {
 	id: string
 	plan: {id: string} & any
 	current_period_end: number
@@ -15,12 +15,12 @@ export interface MockSubscription extends Partial<Stripe.Subscription> {
 	status: Stripe.Subscription.Status
 }
 
-export interface MockPaymentMethod extends Partial<Stripe.PaymentMethod> {
+export type MockPaymentMethod = DbbyRow & Partial<Stripe.PaymentMethod> & {
 	id: string
 	card: Stripe.PaymentMethod.Card
 }
 
-export interface MockSetupIntent extends Partial<Stripe.SetupIntent> {
+export type MockSetupIntent = DbbyRow & Partial<Stripe.SetupIntent> & {
 	id: string
 	customer: string
 	payment_method: string
@@ -30,8 +30,8 @@ export interface MockSetupIntent extends Partial<Stripe.SetupIntent> {
 }
 
 export interface MockStripeTables {
-	customers: DbbyTable<MockCustomer>
-	setupIntents: DbbyTable<MockSetupIntent>
-	subscriptions: DbbyTable<MockSubscription>
-	paymentMethods: DbbyTable<MockPaymentMethod>
+	customers: DbbyTable<DbbyRow & MockCustomer>
+	setupIntents: DbbyTable<DbbyRow & MockSetupIntent>
+	subscriptions: DbbyTable<DbbyRow & MockSubscription>
+	paymentMethods: DbbyTable<DbbyRow & MockPaymentMethod>
 }
