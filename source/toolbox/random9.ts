@@ -8,6 +8,19 @@ export const getRandomBytes: (bytes: number) => ArrayBuffer = (() =>
 		: (bytes: number) => crypto.getRandomValues(new Uint8Array(bytes)).buffer
 )()
 
+export const compare: (a: string, b: string) => boolean = (() =>
+	isNode
+		? (a: string, b: string) => require("crypto").timingSafeEqual(
+			Buffer.from(a, "utf8"),
+			Buffer.from(b, "utf8"),
+		)
+		: (a: string, b: string) => {
+			// TODO implement secure browser compare
+			console.warn("insecure compare")
+			return a === b
+		}
+)()
+
 export function random(): number {
 	const buffer = getRandomBytes(8)
 	const ints = new Int8Array(buffer)
