@@ -1,8 +1,8 @@
 
 import {AccessToken} from "../../types.js"
-import {DbbyRow} from "../../toolbox/dbby/dbby-types.js"
 import * as loading from "../../metalfront/toolbox/loading.js"
 import {AccessPayload, Personal} from "../../metalfront/types.js"
+import {DbbyRow, DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 
 import {makeAdminApi} from "./admin-api.js"
 
@@ -28,6 +28,8 @@ export interface AuthData {
 }
 
 export type Authorizer = (meta: AuthMeta) => Promise<AuthData>
+
+export type GetAppTable = <Row extends DbbyRow>(appId: string) => DbbyTable<Row>
 
 //
 // admin-specific
