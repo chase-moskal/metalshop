@@ -1,12 +1,13 @@
 
-import {cancel} from "../system/icons.js"
-import {select} from "../toolbox/selects.js"
-import * as loading from "../toolbox/loading.js"
-import {mixinStyles} from "../framework/mixin-styles.js"
-import {styles} from "./styles/metal-liveshow-styles.js"
-import {LiveshowShare, PrivilegeLevel} from "../types.js"
-import {LiveshowViewModel} from "../models/liveshow-model.js"
-import {MetalshopComponent, property, html} from "../framework/metalshop-component.js"
+import {cancel} from "../../metalfront/system/icons.js"
+import {select} from "../../metalfront/toolbox/selects.js"
+import * as loading from "../../metalfront/toolbox/loading.js"
+import {mixinStyles} from "../../metalfront/framework/mixin-styles.js"
+import {MetalshopComponent, property, html} from "../../metalfront/framework/metalshop-component.js"
+
+import styles from "./liveshow.css.js"
+import {LiveshowViewModel} from "./liveshow-view-model.js"
+import {LiveshowShare, LiveshowPrivilegeLevel} from "./liveshow-types.js"
 
  @mixinStyles(styles)
 export class MetalLiveshow extends MetalshopComponent<LiveshowShare> {
@@ -43,24 +44,24 @@ export class MetalLiveshow extends MetalshopComponent<LiveshowShare> {
 		`
 	}
 
-	private renderPrivilegeBox(privilege: PrivilegeLevel) {
+	private renderPrivilegeBox(privilege: LiveshowPrivilegeLevel) {
 		const {validationMessage} = this._viewModel || {}
 		switch (privilege) {
-			case PrivilegeLevel.Unknown: return html`
+			case LiveshowPrivilegeLevel.Unknown: return html`
 				<slot name="unknown">
 					<h2>Private video</h2>
 					<p>You must be logged in to view this video</p>
 				</slot>
 				<div class="ghostplayer">${cancel}</div>
 			`
-			case PrivilegeLevel.Unprivileged: return html`
+			case LiveshowPrivilegeLevel.Unprivileged: return html`
 				<slot name="unprivileged">
 					<h2>Private video</h2>
 					<p>Your account does not have privilege to watch this video</p>
 				</slot>
 				<div class="ghostplayer">${cancel}</div>
 			`
-			case PrivilegeLevel.Privileged: return html`
+			case LiveshowPrivilegeLevel.Privileged: return html`
 				<slot></slot>
 				${this._renderViewer()}
 				<metal-is-staff fancy class="adminpanel coolbuttonarea formarea">

@@ -60,7 +60,7 @@ export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 	const {
 		tokenStore,
 		userUmbrella,
-		liveshowLizard,
+		liveshowTopic,
 		scheduleSentry,
 		questionQuarry,
 		settingsSheriff,
@@ -144,10 +144,12 @@ export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 
 		// set demo liveshow
 		async() => {
-			await liveshowLizard.setShow({
+			await liveshowTopic.setShow({
+				accessToken: mockAdminAccessToken,
+				appToken: undefined,
+			}, {
 				label: "livestream",
 				vimeoId: "109943349",
-				accessToken: mockAdminAccessToken,
 			})
 		},
 

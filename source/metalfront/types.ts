@@ -18,17 +18,17 @@ import {
 	UserUmbrellaTopic,
 	ScheduleSentryTopic,
 	QuestionQuarryTopic,
-	LiveshowLizardTopic,
 	SettingsSheriffTopic,
 	PremiumPachydermTopic,
 } from "../types.js"
 
+import {LiveshowModel} from "../features/liveshow/liveshow-model.js"
+import {LiveshowTopic} from "../features/liveshow/liveshow-types.js"
 import {AuthModel} from "./models/auth-model.js"
 import {PaywallModel} from "./models/paywall-model.js"
 import {PersonalModel} from "./models/personal-model.js"
 import {ScheduleModel} from "./models/schedule-model.js"
 import {QuestionsModel} from "./models/questions-model.js"
-import {LiveshowViewModel, LiveshowModel} from "./models/liveshow-model.js"
 
 import * as loading from "./toolbox/loading.js"
 import {Logger} from "../toolbox/logger/interfaces.js"
@@ -55,7 +55,7 @@ export type ConstructorFor<T extends {} = {}> = new(...args: any[]) => T
 export interface MetalOptions<G extends MetalGenerics = MetalGenerics> {
 	logger: Logger
 	tokenStore: TokenStoreTopic
-	liveshowLizard: LiveshowLizardTopic
+	liveshowTopic: LiveshowTopic
 	scheduleSentry: ScheduleSentryTopic
 	questionQuarry: QuestionQuarryTopic
 	premiumPachyderm: PremiumPachydermTopic
@@ -168,15 +168,11 @@ export enum PremiumStatus {
 	Premium,
 }
 
-export enum PrivilegeLevel {
-	Unknown,
-	Unprivileged,
-	Privileged,
-}
-
 //
 // component shares
 //
+
+export * from "../features/liveshow/liveshow-types.js"
 
 export interface SettingsPremiumSubscription {
 	card: CardClues
@@ -239,14 +235,6 @@ export interface CountdownShare {
 	authLoad: loading.Load<AuthPayload<User>>
 	loadEvent: (label: string) => Promise<ScheduleEvent>
 	saveEvent: (event: ScheduleEvent) => Promise<void>
-}
-
-export interface LiveshowShare {
-	authLoad: loading.Load<AuthPayload<User>>
-	makeViewModel(options: {label: string}): {
-		dispose: () => void
-		viewModel: LiveshowViewModel
-	}
 }
 
 // export interface SeekerShare {

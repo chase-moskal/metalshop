@@ -100,3 +100,11 @@ export interface DbbyStorage<Row extends {}> {
 	save(table: Row[]): void
 	load(): Row[]
 }
+
+//
+//
+//
+
+export type GetDbbyTable = <Row extends {}>(
+		collectionName: string
+	) => DbbyTable<Row>

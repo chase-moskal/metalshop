@@ -55,11 +55,6 @@ export interface QuestionReportRow {
 	questionId: string
 }
 
-export interface LiveshowRow {
-	label: string
-	vimeoId: string
-}
-
 export interface ScheduleEventRow {
 	label: string
 	time: number

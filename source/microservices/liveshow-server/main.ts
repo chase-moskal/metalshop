@@ -13,8 +13,11 @@ import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 
 import * as evaluators from "../../business/auth/user-evaluators.js"
-import {makeLiveshowLizard} from "../../business/liveshow/liveshow-lizard.js"
-import {LiveshowServerConfig, LiveshowRow, LiveshowApi} from "../../types.js"
+
+import {makeLiveshowApi} from "../../features/liveshow/liveshow-api.js"
+import {LiveshowRow, LiveshowApi} from "../../features/liveshow/liveshow-types.js"
+
+import {LiveshowServerConfig, TopicAuthorizer, AccessPayload, AppPayload} from "../../types.js"
 
 nodeProgram(async function main({logger}) {
 	const paths = {
@@ -32,30 +35,35 @@ nodeProgram(async function main({logger}) {
 
 	const {dbbyTable} = await connectMongo(config.mongo)
 	const liveshowTable = dbbyTable<LiveshowRow>("liveshows")
-	
-	const liveshowLizard = makeLiveshowLizard({
-		liveshowTable,
-		authorize: verifyToken,
+
+	const auth: TopicAuthorizer = async({appToken, accessToken}) => ({
+		app: await verifyToken<AppPayload>(appToken),
+		access: await verifyToken<AccessPayload>(accessToken),
+	})
+
+	const liveshowApi = makeLiveshowApi({
+		auth,
+		getDbbyTable: dbbyTable,
 		userCanRead: evaluators.isPremium,
 		userCanWrite: evaluators.isStaff,
 	})
-	
+
 	const {koa: apiKoa} = await apiServer<LiveshowApi>({
 		debug,
 		logger,
 		exposures: {
-			liveshowLizard: {
+			liveshowTopic: {
 				cors,
-				exposed: liveshowLizard,
+				exposed: liveshowApi.liveshowTopic,
 			},
 		}
 	})
-	
+
 	new Koa()
 		.use(koaCors())
 		.use(health({logger}))
 		.use(mount("/api", apiKoa))
 		.listen({host: "0.0.0.0", port})
-	
+
 	logger.info(`🌐 liveshow-server on ${port}`)
 })

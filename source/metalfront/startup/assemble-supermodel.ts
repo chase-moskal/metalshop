@@ -2,9 +2,10 @@
 import {autorun} from "mobx"
 import {MetalOptions, Supermodel, MetalGenerics} from "../types.js"
 
+import {LiveshowModel} from "../../features/liveshow/liveshow-model.js"
+
 import {AuthModel} from "../models/auth-model.js"
 import {PaywallModel} from "../models/paywall-model.js"
-import {LiveshowModel} from "../models/liveshow-model.js"
 import {ScheduleModel} from "../models/schedule-model.js"
 import {PersonalModel} from "../models/personal-model.js"
 import {QuestionsModel} from "../models/questions-model.js"
@@ -13,7 +14,7 @@ export function assembleSupermodel({
 	logger,
 	tokenStore,
 	userUmbrella,
-	liveshowLizard,
+	liveshowTopic,
 	scheduleSentry,
 	questionQuarry,
 	settingsSheriff,
@@ -41,7 +42,7 @@ export function assembleSupermodel({
 			reauthorize: () => auth.reauthorize(),
 		}),
 		schedule: new ScheduleModel({scheduleSentry}),
-		liveshow: new LiveshowModel({liveshowLizard}),
+		liveshow: new LiveshowModel({liveshowTopic}),
 		questions: new QuestionsModel({questionQuarry}),
 
 		// TODO consider uncoupling inter-model dependencies?

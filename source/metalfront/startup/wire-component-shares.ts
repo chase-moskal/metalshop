@@ -1,6 +1,6 @@
 
 import {share} from "../framework/share.js"
-import {ButtonPremiumShare, PersonalShare, MyAvatarShare, AdminModeShare, QuestionsShare, Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare, AppListShare} from "../types.js"
+import {ButtonPremiumShare, PersonalShare, MyAvatarShare, AdminModeShare, QuestionsShare, Supermodel, AccountShare, CountdownShare, PaywallShare, LiveshowShare} from "../types.js"
 
 import {AdminShare} from "../../features/admin/admin-types.js"
 import {MetalPermissions} from "../../features/admin/metal-admin-permissions.js"
@@ -12,10 +12,10 @@ import {IronTextInput} from "../components/iron-text-input.js"
 import {CobaltCard} from "../components/cobalt-card.js"
 import {CobaltAvatar} from "../components/cobalt-avatar.js"
 
+import {MetalLiveshow} from "../../features/liveshow/metal-liveshow.js"
 import {MetalAccount} from "../components/metal-account.js"
 import {MetalPaywall} from "../components/metal-paywall.js"
 import {MetalIsStaff} from "../components/metal-is-staff.js"
-import {MetalLiveshow} from "../components/metal-liveshow.js"
 import {MetalPersonal} from "../components/metal-personal.js"
 import {MetalMyAvatar} from "../components/metal-my-avatar.js"
 import {MetalCountdown} from "../components/metal-countdown.js"
@@ -25,8 +25,6 @@ import {MetalButtonAuth} from "../components/metal-button-auth.js"
 import {MetalIsLoggedin} from "../components/metal-is-loggedin.js"
 import {MetalButtonPremium} from "../components/metal-button-premium.js"
 import {MetalQuestions} from "../components/questions/metal-questions.js"
-
-import {MetalAppList} from "../components/app/metal-app-list.js"
 
 export const wireComponentShares = (supermodel: Supermodel) => {
 	const accountShare = (): AccountShare => ({

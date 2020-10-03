@@ -2,14 +2,16 @@
 import {mockSignToken} from "redcrypto/dist/curries/mock-sign-token.js"
 import {mockVerifyToken} from "redcrypto/dist/curries/mock-verify-token.js"
 
-import {ClaimsRow, MetalUser, MetalScope, Authorizer, AccountRow, ProfileRow, QuestionRow, LiveshowRow, SettingsRow, AccessPayload, PremiumGiftRow, QuestionLikeRow, ScheduleEventRow, StripeBillingRow, StripePremiumRow, AuthAardvarkTopic, UserUmbrellaTopic, QuestionReportRow, QuestionQuarryTopic, PremiumPachydermTopic} from "../../types.js"
+import {ClaimsRow, MetalUser, MetalScope, Authorizer, AccountRow, ProfileRow, QuestionRow, SettingsRow, AccessPayload, PremiumGiftRow, QuestionLikeRow, ScheduleEventRow, StripeBillingRow, StripePremiumRow, AuthAardvarkTopic, UserUmbrellaTopic, QuestionReportRow, QuestionQuarryTopic, PremiumPachydermTopic} from "../../types.js"
+
+import {LiveshowRow} from "../../features/liveshow/liveshow-types.js"
+import {makeLiveshowApi} from "../../features/liveshow/liveshow-api.js"
 
 import {makeTokenStore} from "../../business/auth/token-store.js"
 import {makeAuthSystems} from "../../business/auth/auth-systems.js"
 import * as evaluators from "../../business/auth/user-evaluators.js"
 import {validateProfile} from "../../business/auth/validate-profile.js"
 import {makeClaimsCardinal} from "../../business/auth/claims-cardinal.js"
-import {makeLiveshowLizard} from "../../business/liveshow/liveshow-lizard.js"
 import {makeScheduleSentry} from "../../business/schedule/schedule-sentry.js"
 import {makeQuestionQuarry} from "../../business/questions/question-quarry.js"
 import {makeSettingsSheriff} from "../../business/settings/settings-sheriff.js"
@@ -28,6 +30,7 @@ import {mockLatency, mockLatencyDbby} from "../mocks/mock-latency.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
 
 import {MetalOptions, DecodeAccessToken, TriggerAccountPopup, TriggerCheckoutPopup} from "../types.js"
+import { AppPayload } from "../../types/features.js"
 
 export type PrepareMockData = (options: {
 		authAardvark: AuthAardvarkTopic,
@@ -126,11 +129,14 @@ export async function makeMocks({
 		userCanArchiveQuestion: (user, authorId) => evaluators.isStaff(user) || user.userId === authorId,
 	})
 
-	const liveshowLizard = makeLiveshowLizard({
-		liveshowTable,
-		authorize,
+	const {liveshowTopic} = makeLiveshowApi({
+		auth: async({appToken, accessToken}) => ({
+			app: await verifyToken<AppPayload>(appToken),
+			access: await verifyToken<AccessPayload>(accessToken),
+		}),
+		getDbbyTable: memoryTable,
 		userCanRead: evaluators.isPremium,
-		userCanWrite: evaluators.isPremium,
+		userCanWrite: evaluators.isStaff,
 	})
 
 	const {premiumDatalayer, stripeLiaison} = mockStripeCircuit({
@@ -186,7 +192,7 @@ export async function makeMocks({
 		const lag2 = 200
 		mockLatency(lag2, tokenStore)
 		mockLatency(lag2, userUmbrella)
-		mockLatency(lag2, liveshowLizard)
+		mockLatency(lag2, liveshowTopic)
 		mockLatency(lag2, questionQuarry)
 		mockLatency(lag2, scheduleSentry)
 		mockLatency(lag2, settingsSheriff)
@@ -200,7 +206,7 @@ export async function makeMocks({
 			logger,
 			tokenStore,
 			userUmbrella,
-			liveshowLizard,
+			liveshowTopic,
 			questionQuarry,
 			scheduleSentry,
 			settingsSheriff,

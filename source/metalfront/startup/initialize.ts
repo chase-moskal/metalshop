@@ -8,9 +8,9 @@ import {openCheckoutPopup} from "../../business/paywall/checkout-popup/open-chec
 
 import {makeAuthClients} from "../../business/auth/auth-clients.js"
 import {makePaywallClients} from "../../business/paywall/paywall-clients.js"
+import {makeLiveshowClients} from "../../features/liveshow/liveshow-clients.js"
 import {makeScheduleClients} from "../../business/schedule/schedule-clients.js"
 import {makeSettingsClients} from "../../business/settings/settings-clients.js"
-import {makeLiveshowClients} from "../../business/liveshow/liveshow-clients.js"
 import {makeQuestionsClients} from "../../business/questions/questions-clients.js"
 
 import {concurrent} from "../../toolbox/concurrent.js"
@@ -40,7 +40,7 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 		const {
 			tokenStore,
 			userUmbrella,
-			liveshowLizard,
+			liveshowTopic,
 			questionQuarry,
 			scheduleSentry,
 			settingsSheriff,
@@ -58,11 +58,9 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 				})
 				return userUmbrella
 			})(),
-			liveshowLizard: (async function() {
-				const {liveshowLizard} = await makeLiveshowClients({
-					liveshowServerOrigin: config["liveshow-server"],
-				})
-				return liveshowLizard
+			liveshowTopic: (async function() {
+				const {liveshowTopic} = await makeLiveshowClients(config["liveshow-server"])
+				return liveshowTopic
 			})(),
 			questionQuarry: (async function() {
 				const {questionQuarry} = await makeQuestionsClients({
@@ -93,7 +91,7 @@ export async function initialize(config: MetalConfig): Promise<MetalOptions> {
 			logger,
 			tokenStore,
 			userUmbrella,
-			liveshowLizard,
+			liveshowTopic,
 			questionQuarry,
 			scheduleSentry,
 			settingsSheriff,

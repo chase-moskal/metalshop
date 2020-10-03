@@ -1,9 +1,11 @@
 
 import {topicTransform} from "renraku/dist/curries.js"
-import {AuthMeta, Authorizer, Role, RoleRow, GetAppTable} from "./admin-types.js"
+import {Role, RoleRow} from "./admin-types.js"
+
+import {AuthMeta, TopicAuthorizer, GetAppTable} from "../../types.js"
 
 export function makeAdminApi({auth, getAppTable}: {
-		auth: Authorizer
+		auth: TopicAuthorizer
 		getAppTable: GetAppTable
 	}) {
 

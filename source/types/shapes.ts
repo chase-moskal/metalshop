@@ -6,7 +6,6 @@ import {
 	User,
 	VaultApi,
 	PaywallApi,
-	LiveshowApi,
 	SettingsApi,
 	ScheduleApi,
 	QuestionsApi,
@@ -51,13 +50,6 @@ export const paywallShape: RenrakuApiShape<PaywallApi> = {
 		updatePremium: "method",
 		cancelPremium: "method",
 		checkoutPremium: "method",
-	}
-}
-
-export const liveshowShape: RenrakuApiShape<LiveshowApi> = {
-	liveshowLizard: {
-		getShow: "method",
-		setShow: "method",
 	}
 }
 

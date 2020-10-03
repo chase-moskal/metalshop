@@ -1,59 +1,12 @@
 
 import {observable, action, runInAction} from "mobx"
 
+import {MetalUser, AccessToken} from "../../types.js"
+import * as loading from "../../metalfront/toolbox/loading.js"
 import * as evaluators from "../../business/auth/user-evaluators.js"
+import {AuthPayload, GetAuthContext, VideoPayload} from "../../metalfront/types.js"
 
-import {pubsub} from "../../toolbox/pubsub.js"
-import * as loading from "../toolbox/loading.js"
-
-import {LiveshowLizardTopic, MetalUser, AccessToken} from "../../types.js"
-import {AuthPayload, PrivilegeLevel, GetAuthContext, VideoPayload} from "../types.js"
-
-export type HandleAuthUpdate = (auth: loading.Load<AuthPayload<MetalUser>>) => Promise<void>
-
-export class LiveshowModel {
-	private liveshowLizard: LiveshowLizardTopic
-
-	constructor(options: {
-			liveshowLizard: LiveshowLizardTopic
-		}) {
-		this.liveshowLizard = options.liveshowLizard
-	}
-
-	//
-	// pubsub to mirror auth load to view models
-	//
-
-	authLoadPubsub = pubsub<HandleAuthUpdate>()
-
-	handleAuthLoad(authLoad: loading.Load<AuthPayload<MetalUser>>) {
-		this.authLoadPubsub.publish(authLoad)
-	}
-
-	dispose() {
-		this.authLoadPubsub.dispose()
-	}
-
-	//
-	// function to create new view models
-	//
-
-	makeViewModel = ({label}: {label: string}): {
-			dispose: () => void,
-			viewModel: LiveshowViewModel,
-		} => {
-		const {liveshowLizard} = this
-		const viewModel = new LiveshowViewModel({
-			label,
-			liveshowLizard,
-		})
-		const dispose = this.authLoadPubsub.subscribe(viewModel.handleAuthLoad)
-		return {
-			dispose,
-			viewModel,
-		}
-	}
-}
+import {LiveshowTopic, LiveshowPrivilegeLevel} from "./liveshow-types.js"
 
 /**
  * Component-level liveshow state
@@ -66,7 +19,7 @@ export class LiveshowViewModel {
 
 	@observable validationMessage: string = null
 	@observable videoLoad = loading.load<VideoPayload>()
-	@observable privilege: PrivilegeLevel = PrivilegeLevel.Unknown
+	@observable privilege: LiveshowPrivilegeLevel = LiveshowPrivilegeLevel.Unknown
 
 	//
 	// private variables and constructor
@@ -74,11 +27,11 @@ export class LiveshowViewModel {
 
 	private label: string
 	private getAuthContext: GetAuthContext<MetalUser>
-	private liveshowLizard: LiveshowLizardTopic
+	private liveshowTopic: LiveshowTopic
 
 	constructor(options: {
 			label: string
-			liveshowLizard: LiveshowLizardTopic
+			liveshowLizard: LiveshowTopic
 		}) {
 		Object.assign(this, options)
 	}
@@ -88,10 +41,10 @@ export class LiveshowViewModel {
 	//
 
 	 @action.bound
-	ascertainPrivilege(user: MetalUser): PrivilegeLevel {
+	ascertainPrivilege(user: MetalUser): LiveshowPrivilegeLevel {
 		return evaluators.isPremium(user)
-			? PrivilegeLevel.Privileged
-			: PrivilegeLevel.Unprivileged
+			? LiveshowPrivilegeLevel.Privileged
+			: LiveshowPrivilegeLevel.Unprivileged
 	}
 
 	 @action.bound
@@ -99,7 +52,7 @@ export class LiveshowViewModel {
 
 		// initialize observables
 		this.videoLoad = loading.none()
-		this.privilege = <PrivilegeLevel>PrivilegeLevel.Unknown
+		this.privilege = LiveshowPrivilegeLevel.Unknown
 
 		// setup variables
 		this.getAuthContext = null
@@ -118,7 +71,7 @@ export class LiveshowViewModel {
 				runInAction(() => this.privilege = privilege)
 
 				// load video
-				if (privilege === PrivilegeLevel.Privileged) {
+				if (privilege === LiveshowPrivilegeLevel.Privileged) {
 					runInAction(() => this.videoLoad = loading.loading())
 					const {vimeoId} = (await this.loadVideo(accessToken)) || {}
 					runInAction(() => this.videoLoad = loading.ready({
@@ -126,7 +79,7 @@ export class LiveshowViewModel {
 					}))
 				}
 			}
-			else this.privilege = PrivilegeLevel.Unprivileged
+			else this.privilege = LiveshowPrivilegeLevel.Unprivileged
 		}
 	}
 
@@ -150,9 +103,11 @@ export class LiveshowViewModel {
 		if (vimeoId || vimeostring === "") {
 			const {label, getAuthContext} = this
 			const {accessToken} = await getAuthContext()
-			await this.liveshowLizard.setShow({
-				vimeoId,
+			await this.liveshowTopic.setShow({
 				accessToken,
+				appToken: undefined,
+			}, {
+				vimeoId,
 				label,
 			})
 		}
@@ -167,8 +122,10 @@ export class LiveshowViewModel {
 
 	 @action.bound
 	private async loadVideo(accessToken: AccessToken) {
-		return await this.liveshowLizard.getShow({
+		return await this.liveshowTopic.getShow({
 			accessToken,
+			appToken: undefined,
+		}, {
 			label: this.label,
 		})
 	}

@@ -6,35 +6,6 @@ import {DbbyRow, DbbyTable, AsDbbyRow} from "../../toolbox/dbby/dbby-types.js"
 
 import {makeAdminApi} from "./admin-api.js"
 
-//
-// universal
-//
-
-export interface AppPayload {
-	appId: string
-	origins: string[]
-	created: number
-	expiry: number
-}
-
-export interface AuthMeta {
-	appToken: string
-	accessToken: AccessToken
-}
-
-export interface AuthData {
-	app: AppPayload
-	access: AccessPayload
-}
-
-export type Authorizer = (meta: AuthMeta) => Promise<AuthData>
-
-export type GetAppTable = <Row extends DbbyRow>(appId: string) => DbbyTable<Row>
-
-//
-// admin-specific
-//
-
 export type AdminApi = ReturnType<typeof makeAdminApi>
 
 // export interface AdminPermissionsTopic extends Topic {

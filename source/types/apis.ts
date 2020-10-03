@@ -10,7 +10,6 @@ import {
 	UserUmbrellaTopic,
 	ClaimsCardinalTopic,
 	QuestionQuarryTopic,
-	LiveshowLizardTopic,
 	ScheduleSentryTopic,
 	SettingsSheriffTopic,
 	PremiumPachydermTopic,
@@ -38,10 +37,6 @@ export interface PaywallApi extends RenrakuApi {
 
 export interface QuestionsApi extends RenrakuApi {
 	questionQuarry: QuestionQuarryTopic
-}
-
-export interface LiveshowApi extends RenrakuApi {
-	liveshowLizard: LiveshowLizardTopic
 }
 
 export interface ScheduleApi extends RenrakuApi {

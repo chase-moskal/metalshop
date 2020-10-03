@@ -85,18 +85,6 @@ export interface QuestionQuarryTopic extends Topic {
 		}): Promise<void>
 }
 
-export interface LiveshowLizardTopic extends Topic {
-	getShow(o: {
-			accessToken: AccessToken
-			label: string
-		}): Promise<{vimeoId: string}>
-	setShow(o: {
-			accessToken: AccessToken
-			label: string
-			vimeoId: string
-		}): Promise<void>
-}
-
 export interface ScheduleSentryTopic extends Topic {
 	getEvent(options: {
 			label: string
