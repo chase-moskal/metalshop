@@ -1,71 +1,69 @@
 
-import {AsDbbyRow} from "../../toolbox/dbby/dbby-types.js"
-
 // common stuff
 //
 
-export interface User {
+export type User = {
 	userId: string
 	profile: Profile
 	privileges: string[]
 }
 
-export interface Profile {
+export type Profile = {
 	userId: string
 	nickname: string
 	tagline: string
 	avatar: string
 }
 
-export interface Settings {
+export type Settings = {
 	actAsAdmin: boolean
 }
 
 // account rows
 //
 
-export type AccountRow = AsDbbyRow<{
+export type AccountRow = {
 	userId: string
 	created: number
-}>
+}
 
-export type AccountViaGoogleRow = AsDbbyRow<{
+export type AccountViaGoogleRow = {
 	userId: string
 	googleId: string
 	googleAvatar: string
-}>
+}
 
-export type AccountViaPasswordRow = AsDbbyRow<{
+export type AccountViaPasskeyRow = {
 	userId: string
-	password: string
-}>
+	digest: string
+}
 
-export type AccountViaSignatureRow = AsDbbyRow<{
+export type AccountViaSignatureRow = {
 	userId: string
 	publicKey: string
-}>
+}
 
-export type ProfileRow = AsDbbyRow<{
+export type ProfileRow = {
 	userId: string
 	nickname: string
 	tagline: string
 	avatar: string
-}>
+}
 
-export type SettingsRow = AsDbbyRow<{
+export type SettingsRow = {
 	actAsAdmin: boolean
-}>
+}
 
 // roles and permissions
 //
 
-export type RoleRow = AsDbbyRow<{
+export type RoleRow = {
 	roleId: string
 	role: string
-}>
+}
 
-export type PrivilegeRow = AsDbbyRow<{
+export type PrivilegeRow = {
 	privilegeId: string
 	roleId: string
 	privilege: string
-}>
+}

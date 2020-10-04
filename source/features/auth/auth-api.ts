@@ -142,8 +142,8 @@ export function makeAuthApi({signToken, verifyToken}: {
 		}),
 
 		authTopic: topicTransform(processAppToken, {
-			async authenticateViaPassword({app}, {password: string}) {
-				
+			async authenticateViaPasskey({app}, {passkey: string}) {
+				// lol authn
 			},
 			async authenticateViaGoogle({app}, {googleToken}: {googleToken: string}) {
 				// const {googleId, avatar, name} = await verifyGoogleToken(googleToken)

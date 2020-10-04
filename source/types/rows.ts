@@ -1,42 +1,42 @@
 
+import {ToDbbyRow} from "../toolbox/dbby/dbby-types.js"
 import {MetalClaims, MetalProfile, MetalSettings, CardClues} from "../types.js"
 
-export interface AccountRow {
+export type AccountRow = {
 	userId: string
 	googleId: string
 	googleAvatar: string
 }
 
-export interface ClaimsRow extends MetalClaims {
+export type ClaimsRow = MetalClaims & {
 	userId: string
 }
 
-export interface ProfileRow extends MetalProfile {
+export type ProfileRow = MetalProfile & {
 	userId: string
 }
 
-export interface SettingsRow extends MetalSettings {
+export type SettingsRow = MetalSettings & {
 	userId: string
 	actAsAdmin: boolean
 }
 
-
-export interface StripeBillingRow {
+export type StripeBillingRow = {
 	userId: string
 	stripeCustomerId: string
 }
 
-export interface StripePremiumRow extends CardClues {
+export type StripePremiumRow = CardClues & {
 	userId: string
 	stripeSubscriptionId: string
 }
 
-export interface PremiumGiftRow {
+export type PremiumGiftRow = {
 	userId: string
 	until: number
 }
 
-export interface QuestionRow {
+export type QuestionRow = {
 	questionId: string
 	authorUserId: string
 	board: string
@@ -45,17 +45,17 @@ export interface QuestionRow {
 	timePosted: number
 }
 
-export interface QuestionLikeRow {
+export type QuestionLikeRow = {
 	userId: string
 	questionId: string
 }
 
-export interface QuestionReportRow {
+export type QuestionReportRow = {
 	userId: string
 	questionId: string
 }
 
-export interface ScheduleEventRow {
+export type ScheduleEventRow = {
 	label: string
 	time: number
 }

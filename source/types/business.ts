@@ -1,7 +1,7 @@
 
 import {MetalUser} from "../types.js"
 
-export interface CardClues {
+export type CardClues = {
 	brand: string
 	last4: string
 	country: string
