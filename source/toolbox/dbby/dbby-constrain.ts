@@ -1,5 +1,5 @@
 
-import {and, or} from "./dbby-helpers.js"
+import {and} from "./dbby-helpers.js"
 import {DbbyTable, DbbyRow, DbbyCondition, DbbyConditions} from "./dbby-types.js"
 
 export function dbbyConstrain<Row extends DbbyRow, Constraint extends DbbyRow>(

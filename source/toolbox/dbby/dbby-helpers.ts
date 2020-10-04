@@ -15,18 +15,18 @@ export function or<
 	return ["or", ...conditions]
 }
 
-export function dbbyHelpers<Row extends DbbyRow>() {
-	const original = {and, or}
-	return {
-		and: <C extends DbbyConditionLeaf<Row>[] = DbbyConditionLeaf<Row>[]>(
-			...conditions: C
-		) => original.and<Row>(...conditions),
-		or: <C extends DbbyConditionLeaf<Row>[] = DbbyConditionLeaf<Row>[]>(
-			...conditions: C
-		) => original.or<Row>(...conditions),
-	}
-}
-
 export function find<Row extends DbbyRow>(row: Partial<Row>) {
 	return {conditions: and({equal: row})}
 }
+
+// export function dbbyHelpers<Row extends DbbyRow>() {
+// 	const original = {and, or}
+// 	return {
+// 		and: <C extends DbbyConditionLeaf<Row>[] = DbbyConditionLeaf<Row>[]>(
+// 			...conditions: C
+// 		) => original.and<Row>(...conditions),
+// 		or: <C extends DbbyConditionLeaf<Row>[] = DbbyConditionLeaf<Row>[]>(
+// 			...conditions: C
+// 		) => original.or<Row>(...conditions),
+// 	}
+// }

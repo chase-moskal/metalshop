@@ -1,8 +1,7 @@
 
 import {DbbyRow, DbbyTable, DbbyCondition, DbbyConditional, DbbyUpdateAmbiguated, DbbyStorage, DbbyConditionTree, DbbyConditions} from "./dbby-types.js"
 
-export {and, or} from "./dbby-helpers.js"
-import {dbbyHelpers} from "./dbby-helpers.js"
+export {and, or, find} from "./dbby-helpers.js"
 
 export function dbbyMemory<Row extends DbbyRow>({
 		dbbyStorage,
@@ -112,8 +111,6 @@ export function dbbyMemory<Row extends DbbyRow>({
 		async count(conditional) {
 			return select(conditional).length
 		},
-
-		...dbbyHelpers<Row>(),
 	}
 }
 
