@@ -1,6 +1,7 @@
 
 import {observable, action, runInAction} from "mobx"
-import {curryTopicMeta, CurryTopicMeta} from "renraku/dist/curries.js"
+import {CurriedTopicMeta} from "renraku/dist/types.js"
+import {curryTopicMeta} from "renraku/dist/curries.js"
 
 import {MetalUser} from "../../types.js"
 import * as loading from "../../metalfront/toolbox/loading.js"
@@ -28,7 +29,7 @@ export class LiveshowViewModel {
 
 	private label: string
 	private getAuthContext: GetAuthContext<MetalUser>
-	private liveshowTopic: CurryTopicMeta<LiveshowTopic>
+	private liveshowTopic: CurriedTopicMeta<LiveshowTopic>
 
 	constructor(options: {
 			label: string

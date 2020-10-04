@@ -1,7 +1,7 @@
 
 import {Topic} from "../../types.js"
 import {nap} from "../toolbox/nap.js"
-import {Method} from "renraku/dist/interfaces.js"
+import {Method} from "renraku/dist/types.js"
 import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 
 const lag = <T extends (...args: any[]) => Promise<any>>(func: T, duration: number) => {

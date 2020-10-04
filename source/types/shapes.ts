@@ -1,6 +1,6 @@
 
-import {ApiShape as RenrakuApiShape} from "renraku/dist/interfaces.js"
-import {ApiShape as CrosscallApiShape} from "crosscall/dist/interfaces.js"
+import {ApiShape as RenrakuApiShape} from "renraku/dist/types.js"
+import {ApiShape as CrosscallApiShape} from "crosscall/dist/types.js"
 
 import {
 	User,

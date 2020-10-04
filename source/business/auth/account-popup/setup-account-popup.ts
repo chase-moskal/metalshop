@@ -1,5 +1,5 @@
 
-import {CorsPermissions} from "crosscall/dist/interfaces.js"
+import {CorsPermissions} from "crosscall/dist/types.js"
 
 import {AuthTokens} from "../../../types.js"
 import {setupPopup} from "../../../toolbox/popups/setup-popup.js"

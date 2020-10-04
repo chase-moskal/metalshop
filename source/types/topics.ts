@@ -1,5 +1,5 @@
 
-import {Topic} from "renraku/dist/interfaces.js"
+import {Topic} from "renraku/dist/types.js"
 
 import {
 	User,

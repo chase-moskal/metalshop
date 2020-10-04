@@ -1,4 +1,11 @@
 
+import {makeAuthApi} from "./auth-api.js"
+
+export type AuthApi = ReturnType<typeof makeAuthApi>
+export type AppsTopic = AuthApi["appsTopic"]
+export type AuthTopic = AuthApi["authTopic"]
+export type UserTopic = AuthApi["userTopic"]
+
 // common stuff
 //
 

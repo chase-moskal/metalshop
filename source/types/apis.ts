@@ -1,6 +1,6 @@
 
-import {Api as RenrakuApi} from "renraku/dist/interfaces.js"
-import {Api as CrosscallApi} from "crosscall/dist/interfaces.js"
+import {Api as RenrakuApi} from "renraku/dist/types.js"
+import {Api as CrosscallApi} from "crosscall/dist/types.js"
 
 import {
 	User,

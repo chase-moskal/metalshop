@@ -1,6 +1,6 @@
 
 import {validateRequest} from "./validate-request.js"
-import {CorsPermissions} from "crosscall/dist/interfaces.js"
+import {CorsPermissions} from "crosscall/dist/types.js"
 import {PopupMessage, PopupReadyResponse, PopupFlag, PopupMessageEvent, PopupGoRequest, PopupPayloadResponse, PopupErrorResponse} from "./interfaces.js"
 
 export function setupPopup<Parameters, Payload>({

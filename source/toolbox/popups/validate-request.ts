@@ -1,6 +1,6 @@
 
 import {verifyCors} from "renraku/dist/verify-cors.js"
-import {CorsPermissions} from "crosscall/dist/interfaces.js"
+import {CorsPermissions} from "crosscall/dist/types.js"
 import {PopupMessageEvent, PopupMessage} from "./interfaces.js"
 
 export function validateRequest({namespace, event, cors}: {

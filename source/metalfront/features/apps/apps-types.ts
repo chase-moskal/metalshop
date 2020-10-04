@@ -1,5 +1,5 @@
 
-import {Topic, Method} from "renraku/dist/interfaces.js"
+import {Topic, Method} from "renraku/dist/types.js"
 import * as loading from "../../toolbox/loading.js"
 import {DbbyRow} from "../../../toolbox/dbby/dbby-types.js"
 

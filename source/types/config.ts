@@ -1,5 +1,5 @@
 
-export {CorsPermissions} from "renraku/dist/interfaces.js"
+export {CorsPermissions} from "renraku/dist/types.js"
 
 export interface JsonRegex {
 	pattern: string

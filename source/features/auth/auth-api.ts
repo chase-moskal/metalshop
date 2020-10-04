@@ -1,7 +1,7 @@
 
-import {asTopic} from "renraku/dist/interfaces.js"
+import {asTopic} from "renraku/dist/types.js"
 import {topicTransform} from "renraku/dist/curries.js"
-import {Profile, VerifyToken, SignToken, AccessToken, RefreshToken, RefreshPayload, AccessPayload, AppToken, AppPayload} from "../../types.js"
+import {Profile, VerifyToken, SignToken, AccessToken, RefreshToken, RefreshPayload, Scope, AccessPayload, AppToken, AppPayload} from "../../types.js"
 
 export function makeAuthApi({signToken, verifyToken}: {
 		signToken: SignToken
@@ -167,13 +167,14 @@ export function makeAuthApi({signToken, verifyToken}: {
 				// 	}),
 				// })
 			},
-			async authorize({app}, {refreshToken}: {refreshToken: RefreshToken}) {
+			async authorize({app}, {refreshToken}: {refreshToken: RefreshToken, scope: Scope}) {
 				// const {userId} = await verifyToken<RefreshPayload>(refreshToken)
 				// const user = await userLogin(userId)
 				// return signToken<AccessPayload>({
 				// 	payload: {user, scope},
 				// 	lifespan: accessTokenLifespan,
 				// })
+				return ""
 			},
 		}),
 
