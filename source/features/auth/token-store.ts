@@ -1,6 +1,7 @@
 
-import {CurriedMethodMeta} from "renraku/dist/types.js"
+import {asTopic, CurriedMethodMeta} from "renraku/dist/types.js"
 import {tokenDecode} from "redcrypto/dist/token-decode.js"
+
 import {SimpleStorage} from "../../toolbox/json-storage.js"
 
 import {AuthTopic} from "./auth-types.js"
@@ -31,7 +32,7 @@ export function makeTokenStore({
 		storage.setItem("refreshToken", refreshToken || "")
 	}
 
-	return {
+	return asTopic({
 
 		async writeTokens({accessToken, refreshToken}) {
 			saveTokens({accessToken, refreshToken})
@@ -75,5 +76,5 @@ export function makeTokenStore({
 
 			return accessToken
 		},
-	}
+	})
 }

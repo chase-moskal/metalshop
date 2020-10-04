@@ -1,7 +1,10 @@
 
 import {makeAuthApi} from "./auth-api.js"
+import {makeTokenStore} from "./token-store.js"
 
 export type AuthApi = ReturnType<typeof makeAuthApi>
+export type TokenStoreTopic = ReturnType<typeof makeTokenStore>
+
 export type AppsTopic = AuthApi["appsTopic"]
 export type AuthTopic = AuthApi["authTopic"]
 export type UserTopic = AuthApi["userTopic"]

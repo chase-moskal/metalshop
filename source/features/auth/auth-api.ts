@@ -8,20 +8,6 @@ export function makeAuthApi({signToken, verifyToken}: {
 		verifyToken: VerifyToken
 	}) {
 
-	const processAppToken = async({appToken}: {appToken: AppToken}) => ({
-		app: await verifyToken<AppPayload>(appToken)
-	})
-
-	const processBothTokens = async({appToken, accessToken}: {
-			appToken: AppToken
-			accessToken: AccessToken
-		}) => ({
-		app: await verifyToken<AppPayload>(appToken),
-		access: await verifyToken<AccessPayload>(accessToken),
-	})
-
-	//
-
 	// async function verifyScope(accessToken: AccessToken): Promise<U> {
 	// 	const {user, scope} = await verifyToken<AccessPayload>(accessToken)
 	// 	if (!scope.core) throw new Error("forbidden scope")
@@ -107,18 +93,29 @@ export function makeAuthApi({signToken, verifyToken}: {
 	// 	return user
 	// }
 
-	async function processBothTokensAndForceRootApp(meta: {
+	const processAppToken = async({appToken}: {appToken: AppToken}) => ({
+		app: await verifyToken<AppPayload>(appToken)
+	})
+
+	const processStandardAuth = async({appToken, accessToken}: {
+			appToken: AppToken
+			accessToken: AccessToken
+		}) => ({
+		...await processAppToken({appToken}),
+		access: await verifyToken<AccessPayload>(accessToken),
+	})
+
+	async function processRootAuth(meta: {
 			appToken: AppToken
 			accessToken: AccessToken
 		}) {
-		const {app, access} = await processBothTokens(meta)
-		if (!app.root) throw new Error("apps topic is root-only")
-		return {app, access}
+		const auth = await processStandardAuth(meta)
+		if (!auth.app.root) throw new Error("apps topic is root-only")
+		return auth
 	}
 
 	return {
-
-		appsTopic: topicTransform(processBothTokensAndForceRootApp, {
+		appsTopic: topicTransform(processRootAuth, {
 			async listApps({app, access}, o: {
 					userId: string
 				}) {},
@@ -142,7 +139,7 @@ export function makeAuthApi({signToken, verifyToken}: {
 		}),
 
 		authTopic: topicTransform(processAppToken, {
-			async authenticateViaPasskey({app}, {passkey: string}) {
+			async authenticateViaPasskey({app}, {passkey}: {passkey: string}) {
 				// lol authn
 			},
 			async authenticateViaGoogle({app}, {googleToken}: {googleToken: string}) {
@@ -167,7 +164,7 @@ export function makeAuthApi({signToken, verifyToken}: {
 				// 	}),
 				// })
 			},
-			async authorize({app}, {refreshToken}: {refreshToken: RefreshToken, scope: Scope}) {
+			async authorize({app}, {refreshToken, scope}: {refreshToken: RefreshToken, scope: Scope}) {
 				// const {userId} = await verifyToken<RefreshPayload>(refreshToken)
 				// const user = await userLogin(userId)
 				// return signToken<AccessPayload>({
@@ -178,7 +175,7 @@ export function makeAuthApi({signToken, verifyToken}: {
 			},
 		}),
 
-		userTopic: topicTransform(processBothTokens, {
+		userTopic: topicTransform(processStandardAuth, {
 			async getUser({app, access}, {userId}: {userId: string}) {
 				// return fetchUser(userId)
 			},
