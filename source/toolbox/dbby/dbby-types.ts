@@ -101,8 +101,6 @@ export interface DbbyTable<Row extends DbbyRow> {
 	update(options: DbbyUpdate<Row>): Promise<void>
 	delete(options: DbbyConditional<Row>): Promise<void>
 	count(options: DbbyConditional<Row>): Promise<number>
-	and: DbbyConditionHelper<"and", Row>
-	or: DbbyConditionHelper<"or", Row>
 }
 
 export interface DbbyStorage<Row extends DbbyRow> {

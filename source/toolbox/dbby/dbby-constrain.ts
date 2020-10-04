@@ -75,7 +75,5 @@ export function dbbyConstrain<Row extends DbbyRow, Constraint extends DbbyRow>(
 				conditions: spike(options.conditions),
 			})
 		},
-		and,
-		or,
 	}
 }

@@ -108,7 +108,6 @@ export default <Suite>{
 		},
 		"read with single conditions": async() => {
 			const dbby = await setupThreeUserDemo()
-			const {and} = dbby
 			return (true
 				&& expect([
 						...await dbby.read({conditions: and({equal: {userId: "u123"}})}),
