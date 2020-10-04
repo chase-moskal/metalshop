@@ -1,6 +1,4 @@
 
-import {ApiShape} from "renraku/dist/interfaces.js"
-
 import {AsDbbyRow} from "../../toolbox/dbby/dbby-types.js"
 import {AuthPayload, User} from "../../metalfront/types.js"
 import * as loading from "../../metalfront/toolbox/loading.js"

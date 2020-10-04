@@ -142,6 +142,9 @@ export function makeAuthApi({signToken, verifyToken}: {
 		}),
 
 		authTopic: topicTransform(processAppToken, {
+			async authenticateViaPassword({app}, {password: string}) {
+				
+			},
 			async authenticateViaGoogle({app}, {googleToken}: {googleToken: string}) {
 				// const {googleId, avatar, name} = await verifyGoogleToken(googleToken)
 				// const accountRow = await accountTable.assert({
