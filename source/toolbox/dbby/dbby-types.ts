@@ -94,7 +94,7 @@ export type DbbyConditionHelper<
 ) => DbbyConditionBranch<Op, Row>
 
 export interface DbbyTable<Row extends DbbyRow> {
-	create(row: Row, ...args: Row[]): Promise<void>
+	create(...rows: Row[]): Promise<void>
 	read(options: DbbyPaginated<Row>): Promise<Row[]>
 	one(options: DbbyConditional<Row>): Promise<Row>
 	assert(options: DbbyAssertion<Row>): Promise<Row>

@@ -26,3 +26,7 @@ export function dbbyHelpers<Row extends DbbyRow>() {
 		) => original.or<Row>(...conditions),
 	}
 }
+
+export function find<Row extends DbbyRow>(row: Partial<Row>) {
+	return {conditions: and({equal: row})}
+}
