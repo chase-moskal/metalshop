@@ -1,10 +1,3 @@
 
-export const isNode = (function() {
-	try {
-		const glob = typeof global !== "undefined"
-		return glob && this === global
-	}
-	catch (error) {
-		return false
-	}
-})()
+export const isNode = (typeof process !== "undefined")
+	&& (process.release.name === "node")
