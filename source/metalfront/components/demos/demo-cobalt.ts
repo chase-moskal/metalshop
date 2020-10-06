@@ -1,7 +1,7 @@
 
 import {MetalUser} from "../../../types.js"
 import {LitElement, html, css} from "lit-element"
-import {generateId} from "../../../toolbox/generate-id.js"
+import {getRando, Rando} from "../../../toolbox/get-rando.js"
 import {mixinStyles} from "../../framework/mixin-styles.js"
 
 const day = 1000 * 60 * 60 * 24
@@ -23,9 +23,17 @@ cobalt-card {
 
  @mixinStyles(styles)
 export class DemoCobalt extends LitElement {
+	private rando: Rando
+
+	constructor() {
+		super()
+		getRando().then(rando => this.rando = rando)
+	}
+
 	render() {
+		if (!this.rando) return null
 		const user: MetalUser = {
-			userId: generateId(),
+			userId: this.rando.randomId(),
 			claims: {
 				admin: true,
 				staff: true,

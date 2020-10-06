@@ -6,10 +6,9 @@ import {themeComponents} from "./framework/theme-components.js"
 import {assembleSupermodel} from "./startup/assemble-supermodel.js"
 import {wireComponentShares } from "./startup/wire-component-shares.js"
 
+import {getRando} from "../toolbox/get-rando.js"
 import {hatPuller} from "../toolbox/hat-puller.js"
-import {randomSample} from "../toolbox/random9.js"
 import {parseQuery} from "./toolbox/parse-query.js"
-import {generateId} from "../toolbox/generate-id.js"
 
 import {MockQuestion} from "./types.js"
 import {AccessPayload, MetalScope, MetalUser} from "../types.js"
@@ -19,6 +18,8 @@ export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 		nicknameData: string[][]
 		mockQuestions: MockQuestion[]
 	}) {
+
+	const rando = await getRando()
 
 	// get version, and reset on version change
 	{
@@ -38,11 +39,12 @@ export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 		localStorage.setItem(key, version)
 	}
 
+	const generateId = () => rando.randomId()
 	const generateAvatar = hatPuller(mockAvatars)
 
 	function generateNickname() {
 		return nicknameData
-			.map(names => randomSample(names))
+			.map(names => rando.randomSample(names))
 			.join(" ")
 	}
 
@@ -115,6 +117,7 @@ export async function installDemo({mockAvatars, nicknameData, mockQuestions}: {
 		}) {
 		let {user, accessToken, refreshToken} = await generateMockUser({
 			authAardvark,
+			generateId,
 			verifyToken,
 			generateAvatar,
 		})

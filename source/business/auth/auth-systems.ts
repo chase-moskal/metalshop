@@ -3,7 +3,6 @@ import {MetalUser, AccessToken, ClaimsRow, SignToken, AccountRow, ProfileRow, Ve
 
 import {concurrent} from "../../toolbox/concurrent.js"
 import {and} from "../../toolbox/dbby/dbby-helpers.js"
-import {generateId} from "../../toolbox/generate-id.js"
 import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 
 import {VerifyGoogleToken} from "./types.js"
@@ -16,6 +15,7 @@ export function makeAuthSystems<U extends MetalUser>({
 		accessTokenLifespan,
 		refreshTokenLifespan,
 		signToken,
+		generateId,
 		verifyToken,
 		generateNickname,
 		verifyGoogleToken,
@@ -28,6 +28,7 @@ export function makeAuthSystems<U extends MetalUser>({
 		profileTable: DbbyTable<ProfileRow>
 		signToken: SignToken
 		verifyToken: VerifyToken
+		generateId: () => string
 		generateNickname: () => string
 		verifyGoogleToken: VerifyGoogleToken
 		validateProfile?: (profile: U["profile"]) => {problems: string[]}

@@ -1,14 +1,18 @@
 
 import {VerifyToken} from "redcrypto/dist/types.js"
 
-import {generateId} from "../../toolbox/generate-id.js"
 import {mockSignGoogleToken} from "../../business/auth/mocks/mock-google-tokens.js"
-
 import {AuthAardvarkTopic, AccessPayload, MetalScope, MetalUser} from "../../types.js"
 
-export async function generateMockUser({authAardvark, verifyToken, generateAvatar}: {
+export async function generateMockUser({
+		authAardvark,
+		verifyToken,
+		generateId,
+		generateAvatar,
+	}: {
 		authAardvark: AuthAardvarkTopic
 		verifyToken: VerifyToken
+		generateId: () => string
 		generateAvatar: () => string
 	}) {
 
@@ -18,8 +22,14 @@ export async function generateMockUser({authAardvark, verifyToken, generateAvata
 		avatar: generateAvatar(),
 	})
 
-	const {accessToken, refreshToken} = await authAardvark.authenticateViaGoogle({googleToken})
+	const {
+		accessToken,
+		refreshToken,
+	} = await authAardvark.authenticateViaGoogle({googleToken})
 
-	const {user} = await verifyToken<AccessPayload<MetalScope, MetalUser>>(accessToken)
+	const {user} = await verifyToken<
+		AccessPayload<MetalScope, MetalUser>
+	>(accessToken)
+
 	return {user, accessToken, refreshToken}
 }

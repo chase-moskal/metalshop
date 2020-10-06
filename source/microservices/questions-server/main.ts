@@ -7,7 +7,7 @@ import mount from "../../commonjs/koa-mount.js"
 import koaCors from "../../commonjs/koa-cors.js"
 
 import {health} from "../../toolbox/health.js"
-import {generateId} from "../../toolbox/generate-id.js"
+import {getRando} from "../../toolbox/get-rando.js"
 import {read, readYaml} from "../../toolbox/reading.js"
 import {nodeProgram} from "../../toolbox/node-program.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
@@ -41,6 +41,8 @@ nodeProgram(async function main({logger}) {
 	const questionTable = dbbyTable<QuestionRow>("questions")
 	const questionLikeTable = dbbyTable<QuestionLikeRow>("questionLikes")
 	const questionReportTable = dbbyTable<QuestionReportRow>("questionReports")
+
+	const {randomId: generateId} = await getRando()
 
 	const questionQuarry = makeQuestionQuarry({
 		userUmbrella,

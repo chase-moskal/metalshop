@@ -20,9 +20,9 @@ import {MockStripeTables} from "../../business/paywall/mocks/mock-stripe-types.j
 import {mockStripeCircuit} from "../../business/paywall/mocks/mock-stripe-circuit.js"
 import {mockVerifyGoogleToken, mockSignGoogleToken} from "../../business/auth/mocks/mock-google-tokens.js"
 
-import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
-import {generateId} from "../../toolbox/generate-id.js"
+import {getRando} from "../../toolbox/get-rando.js"
 import {Logger} from "../../toolbox/logger/interfaces.js"
+import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {dbbyMemory} from "../../toolbox/dbby/dbby-memory.js"
 import {makeDbbyStorage} from "../../toolbox/dbby/dbby-storage.js"
 
@@ -51,6 +51,12 @@ export async function makeMocks({
 		generateNickname: () => string
 		decodeAccessToken?: DecodeAccessToken<MetalUser>
 	}) {
+
+	const rando = await getRando()
+
+	function generateId() {
+		return rando.randomId()
+	}
 
 	const minute = 1000 * 60
 	const day = minute * 60 * 24
@@ -100,6 +106,7 @@ export async function makeMocks({
 		refreshTokenLifespan: day * 90,
 		accessTokenLifespan: minute * 20,
 		signToken,
+		generateId,
 		verifyToken,
 		validateProfile,
 		generateNickname,
@@ -140,6 +147,7 @@ export async function makeMocks({
 	})
 
 	const {premiumDatalayer, stripeLiaison} = mockStripeCircuit({
+		rando,
 		logger,
 		userUmbrella,
 		claimsCardinal,

@@ -2,8 +2,12 @@
 
 node --input-type=module <<EOF
 
-import {randomId} from "./dist/toolbox/random9.js"
+import {getRando} from "./dist/toolbox/get-rando.js"
+;(async() => {
 
-console.log(randomId())
+	const {randomId} = await getRando()
+	console.log(randomId())
+
+})()
 
 EOF

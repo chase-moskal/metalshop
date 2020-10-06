@@ -13,6 +13,7 @@ import {health} from "../../toolbox/health.js"
 import {read, readYaml} from "../../toolbox/reading.js"
 import {httpHandler} from "../../toolbox/http-handler.js"
 import {nodeProgram} from "../../toolbox/node-program.js"
+import {getRando, Rando} from "../../toolbox/get-rando.js"
 import {connectMongo} from "../../toolbox/connect-mongo.js"
 import {unpackCorsConfig} from "../../toolbox/unpack-cors-config.js"
 
@@ -62,6 +63,9 @@ nodeProgram(async function main({logger}) {
 	const accountTable = dbbyTable<AccountRow>("accounts")
 	const profileTable = dbbyTable<ProfileRow>("profiles")
 
+	const rando = await getRando()
+	const generateId = () => rando.randomId()
+
 	const claimsCardinal = makeClaimsCardinal({claimsTable})
 	const {authAardvark, userUmbrella} = makeAuthSystems({
 		claimsTable,
@@ -70,10 +74,12 @@ nodeProgram(async function main({logger}) {
 		accessTokenLifespan,
 		refreshTokenLifespan,
 		signToken,
+		generateId,
 		verifyToken,
 		validateProfile,
 		verifyGoogleToken,
 		generateNickname: curryGenerateNickname({
+			rando,
 			delimiter: " ",
 			nicknameStructure,
 		}),

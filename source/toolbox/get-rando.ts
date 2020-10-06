@@ -5,7 +5,7 @@ import {isNode as stockIsNode} from "./is-node.js"
 
 export type Rando = Await<ReturnType<typeof getRando>>
 
-export async function getRando({isNode = stockIsNode}: {isNode: boolean}) {
+export async function getRando({isNode = stockIsNode}: {isNode?: boolean} = {}) {
 
 	const getRandomBytes: (bytes: number) => ArrayBuffer = isNode
 		? await (async() => {
@@ -37,7 +37,7 @@ export async function getRando({isNode = stockIsNode}: {isNode: boolean}) {
 	}
 	
 	function randomId() {
-		const bytes = getRandomBytes(24)
+		const bytes = getRandomBytes(32)
 		return encodeHex(bytes)
 	}
 	

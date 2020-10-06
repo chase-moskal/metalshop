@@ -1,9 +1,8 @@
 
 import {Stripe} from "../../../commonjs/stripe.js"
 
+import {Rando} from "../../../toolbox/get-rando.js"
 import {and} from "../../../toolbox/dbby/dbby-helpers.js"
-import {generateId} from "../../../toolbox/generate-id.js"
-import {randomSequence} from "../../../toolbox/random9.js"
 
 const numbers = [..."1234567890"]
 
@@ -15,12 +14,16 @@ import {MockStripeTables, MockCustomer, MockSetupIntent, MockSubscription, MockP
 const days = (n: number) => n * (1000 * 60 * 60 * 24)
 
 export function mockStripeLiaison({
+		rando,
 		tables,
 		webhooks,
 	}: {
+		rando: Rando
 		tables: MockStripeTables
 		webhooks: StripeWebhooks
 	}): StripeLiaison {
+
+	const generateId = () => rando.randomId()
 
 	//
 	// functions for low level data interaction with the tables
@@ -117,7 +120,7 @@ export function mockStripeLiaison({
 				country: "US",
 				exp_year: 2020,
 				exp_month: 10,
-				last4: randomSequence(4, numbers),
+				last4: rando.randomSequence(4, numbers),
 				description: "description",
 				funding: "credit",
 				checks: null,

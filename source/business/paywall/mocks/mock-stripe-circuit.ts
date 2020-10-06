@@ -1,6 +1,7 @@
 
 import {MetalUser, PremiumGiftRow, StripeBillingRow, StripePremiumRow, ClaimsCardinalTopic, UserUmbrellaTopic} from "../../../types.js"
 
+import {Rando} from "../../../toolbox/get-rando.js"
 import {pubsubs, pubsub} from "../../../toolbox/pubsub.js"
 import {Logger} from "../../../toolbox/logger/interfaces.js"
 import {DbbyTable} from "../../../toolbox/dbby/dbby-types.js"
@@ -23,6 +24,7 @@ import {mockStripeLiaison} from "./mock-stripe-liaison.js"
  * - we use pubsub to defeat the circular dependency here
  */
 export function mockStripeCircuit({
+		rando,
 		logger,
 		userUmbrella,
 		claimsCardinal,
@@ -36,6 +38,7 @@ export function mockStripeCircuit({
 			paymentMethods: dbbyMemory(),
 		},
 	}: {
+		rando: Rando
 		logger: Logger
 		tables: MockStripeTables
 		userUmbrella: UserUmbrellaTopic<MetalUser>
@@ -55,7 +58,7 @@ export function mockStripeCircuit({
 	})
 
 	// give the publishers to the mock stripe liaison
-	const stripeLiaison = mockStripeLiaison({tables, webhooks: webhookPublishers})
+	const stripeLiaison = mockStripeLiaison({rando, tables, webhooks: webhookPublishers})
 	const premiumDatalayer = makePremiumDatalayer({
 		stripeLiaison,
 		premiumGiftTable,
