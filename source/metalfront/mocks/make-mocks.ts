@@ -30,7 +30,6 @@ import {mockLatency, mockLatencyDbby} from "../mocks/mock-latency.js"
 import {decodeAccessToken as defaultDecodeAccessToken} from "../system/decode-access-token.js"
 
 import {MetalOptions, DecodeAccessToken, TriggerAccountPopup, TriggerCheckoutPopup} from "../types.js"
-import { AppPayload } from "../../types/features.js"
 
 export type PrepareMockData = (options: {
 		authAardvark: AuthAardvarkTopic,

@@ -20,16 +20,11 @@ export function mockLatency<T extends Topic>(duration: number, topic: T): T {
 	return <T>newTopic
 }
 
-
 export function mockLatencyDbby<T extends DbbyTable<{}>>(duration: number, table: T): T {
-	const {and, or, ...methods} = table
+	const {...methods} = table
 	const newMethods = {}
 	for (const [key, value] of Object.entries(methods)) {
 		newMethods[key] = lag(value, duration)
 	}
-	return <T>{
-		and,
-		or,
-		...newMethods,
-	}
+	return <T>newMethods
 }

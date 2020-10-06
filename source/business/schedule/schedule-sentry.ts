@@ -1,4 +1,5 @@
 
+import {and} from "../../toolbox/dbby/dbby-helpers.js"
 import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {ScheduleSentryTopic, ScheduleEventRow, Authorizer, User} from "../../types.js"
 
@@ -11,8 +12,6 @@ export function makeScheduleSentry({
 		userCanChangeSchedule: (user: User) => boolean
 		scheduleEventTable: DbbyTable<ScheduleEventRow>
 	}): ScheduleSentryTopic {
-	const {and} = scheduleEventTable
-
 	return {
 
 		async getEvent({label}) {

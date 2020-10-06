@@ -29,7 +29,7 @@ export function makeLiveshowApi({auth, getDbbyTable, userCanRead, userCanWrite}:
 			async getShow({liveshowTable, allowRead}, {label}: {label: string}) {
 				if (allowRead) {
 					const row = await liveshowTable.one({
-						conditions: liveshowTable.and({equal: {label}})
+						conditions: and({equal: {label}})
 					})
 					return row
 						? {vimeoId: row.vimeoId}

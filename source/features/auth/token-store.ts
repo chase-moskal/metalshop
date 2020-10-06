@@ -60,7 +60,7 @@ export function makeTokenStore({
 					// access token missing or expired -- perform a refresh
 					accessToken = await authorize({
 						refreshToken,
-						scope: {core: true},
+						scope: {metalshop: true},
 					})
 
 					saveTokens({accessToken, refreshToken})

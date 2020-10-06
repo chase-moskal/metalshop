@@ -1,4 +1,5 @@
 
+import {and} from "../../toolbox/dbby/dbby-helpers.js"
 import {DbbyTable} from "../../toolbox/dbby/dbby-types.js"
 import {SettingsSheriffTopic, MetalSettings, SettingsRow, Authorizer} from "../../types.js"
 
@@ -6,7 +7,6 @@ export function makeSettingsSheriff<S extends MetalSettings>({settingsTable, aut
 		authorize: Authorizer
 		settingsTable: DbbyTable<SettingsRow>
 	}): SettingsSheriffTopic<S> {
-	const {and} = settingsTable
 
 	async function assertSettings(userId: string): Promise<S> {
 		const row = await settingsTable.assert({

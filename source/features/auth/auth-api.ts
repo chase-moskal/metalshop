@@ -1,9 +1,17 @@
 
 import {asTopic} from "renraku/dist/types.js"
 import {topicTransform} from "renraku/dist/curries.js"
-import {Profile, VerifyToken, SignToken, AccessToken, RefreshToken, RefreshPayload, Scope, AccessPayload, AppToken, AppPayload} from "../../types.js"
 
-export function makeAuthApi({signToken, verifyToken}: {
+import {Profile, VerifyToken, SignToken, AccessToken, RefreshToken, RefreshPayload, Scope, AccessPayload, AppToken, AppPayload, AccountRow, AccountViaGoogleRow, AccountViaPasskeyRow, ProfileRow, SettingsRow} from "./auth-types.js"
+
+import {GetTableForApp, tablesForApp} from "./tables-for-app.js"
+
+export function makeAuthApi({tables, signToken, verifyToken}: {
+		tables: {
+			accountTable: GetTableForApp<AccountRow>
+			accountViaGoogleTable: GetTableForApp<AccountViaGoogleRow>
+			accountViaPasskeyTable: GetTableForApp<AccountViaPasskeyRow>
+		}
 		signToken: SignToken
 		verifyToken: VerifyToken
 	}) {
@@ -93,56 +101,74 @@ export function makeAuthApi({signToken, verifyToken}: {
 	// 	return user
 	// }
 
-	const processAppToken = async({appToken}: {appToken: AppToken}) => ({
-		app: await verifyToken<AppPayload>(appToken)
-	})
+	//
+	// auth preprocessing for requests
+	//
 
-	const processStandardAuth = async({appToken, accessToken}: {
-			appToken: AppToken
-			accessToken: AccessToken
-		}) => ({
-		...await processAppToken({appToken}),
-		access: await verifyToken<AccessPayload>(accessToken),
-	})
+	const auth = (() => {
+		const processAppToken = async({appToken}: {appToken: AppToken}) => {
+			const app = await verifyToken<AppPayload>(appToken)
+			return {
+				app,
 
-	async function processRootAuth(meta: {
-			appToken: AppToken
-			accessToken: AccessToken
-		}) {
-		const auth = await processStandardAuth(meta)
-		if (!auth.app.root) throw new Error("apps topic is root-only")
-		return auth
-	}
+				// generate table handlers constrained to app namespace
+				tables: tablesForApp(app, tables),
+			}
+		}
+
+		const processStandardAuth = async({appToken, accessToken}: {
+				appToken: AppToken
+				accessToken: AccessToken
+			}) => ({
+			...await processAppToken({appToken}),
+			access: await verifyToken<AccessPayload>(accessToken),
+		})
+
+		async function processRootAuth(meta: {
+				appToken: AppToken
+				accessToken: AccessToken
+			}) {
+			const auth = await processStandardAuth(meta)
+			if (!auth.app.root) throw new Error("apps topic is root-only")
+			return auth
+		}
+
+		return {processAppToken, processStandardAuth, processRootAuth}
+	})()
+
+	//
+	// auth api topics
+	//
 
 	return {
-		appsTopic: topicTransform(processRootAuth, {
-			async listApps({app, access}, o: {
+		appsTopic: topicTransform(auth.processRootAuth, {
+			async listApps({app, access, tables}, o: {
 					userId: string
 				}) {},
-			async registerApp({app, access}, o: {
+			async registerApp({app, access, tables}, o: {
 					userId: string
 					appDraft: any
 				}) {},
-			async deleteApp({app, access}, o: {
+			async deleteApp({app, access, tables}, o: {
 					userId: string
 					appId: string
 				}) {},
-			async createAppToken({app, access}, o: {
+			async createAppToken({app, access, tables}, o: {
 					userId: string
 					appId: string
 					appTokenDraft: any
 				}) {},
-			async deleteAppToken({app, access}, o: {
+			async deleteAppToken({app, access, tables}, o: {
 					userId: string
 					appTokenId: string
 				}) {},
 		}),
 
-		authTopic: topicTransform(processAppToken, {
-			async authenticateViaPasskey({app}, {passkey}: {passkey: string}) {
+		authTopic: topicTransform(auth.processAppToken, {
+			async authenticateViaPasskey({app, tables}, {passkey}: {passkey: string}) {
 				// lol authn
 			},
-			async authenticateViaGoogle({app}, {googleToken}: {googleToken: string}) {
+			async authenticateViaGoogle({app, tables}, {googleToken}: {googleToken: string}) {
 				// const {googleId, avatar, name} = await verifyGoogleToken(googleToken)
 				// const accountRow = await accountTable.assert({
 				// 	conditions: and({equal: {googleId}}),
@@ -164,7 +190,7 @@ export function makeAuthApi({signToken, verifyToken}: {
 				// 	}),
 				// })
 			},
-			async authorize({app}, {refreshToken, scope}: {refreshToken: RefreshToken, scope: Scope}) {
+			async authorize({app, tables}, {refreshToken, scope}: {refreshToken: RefreshToken, scope: Scope}) {
 				// const {userId} = await verifyToken<RefreshPayload>(refreshToken)
 				// const user = await userLogin(userId)
 				// return signToken<AccessPayload>({
@@ -175,11 +201,11 @@ export function makeAuthApi({signToken, verifyToken}: {
 			},
 		}),
 
-		userTopic: topicTransform(processStandardAuth, {
-			async getUser({app, access}, {userId}: {userId: string}) {
+		userTopic: topicTransform(auth.processStandardAuth, {
+			async getUser({app, access, tables}, {userId}: {userId: string}) {
 				// return fetchUser(userId)
 			},
-			async setUserProfile({app, access}, {userId, profile}: {userId: string, profile: Profile}) {
+			async setUserProfile({app, access, tables}, {userId, profile}: {userId: string, profile: Profile}) {
 				// const askingUser = await verifyScope(accessToken)
 				// const allowed = false
 				// 	|| askingUser.claims.admin

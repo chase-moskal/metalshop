@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+node --input-type=module <<EOF
+
+import {randomId} from "./dist/toolbox/random9.js"
+
+console.log(randomId())
+
+EOF
