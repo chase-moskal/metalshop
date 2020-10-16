@@ -61,7 +61,7 @@ export type AccessToken = string
 export type RefreshToken = string
 
 export interface Scope {
-	metalshop?: boolean
+	core?: boolean
 }
 
 export interface AppPayload {

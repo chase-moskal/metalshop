@@ -1,5 +1,5 @@
 
-import {curryTopicMeta} from "renraku/dist/curries.js"
+// import {curryTopicMeta} from "renraku/dist/curries.js"
 
 import {MetalUser} from "../../types.js"
 import {pubsub} from "../../toolbox/pubsub.js"

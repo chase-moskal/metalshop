@@ -1,8 +1,8 @@
 
 import {asTopic} from "renraku/dist/types.js"
-import {topicTransform} from "renraku/dist/curries.js"
+import {processPayloadTopic} from "renraku/dist/curries.js"
 
-import {Profile, VerifyToken, SignToken, AccessToken, RefreshToken, RefreshPayload, Scope, AccessPayload, AppToken, AppPayload, AccountRow, AccountViaGoogleRow, AccountViaPasskeyRow, ProfileRow, SettingsRow} from "./auth-types.js"
+import {User, Profile, VerifyToken, SignToken, AccessToken, RefreshToken, RefreshPayload, Scope, AccessPayload, AppToken, AppPayload, AccountRow, AccountViaGoogleRow, AccountViaPasskeyRow, ProfileRow, SettingsRow} from "./auth-types.js"
 
 import {GetTableForApp, tablesForApp} from "./tables-for-app.js"
 
@@ -16,11 +16,11 @@ export function makeAuthApi({tables, signToken, verifyToken}: {
 		verifyToken: VerifyToken
 	}) {
 
-	// async function verifyScope(accessToken: AccessToken): Promise<U> {
-	// 	const {user, scope} = await verifyToken<AccessPayload>(accessToken)
-	// 	if (!scope.core) throw new Error("forbidden scope")
-	// 	return <U>user
-	// }
+	async function verifyScope(accessToken: AccessToken): Promise<User> {
+		const {user, scope} = await verifyToken<AccessPayload>(accessToken)
+		if (!scope.core) throw new Error("forbidden scope")
+		return user
+	}
 
 	// function assembleUser({
 	// 		accountRow,
@@ -141,7 +141,7 @@ export function makeAuthApi({tables, signToken, verifyToken}: {
 	//
 
 	return {
-		appsTopic: topicTransform(auth.processRootAuth, {
+		appsTopic: processPayloadTopic(auth.processRootAuth, {
 			async listApps({app, access, tables}, o: {
 					userId: string
 				}) {},
@@ -164,7 +164,7 @@ export function makeAuthApi({tables, signToken, verifyToken}: {
 				}) {},
 		}),
 
-		authTopic: topicTransform(auth.processAppToken, {
+		authTopic: processPayloadTopic(auth.processAppToken, {
 			async authenticateViaPasskey({app, tables}, {passkey}: {passkey: string}) {
 				// lol authn
 			},
@@ -201,7 +201,7 @@ export function makeAuthApi({tables, signToken, verifyToken}: {
 			},
 		}),
 
-		userTopic: topicTransform(auth.processStandardAuth, {
+		userTopic: processPayloadTopic(auth.processStandardAuth, {
 			async getUser({app, access, tables}, {userId}: {userId: string}) {
 				// return fetchUser(userId)
 			},

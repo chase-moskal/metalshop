@@ -1,5 +1,5 @@
 
-import {topicTransform} from "renraku/dist/curries.js"
+import {processPayloadTopic} from "renraku/dist/curries.js"
 
 import {and} from "../../toolbox/dbby/dbby-helpers.js"
 import {GetDbbyTable} from "../../toolbox/dbby/dbby-types.js"
@@ -24,7 +24,7 @@ export function makeLiveshowApi({auth, getDbbyTable, userCanRead, userCanWrite}:
 	}
 
 	return {
-		liveshowTopic: topicTransform(authorizer, {
+		liveshowTopic: processPayloadTopic(authorizer, {
 
 			async getShow({liveshowTable, allowRead}, {label}: {label: string}) {
 				if (allowRead) {

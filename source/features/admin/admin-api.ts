@@ -1,5 +1,5 @@
 
-import {topicTransform} from "renraku/dist/curries.js"
+import {processPayloadTopic} from "renraku/dist/curries.js"
 import {Role, RoleRow} from "./admin-types.js"
 
 import {AuthMeta, TopicAuthorizer, GetAppTable} from "../../types.js"
@@ -18,8 +18,8 @@ export function makeAdminApi({auth, getAppTable}: {
 	}
 
 	return {
-		permissions: topicTransform(authorizer, {
-			async list({roleTable}) {
+		permissions: processPayloadTopic(authorizer, {
+			async list(payload, {roleTable}) {
 				return []
 			},
 			async setRole(payload, {role}: {role: Role}) {

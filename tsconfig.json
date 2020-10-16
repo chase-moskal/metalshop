@@ -16,6 +16,8 @@
 		"source/**/*.js",
 	],
 	"exclude": [
-		"jwt/**/*"
+		"jwt/**/*",
+		"source/microservices",
+		"source/metalfront",
 	]
 }

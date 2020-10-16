@@ -1,5 +1,5 @@
 
-import {asTopic, CurriedMethodMeta} from "renraku/dist/types.js"
+import {asTopic, AddMeta} from "renraku/dist/types.js"
 import {tokenDecode} from "redcrypto/dist/token-decode.js"
 
 import {SimpleStorage} from "../../toolbox/json-storage.js"
@@ -24,7 +24,7 @@ export function makeTokenStore({
 		authorize,
 	}: {
 		storage: SimpleStorage
-		authorize: CurriedMethodMeta<AuthTopic["authorize"]>
+		authorize: AddMeta<AuthTopic["authorize"]>
 	}) {
 
 	function saveTokens({accessToken, refreshToken}) {
@@ -60,7 +60,7 @@ export function makeTokenStore({
 					// access token missing or expired -- perform a refresh
 					accessToken = await authorize({
 						refreshToken,
-						scope: {metalshop: true},
+						scope: {core: true},
 					})
 
 					saveTokens({accessToken, refreshToken})
