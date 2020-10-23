@@ -1,8 +1,7 @@
 
-import {asTopic} from "renraku/dist/types.js"
 import {processPayloadTopic} from "renraku/dist/curries.js"
 
-import {User, Profile, VerifyToken, SignToken, AccessToken, RefreshToken, RefreshPayload, Scope, AccessPayload, AppToken, AppPayload, AccountRow, AccountViaGoogleRow, AccountViaPasskeyRow, ProfileRow, SettingsRow} from "./auth-types.js"
+import {User, Profile, VerifyToken, SignToken, AccessToken, RefreshToken, Scope, AccessPayload, AppToken, AppPayload, AccountRow, AccountViaGoogleRow, AccountViaPasskeyRow} from "./auth-types.js"
 
 import {GetTableForApp, tablesForApp} from "./tables-for-app.js"
 
